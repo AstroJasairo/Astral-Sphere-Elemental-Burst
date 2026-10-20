@@ -1,0 +1,20 @@
+# Thư mục Unity tự sinh, không đưa lên Git
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]serSettings/
+
+# File của IDE
+.vs/
+.idea/
+*.csproj
+*.sln
+*.suo
+*.user
+
+# Build Android
+*.apk
+*.aab
