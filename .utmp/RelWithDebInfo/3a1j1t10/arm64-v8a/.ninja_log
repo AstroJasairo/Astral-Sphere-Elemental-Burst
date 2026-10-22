@@ -1,0 +1,12 @@
+# ninja log v5
+75	487	8143594523563340	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	f4270b006a29cfbb
+489	806	8143594526629516	D:/Project/Unity/Astral Sphere - Elementals Burst/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/3a1j1t10/obj/arm64-v8a/libswappywrapper.so	20aa1f62ecb084df
+34	2370	8143594542336853	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	4eb21227ef2483c8
+25	2378	8143594542392443	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	8dcea95dca85cdb5
+18	2404	8143594542693850	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	21deb9c4c47d7b90
+53	2427	8143594542923167	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	7d042a01d6e29bb
+11	2487	8143594543542180	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	797ac7656296aa67
+63	2675	8143594545414280	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	cf7d9904643ef02f
+42	2706	8143594545730957	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	e4be9fa318c2f587
+1	2812	8143594546792302	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	e26470b36f454747
+2812	2918	8143594547876328	D:/Project/Unity/Astral Sphere - Elementals Burst/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/3a1j1t10/obj/arm64-v8a/libgame.so	364758a8072f8ec0

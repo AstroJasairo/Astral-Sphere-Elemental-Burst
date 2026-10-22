@@ -1,0 +1,137 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d76af4eaf44357d43a83a8c754a9cef2, type: 3}
+  m_Name: StageData_Forest
+  m_EditorClassIdentifier: Assembly-CSharp::StageData
+  spawnInterval: 2
+  bossTime: 1800
+  hpMultiplier:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 30
+      value: 4
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  damageMultiplier:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 30
+      value: 3
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  phases:
+  - startTime: 15
+    melee: 3
+    ranged: 0
+    tank: 0
+    mage: 0
+    assassin: 0
+  - startTime: 180
+    melee: 3
+    ranged: 3
+    tank: 0
+    mage: 0
+    assassin: 0
+  - startTime: 300
+    melee: 4
+    ranged: 3
+    tank: 1
+    mage: 0
+    assassin: 0
+  - startTime: 480
+    melee: 4
+    ranged: 4
+    tank: 2
+    mage: 0
+    assassin: 0
+  - startTime: 600
+    melee: 4
+    ranged: 4
+    tank: 2
+    mage: 2
+    assassin: 0
+  - startTime: 900
+    melee: 5
+    ranged: 4
+    tank: 2
+    mage: 2
+    assassin: 1
+  - startTime: 1080
+    melee: 5
+    ranged: 4
+    tank: 3
+    mage: 3
+    assassin: 1
+  - startTime: 1200
+    melee: 5
+    ranged: 4
+    tank: 5
+    mage: 3
+    assassin: 2
+  - startTime: 1380
+    melee: 5
+    ranged: 5
+    tank: 5
+    mage: 4
+    assassin: 3
+  - startTime: 1500
+    melee: 5
+    ranged: 5
+    tank: 5
+    mage: 5
+    assassin: 4
+  - startTime: 1680
+    melee: 5
+    ranged: 5
+    tank: 5
+    mage: 5
+    assassin: 5
+  - startTime: 1800
+    melee: 5
+    ranged: 5
+    tank: 5
+    mage: 5
+    assassin: 5
