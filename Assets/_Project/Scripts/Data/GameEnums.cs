@@ -9,3 +9,16 @@ public enum EnemyType
 {
     Melee, Ranged, Tank, Mage, Assassin
 }
+
+// Các loại vật phẩm rơi (theo tài liệu kẻ địch). Giai đoạn này chỉ dùng Gold và Crystal.
+public enum PickupType
+{
+    Gold, Crystal, HealthPotion, SpeedPotion, RagePotion,
+    Magnet, ManaPotion, Shield, ScoreBoost
+}
+
+// 6 chỉ số cơ bản của nhân vật
+public enum StatType
+{
+    Hp, Mp, Atk, Def, Spd, Mag
+}

@@ -23,7 +23,17 @@ MonoBehaviour:
   pierce: 0
   levels:
   - projectileCount: 1
+    radius: 1.5
   - projectileCount: 2
+    radius: 1.5
   - projectileCount: 3
+    radius: 1.5
   - projectileCount: 4
+    radius: 1.5
   - projectileCount: 5
+    radius: 1.5
+  icon: {fileID: 0}
+  description: "\u0110\u1ECBnh k\u1EF3 ph\xF3ng dao v\xE0o m\u1EE5c ti\xEAu g\u1EA7n
+    nh\u1EA5t"
+  upgradeDescription: "T\u0103ng s\u1ED1 l\u01B0\u1EE3ng dao m\u1ED7i l\u1EA7n ph\xF3ng"
+  weaponPrefab: {fileID: 2924092888550231844, guid: 3d6c871ede81fcf48a77de8d1b27bb41, type: 3}

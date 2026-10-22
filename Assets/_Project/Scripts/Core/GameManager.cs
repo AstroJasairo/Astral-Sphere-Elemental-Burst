@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
 
     public Transform Player => player;
     public float ElapsedTime { get; private set; }   // Thời gian đã chơi (giây)
+    public bool IsPaused { get; private set; }
 
     private void Awake()
     {
@@ -22,5 +23,17 @@ public class GameManager : MonoBehaviour
     {
         // Time.deltaTime tự về 0 khi Time.timeScale = 0 (pause), nên đồng hồ tự dừng theo
         ElapsedTime += Time.deltaTime;
+    }
+
+    public void Pause()
+    {
+        IsPaused = true;
+        Time.timeScale = 0f;   // Dừng mọi thứ dùng Time.deltaTime (quái, vũ khí, đồng hồ trận)
+    }
+
+    public void Resume()
+    {
+        IsPaused = false;
+        Time.timeScale = 1f;
     }
 }

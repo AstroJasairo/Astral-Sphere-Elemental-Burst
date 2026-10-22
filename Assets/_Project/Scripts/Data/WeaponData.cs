@@ -5,6 +5,7 @@ using UnityEngine;
 public class WeaponLevel
 {
     public int projectileCount = 1;   // Kim loại: tăng số dao mỗi lần phóng
+    public float radius = 1.5f;       // Lửa: bán kính Aura
     // Các vũ khí khác sẽ thêm trường riêng sau (bán kính, góc nón, thời gian trói...)
 }
 
@@ -28,4 +29,10 @@ public class WeaponData : ScriptableObject
 
     [Header("Thông số theo cấp: phần tử 0 = Lv1 ... phần tử 4 = Lv5")]
     public WeaponLevel[] levels = new WeaponLevel[5];
+
+    [Header("Hiển thị và prefab")]
+    public Sprite icon;
+    [TextArea] public string description;          // Mô tả khi nhận vũ khí mới
+    [TextArea] public string upgradeDescription;   // Mô tả khi nâng cấp
+    public GameObject weaponPrefab;                // Prefab chứa script vũ khí (ProjectileWeapon, AuraWeapon...)
 }
