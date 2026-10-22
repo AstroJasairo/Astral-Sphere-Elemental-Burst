@@ -6,9 +6,6 @@ public static class TargetFinder
     private static readonly Collider2D[] buffer = new Collider2D[64];
     private static ContactFilter2D filter;
 
-    // Đọc kết quả sau khi gọi FindAll (chỉ dùng ngay, đừng giữ lại)
-    public static Collider2D[] Results => buffer;
-
     public static Transform FindNearest(Vector2 origin, float range, LayerMask mask)
     {
         filter.SetLayerMask(mask);
@@ -29,13 +26,5 @@ public static class TargetFinder
             }
         }
         return nearest;
-    }
-
-    // Trả về số collider tìm được, kết quả nằm trong Results
-    public static int FindAll(Vector2 origin, float radius, LayerMask mask)
-    {
-        filter.SetLayerMask(mask);
-        filter.useTriggers = true;   // Collider quái là Trigger
-        return Physics2D.OverlapCircle(origin, radius, filter, buffer);
     }
 }

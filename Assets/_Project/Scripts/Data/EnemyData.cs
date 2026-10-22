@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 // Dữ liệu một loại kẻ địch. Tạo bằng: Assets > Create > Astral Sphere > Enemy Data
@@ -16,12 +15,4 @@ public class EnemyData : ScriptableObject
 
     [Header("Phần thưởng")]
     public int scoreValue = 10;    // Điểm cộng khi tiêu diệt
-
-    [Header("Rơi đồ")]
-    [Tooltip("Luôn rơi (vàng)")]
-    public List<DropEntry> guaranteedDrops = new List<DropEntry>();
-    [Tooltip("Xác suất để rơi THÊM 1 món từ danh sách bên dưới (0..1)")]
-    [Range(0f, 1f)] public float randomDropChance = 0.5f;
-    [Tooltip("Nếu rơi thêm, chọn 1 món theo trọng số")]
-    public List<DropEntry> randomDrops = new List<DropEntry>();
 }

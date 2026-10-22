@@ -54,16 +54,7 @@ public class EnemyBase : MonoBehaviour
 
     private void HandleDied()
     {
-        // Fix: Không thể trả về pool khi phát sinh lỗi
-        try
-        {
-            EnemyKilled?.Invoke(this);   // Có thể có hàm lắng nghe ném lỗi
-        }
-        finally
-        {
-            // "finally" LUÔN chạy, kể cả khi phía trên có lỗi.
-            // Lỗi vẫn hiện trong Console để biết mà sửa, nhưng quái không còn thành "quái ma".
-            PoolManager.Instance.Release(gameObject);   // Trả về pool thay vì Destroy
-        }
+        EnemyKilled?.Invoke(this);
+        PoolManager.Instance.Release(gameObject);   // Trả về pool thay vì Destroy
     }
 }
