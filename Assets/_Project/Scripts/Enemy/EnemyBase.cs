@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System;
 using UnityEngine;
 
@@ -15,6 +16,8 @@ public class EnemyBase : MonoBehaviour
     private float damage;
     private float nextAttackTime;
     private const float AttackCooldown = 1f;   // Chạm người chơi: 1 giây mới gây sát thương lại
+    public static int ActiveCount { get; private set; }                       // Số quái đang hoạt động
+    public static readonly HashSet<EnemyBase> Active = new HashSet<EnemyBase>();
 
     private void Awake()
     {
@@ -65,5 +68,26 @@ public class EnemyBase : MonoBehaviour
             // Lỗi vẫn hiện trong Console để bạn biết mà sửa, nhưng quái không còn thành "quái ma".
             PoolManager.Instance.Release(gameObject);   // Trả về pool thay vì Destroy
         }
+    }
+
+    // OnEnable/OnDisable gọi mỗi khi quái được bật/tắt (lấy ra khỏi pool / trả về pool),
+    // nên bao quát mọi đường trả về, không phụ thuộc vào event.
+    private void OnEnable()
+    {
+        ActiveCount++;
+        Active.Add(this);
+    }
+
+    private void OnDisable()
+    {
+        ActiveCount--;
+        Active.Remove(this);
+    }
+
+    // Dịch chuyển quái tới vị trí mới
+    public void TeleportTo(Vector2 position)
+    {
+        rb.position = position;
+        transform.position = position;
     }
 }

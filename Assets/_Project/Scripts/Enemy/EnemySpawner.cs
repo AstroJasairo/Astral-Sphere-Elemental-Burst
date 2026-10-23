@@ -9,7 +9,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float spawnMargin = 1.5f;  // Khoảng cách thêm ra ngoài mép màn hình
 
     private float spawnTimer;
-    private int aliveCount;
+    //private int aliveCount;
     private Camera cam;
 
     private void Start()
@@ -17,10 +17,10 @@ public class EnemySpawner : MonoBehaviour
         cam = Camera.main;
     }
 
-    private void OnEnable() { EnemyBase.EnemyKilled += OnEnemyKilled; }
-    private void OnDisable() { EnemyBase.EnemyKilled -= OnEnemyKilled; }
+    //private void OnEnable() { EnemyBase.EnemyKilled += OnEnemyKilled; }
+    //private void OnDisable() { EnemyBase.EnemyKilled -= OnEnemyKilled; }
 
-    private void OnEnemyKilled(EnemyBase enemy) { aliveCount--; }
+    //private void OnEnemyKilled(EnemyBase enemy) { aliveCount--; }
 
     private void Update()
     {
@@ -55,20 +55,39 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnOne(EnemyData data, float hpMul, float dmgMul)
     {
-        if (aliveCount >= maxAlive) return;
-
-        // Bán kính spawn = nửa đường chéo màn hình + lề => luôn nằm NGOÀI tầm nhìn, không spawn sát người chơi
+        // Tính vị trí spawn ngoài mép màn hình (giữ nguyên như trước)
         float halfH = cam.orthographicSize;
         float halfW = halfH * cam.aspect;
         float radius = Mathf.Sqrt(halfW * halfW + halfH * halfH) + spawnMargin + Random.Range(0f, 2f);
-
-        // Chọn góc ngẫu nhiên quanh người chơi
         float angle = Random.value * Mathf.PI * 2f;
         Vector2 offset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
         Vector3 pos = GameManager.Instance.Player.position + (Vector3)offset;
 
+        // Chạm trần: không tạo thêm, mà kéo một con đang ở quá xa về vị trí này
+        if (EnemyBase.ActiveCount >= maxAlive)
+        {
+            TryRecycleFarEnemy(pos, radius * 1.5f);
+            return;
+        }
+
         GameObject go = PoolManager.Instance.Get(data.prefab, pos, Quaternion.identity);
-        go.GetComponent<EnemyBase>().Init(data, hpMul, dmgMul);   // GetComponent lúc spawn thì chấp nhận được (không phải mỗi frame)
-        aliveCount++;
+        go.GetComponent<EnemyBase>().Init(data, hpMul, dmgMul);
+    }
+
+    // Tìm một con quái cách người chơi xa hơn minDistance và dịch chuyển nó tới newPos
+    private void TryRecycleFarEnemy(Vector3 newPos, float minDistance)
+    {
+        float minSqr = minDistance * minDistance;
+        Vector3 playerPos = GameManager.Instance.Player.position;
+
+        // Duyệt HashSet bằng foreach không sinh rác
+        foreach (EnemyBase enemy in EnemyBase.Active)
+        {
+            if ((enemy.transform.position - playerPos).sqrMagnitude > minSqr)
+            {
+                enemy.TeleportTo(newPos);
+                return;   // Mỗi lần chỉ tái sử dụng 1 con
+            }
+        }
     }
 }
