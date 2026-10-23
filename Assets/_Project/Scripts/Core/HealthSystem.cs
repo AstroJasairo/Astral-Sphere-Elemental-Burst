@@ -33,4 +33,11 @@ public class HealthSystem : MonoBehaviour
         CurrentHealth = Mathf.Min(MaxHealth, CurrentHealth + amount);
         OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
     }
+
+    public void IncreaseMax(float amount)
+    {
+        MaxHealth += amount;
+        CurrentHealth += amount;
+        OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+    }
 }

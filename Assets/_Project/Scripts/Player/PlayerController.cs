@@ -5,7 +5,8 @@ using UnityEngine.InputSystem; // Dùng để test bằng bàn phím trong Edito
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private VirtualJoystick joystick;
-    [SerializeField] private float moveSpeed = 5f; // Sau này sẽ lấy từ chỉ số SPD
+    //[SerializeField] private float moveSpeed = 5f; // Sau này sẽ lấy từ chỉ số SPD
+    private PlayerStats stats;
 
     private Rigidbody2D rb;
     private Vector2 moveInput;
@@ -14,6 +15,7 @@ public class PlayerController : MonoBehaviour
     {
         // Lấy Rigidbody2D một lần duy nhất, không gọi GetComponent trong Update
         rb = GetComponent<Rigidbody2D>();
+        stats = GetComponent<PlayerStats>();
     }
 
     // Đọc input mỗi frame
@@ -39,6 +41,6 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         // Unity 6 dùng linearVelocity (tên cũ là velocity)
-        rb.linearVelocity = moveInput * moveSpeed;
+        rb.linearVelocity = moveInput * stats.MoveSpeed;
     }
 }

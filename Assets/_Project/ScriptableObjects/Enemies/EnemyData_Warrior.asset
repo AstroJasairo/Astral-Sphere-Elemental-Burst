@@ -15,7 +15,16 @@ MonoBehaviour:
   enemyName: Warrior
   type: 0
   prefab: {fileID: 8366031795934451168, guid: a9e0ed4dae8790748956e63efa0b2bca, type: 3}
-  baseHp: 20
+  baseHp: 2
   baseDamage: 5
   moveSpeed: 2
   scoreValue: 10
+  guaranteedDrops:
+  - pickup: {fileID: 11400000, guid: c04cfc89dbf2a344b8a18dc54c40fada, type: 2}
+    amount: 1
+    weight: 1
+  randomDropChance: 0.6
+  randomDrops:
+  - pickup: {fileID: 11400000, guid: bde1041f45b792847b84baea3b5bbb41, type: 2}
+    amount: 1
+    weight: 1

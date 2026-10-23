@@ -54,7 +54,16 @@ public class EnemyBase : MonoBehaviour
 
     private void HandleDied()
     {
-        EnemyKilled?.Invoke(this);
-        PoolManager.Instance.Release(gameObject);   // Trả về pool thay vì Destroy
+        // Fix: Kẻ địch không còn tồn tại khi hết máu mà không được release về pool
+        try
+        {
+            EnemyKilled?.Invoke(this);   // Có thể có hàm lắng nghe ném lỗi
+        }
+        finally
+        {
+            // "finally" LUÔN chạy, kể cả khi phía trên có lỗi.
+            // Lỗi vẫn hiện trong Console để bạn biết mà sửa, nhưng quái không còn thành "quái ma".
+            PoolManager.Instance.Release(gameObject);   // Trả về pool thay vì Destroy
+        }
     }
 }

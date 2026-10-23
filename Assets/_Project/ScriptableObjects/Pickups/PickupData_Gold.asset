@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea3c57c9abc5a7841a4231c3b41424d5, type: 3}
+  m_Name: PickupData_Gold
+  m_EditorClassIdentifier: Assembly-CSharp::PickupData
+  type: 0
+  prefab: {fileID: 1986124925649586917, guid: 93d6036d3f3611a4da41b1db4d3bd62a, type: 3}
