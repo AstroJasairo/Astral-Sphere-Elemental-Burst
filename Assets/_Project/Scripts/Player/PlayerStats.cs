@@ -19,20 +19,23 @@ public class PlayerStats : MonoBehaviour
     private float hpBonus, defBonus;
     private float atkBonusPct, speedBonusPct, magnetBonusPct;
     private float manaCostReductionPct;
+    private float aoaAtkPct, aoaSpeedPct;        // Buff All Out Assault (tạm thời, kênh riêng)
+    private float aoaCooldownMultiplier = 1f;    // 1 = bình thường, 0.25 = hồi chiêu còn 25%
 
     private readonly List<StarPerk> activePerks = new List<StarPerk>();
 
     public float MaxHp => baseMaxHp + hpBonus;
-    public float Atk => baseAtk * (1f + atkBonusPct);
+    public float Atk => baseAtk * (1f + atkBonusPct + aoaAtkPct);
     public float Def => baseDef + defBonus;
-    public float MoveSpeed => baseMoveSpeed * (1f + speedBonusPct);
+    public float MoveSpeed => baseMoveSpeed * (1f + speedBonusPct + aoaSpeedPct);
     public float MagnetRadius => baseMagnetRadius * (1f + magnetBonusPct);
     public float ManaCostMultiplier => Mathf.Max(0.2f, 1f - manaCostReductionPct);
+    public float CooldownMultiplier => aoaCooldownMultiplier;
 
     public IReadOnlyList<StarPerk> ActivePerks => activePerks;
 
     // AllOutAssaultSystem (giai đoạn sau) sẽ bật/tắt biến này để kích hoạt perk 5 sao
-    public bool AllOutAssaultActive { get; set; }
+    public bool AllOutAssaultActive { get; private set; }
 
     // Thuộc tính lấy lười: dùng lúc nào cũng an toàn, bất kể thứ tự Awake/OnEnable
     private HealthSystem health;
@@ -110,5 +113,14 @@ public class PlayerStats : MonoBehaviour
     private void HandleDied()
     {
         GameManager.Instance.TriggerGameOver();
+    }
+
+    // Thêm hàm: AllOutAssaultSystem gọi khi bật/tắt
+    public void SetAllOutAssault(bool active, float atkPct, float speedPct, float cooldownMultiplier)
+    {
+        AllOutAssaultActive = active;     // Bật perk 5 sao trong GetDamageBonus
+        aoaAtkPct = active ? atkPct : 0f;
+        aoaSpeedPct = active ? speedPct : 0f;
+        aoaCooldownMultiplier = active ? cooldownMultiplier : 1f;   // Tắt thì trả về đúng 1, không "trừ ngược"
     }
 }

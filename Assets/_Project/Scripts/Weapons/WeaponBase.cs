@@ -6,6 +6,7 @@ public abstract class WeaponBase : MonoBehaviour
     protected int level = 1;
     protected PlayerStats owner;
     private float timer;
+    private const float MinCooldown = 0.1f;   // Sàn: không bao giờ bắn nhanh hơn 10 lần/giây, bảo vệ hiệu năng
 
     public WeaponData Data => data;
     public int Level => level;
@@ -13,6 +14,16 @@ public abstract class WeaponBase : MonoBehaviour
 
     // Thông số của cấp hiện tại (level 1 -> phần tử 0)
     protected WeaponLevel CurrentLevel => data.levels[Mathf.Clamp(level, 1, data.levels.Length) - 1];
+
+    // Hồi chiêu thực tế = hồi chiêu gốc x hệ số hiện tại (bình thường = 1, trong All Out Assault < 1)
+    private float CurrentCooldown
+    {
+        get
+        {
+            float multiplier = owner != null ? owner.CooldownMultiplier : 1f;
+            return Mathf.Max(MinCooldown, data.cooldown * multiplier);
+        }
+    }
 
     protected virtual void Awake()
     {
@@ -30,12 +41,15 @@ public abstract class WeaponBase : MonoBehaviour
 
     private void Update()
     {
-        if (data == null) return;   // Chưa được khởi tạo
+        if (data == null) return;
         timer += Time.deltaTime;
-        if (timer < data.cooldown) return;
 
-        // Fire() trả về true nếu tấn công được. Không có mục tiêu thì thử lại sau 0.2s
-        timer = Fire() ? 0f : data.cooldown - 0.2f;
+        float cooldown = CurrentCooldown;
+        if (timer < cooldown) return;
+
+        // Bắn được thì đặt lại đồng hồ. Không có mục tiêu thì thử lại sau tối đa 0.2s,
+        // nhưng không chờ lâu hơn chính hồi chiêu (nên khi bắn nhanh vẫn kịp phản ứng)
+        timer = Fire() ? 0f : cooldown - Mathf.Min(0.2f, cooldown);
     }
 
     protected abstract bool Fire();

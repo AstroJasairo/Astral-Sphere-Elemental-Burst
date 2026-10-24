@@ -16,6 +16,7 @@ public class EnemyData : ScriptableObject
 
     [Header("Phần thưởng")]
     public int scoreValue = 10;    // Điểm cộng khi tiêu diệt
+    public float manaValue = 2f;   // Lượng mana nạp khi tiêu diệt quái này
 
     [Header("Tấn công tầm xa (attackRange = 0 nghĩa là cận chiến)")]
     public float attackRange = 0f;

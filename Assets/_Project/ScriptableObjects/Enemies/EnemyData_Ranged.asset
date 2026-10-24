@@ -19,6 +19,7 @@ MonoBehaviour:
   baseDamage: 8
   moveSpeed: 2
   scoreValue: 15
+  manaValue: 3
   attackRange: 4.5
   attackCooldown: 2
   projectilePrefab: {fileID: 1986514635598821988, guid: c9ded42b546e1cc4e8969caa7e213e9c, type: 3}
@@ -33,3 +34,6 @@ MonoBehaviour:
   - pickup: {fileID: 11400000, guid: bde1041f45b792847b84baea3b5bbb41, type: 2}
     amount: 1
     weight: 1
+  - pickup: {fileID: 11400000, guid: b8b1884e7652a614c88097a7a12e84d1, type: 2}
+    amount: 1
+    weight: 0.03
