@@ -22,7 +22,8 @@ public class ProjectileWeapon : WeaponBase
             Vector2 dir = Quaternion.Euler(0f, 0f, angleOffset) * baseDir;
 
             GameObject go = PoolManager.Instance.Get(data.projectilePrefab, transform.position, Quaternion.identity);
-            go.GetComponent<Projectile>().Init(damage, dir, data.projectileSpeed, data.projectileLifetime, data.pierce);
+            //go.GetComponent<Projectile>().Init(damage, dir, data.projectileSpeed, data.projectileLifetime, data.pierce);
+            go.GetComponent<Projectile>().Init(damage, dir, data.projectileSpeed, data.projectileLifetime, data.pierce, CurrentLevel.explosionRadius, enemyMask);
         }
         return true;
     }

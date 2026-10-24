@@ -19,3 +19,11 @@ public enum PickupType
 
 // 6 chỉ số cơ bản của nhân vật
 public enum StatType { Hp, Mp, Atk, Def, Spd, Mag }
+
+// Loại đặc quyền theo số sao của nhân vật
+public enum PerkType
+{
+    StartWeapon,                // Khởi đầu trận với một vũ khí ở cấp nhất định
+    ElementDamageBonus,         // Tăng sát thương một nguyên tố
+    AllOutAssaultDamageBonus    // Tăng sát thương một nguyên tố khi đang trong All Out Assault
+}

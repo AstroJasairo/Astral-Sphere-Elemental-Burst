@@ -17,6 +17,13 @@ public class EnemyData : ScriptableObject
     [Header("Phần thưởng")]
     public int scoreValue = 10;    // Điểm cộng khi tiêu diệt
 
+    [Header("Tấn công tầm xa (attackRange = 0 nghĩa là cận chiến)")]
+    public float attackRange = 0f;
+    public float attackCooldown = 2f;
+    public GameObject projectilePrefab;
+    public float projectileSpeed = 6f;
+    public float projectileLifetime = 4f;
+
     [Header("Rơi đồ")]
     [Tooltip("Luôn rơi (vàng)")]
     public List<DropEntry> guaranteedDrops = new List<DropEntry>();

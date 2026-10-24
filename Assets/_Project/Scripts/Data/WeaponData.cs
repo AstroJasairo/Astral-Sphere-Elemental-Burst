@@ -6,6 +6,8 @@ public class WeaponLevel
 {
     public int projectileCount = 1;   // Kim loại: tăng số dao mỗi lần phóng
     public float radius = 1.5f;       // Lửa: bán kính Aura
+    public float explosionRadius = 0f;  // MỚI: bán kính nổ của đạn (Bóng tối). 0 = không nổ
+    public int chainTargets = 0;        // MỚI: số kẻ địch mỗi lần giật (Lôi)
     // Các vũ khí khác sẽ thêm trường riêng sau (bán kính, góc nón, thời gian trói...)
 }
 
@@ -26,6 +28,9 @@ public class WeaponData : ScriptableObject
     public float projectileSpeed = 12f;
     public float projectileLifetime = 2f;
     public int pierce = 0;             // Số kẻ địch xuyên qua thêm (0 = trúng 1 là biến mất)
+
+    [Header("Chuỗi sét (chỉ dùng cho vũ khí dạng Chain)")]
+    public float chainRange = 3f;           // Khoảng cách tối đa để tia sét nhảy sang kẻ địch kế tiếp
 
     [Header("Thông số theo cấp: phần tử 0 = Lv1 ... phần tử 4 = Lv5")]
     public WeaponLevel[] levels = new WeaponLevel[5];

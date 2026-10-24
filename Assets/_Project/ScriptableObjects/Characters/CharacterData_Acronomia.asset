@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f59888042de1e9e428962d4303dbd5f6, type: 3}
+  m_Name: CharacterData_Acronomia
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterData
+  characterName: Acronomia
+  icon: {fileID: 0}
+  baseMaxHp: 100
+  baseAtk: 1
+  baseDef: 0
+  baseMoveSpeed: 5
+  baseMagnetRadius: 1.5
+  perks:
+  - id: lightning_start
+    replacesId: 
+    requiredStar: 0
+    type: 0
+    element: 2
+    weapon: {fileID: 11400000, guid: 901fe598a5ca9884c9b969d56c8ed686, type: 2}
+    weaponLevel: 1
+    bonus: 0
+  - id: dark_start
+    replacesId: 
+    requiredStar: 1
+    type: 0
+    element: 9
+    weapon: {fileID: 11400000, guid: 12e12c1e4e75867489096b7875d3a515, type: 2}
+    weaponLevel: 1
+    bonus: 0
+  - id: lightning_dmg_a
+    replacesId: 
+    requiredStar: 2
+    type: 1
+    element: 2
+    weapon: {fileID: 0}
+    weaponLevel: 0
+    bonus: 0.5
+  - id: lightning_start_2
+    replacesId: lightning_start
+    requiredStar: 3
+    type: 0
+    element: 2
+    weapon: {fileID: 11400000, guid: 901fe598a5ca9884c9b969d56c8ed686, type: 2}
+    weaponLevel: 2
+    bonus: 0
+  - id: lightning_dmg_b
+    replacesId: lightning_dmg_a
+    requiredStar: 4
+    type: 1
+    element: 2
+    weapon: {fileID: 0}
+    weaponLevel: 0
+    bonus: 0.5
+  - id: dark_dmg_b
+    replacesId: 
+    requiredStar: 4
+    type: 1
+    element: 9
+    weapon: {fileID: 0}
+    weaponLevel: 0
+    bonus: 0.25
+  - id: aoa_lightning
+    replacesId: 
+    requiredStar: 5
+    type: 2
+    element: 2
+    weapon: {fileID: 0}
+    weaponLevel: 0
+    bonus: 2
+  - id: aoa_dark
+    replacesId: 
+    requiredStar: 5
+    type: 2
+    element: 9
+    weapon: {fileID: 0}
+    weaponLevel: 0
+    bonus: 1

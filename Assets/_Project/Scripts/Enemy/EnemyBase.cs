@@ -1,32 +1,39 @@
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(HealthSystem))]
 public class EnemyBase : MonoBehaviour
 {
-    // Sự kiện toàn cục "có quái bị giết". Sau này: hồi mana, cộng điểm, rơi đồ chỉ cần lắng nghe sự kiện này.
     public static event Action<EnemyBase> EnemyKilled;
 
+    // Tập quái đang hoạt động. Số lượng lấy trực tiếp từ Active.Count nên không thể bị lệch.
+    public static readonly HashSet<EnemyBase> Active = new HashSet<EnemyBase>();
+    public static int ActiveCount => Active.Count;
+    public static void ResetStatics() => Active.Clear();   // GameManager gọi khi vào trận mới
+
     public EnemyData Data { get; private set; }
+    public Transform Target => target;   // EnemyShooter cần để ngắm
+    public float Damage => damage;       // Sát thương đã nhân hệ số theo thời gian
 
     private Rigidbody2D rb;
     private HealthSystem health;
     private Transform target;
     private float damage;
     private float nextAttackTime;
-    private const float AttackCooldown = 1f;   // Chạm người chơi: 1 giây mới gây sát thương lại
-    public static int ActiveCount { get; private set; }                       // Số quái đang hoạt động
-    public static readonly HashSet<EnemyBase> Active = new HashSet<EnemyBase>();
+    private float stopDistanceSqr;       // Quái tầm xa dừng lại khi tới khoảng cách này
+    private const float AttackCooldown = 1f;   // Hồi chiêu sát thương khi chạm
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         health = GetComponent<HealthSystem>();
-        health.OnDied += HandleDied;   // Đăng ký 1 lần, vẫn còn hiệu lực khi object được tái sử dụng
+        health.OnDied += HandleDied;
     }
 
-    // Spawner gọi ngay sau khi lấy quái từ pool. Hàm này "làm mới" toàn bộ trạng thái.
+    private void OnEnable() { Active.Add(this); }
+    private void OnDisable() { Active.Remove(this); }
+
     public void Init(EnemyData data, float hpMultiplier, float damageMultiplier)
     {
         Data = data;
@@ -35,21 +42,37 @@ public class EnemyBase : MonoBehaviour
         target = GameManager.Instance.Player;
         rb.linearVelocity = Vector2.zero;
         nextAttackTime = 0f;
+
+        // Quái tầm xa dừng ở 90% tầm đánh. Cận chiến (attackRange = 0) thì luôn lao vào.
+        float stop = data.attackRange * 0.9f;
+        stopDistanceSqr = stop * stop;
     }
 
     private void FixedUpdate()
     {
         if (Data == null || target == null) return;
-        // Hướng từ quái đến người chơi, rồi đặt vận tốc theo hướng đó
-        Vector2 dir = ((Vector2)target.position - rb.position).normalized;
-        rb.linearVelocity = dir * Data.moveSpeed;
+
+        Vector2 toTarget = (Vector2)target.position - rb.position;
+
+        // Đã vào tầm bắn thì đứng yên (EnemyShooter lo việc bắn)
+        if (stopDistanceSqr > 0f && toTarget.sqrMagnitude <= stopDistanceSqr)
+        {
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
+        rb.linearVelocity = toTarget.normalized * Data.moveSpeed;
     }
 
-    // Collider của quái là Trigger, nên dùng OnTriggerStay2D. Hàm chạy liên tục khi đang chạm.
+    public void TeleportTo(Vector2 position)
+    {
+        rb.position = position;
+        transform.position = position;
+    }
+
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (Time.time < nextAttackTime) return;   // Chưa hết hồi chiêu: thoát sớm cho nhẹ
-        if (!other.TryGetComponent(out PlayerStats player)) return;   // Không phải người chơi thì bỏ qua
+        if (Time.time < nextAttackTime) return;
+        if (!other.TryGetComponent(out PlayerStats player)) return;
 
         player.TakeDamage(damage);
         nextAttackTime = Time.time + AttackCooldown;
@@ -57,37 +80,13 @@ public class EnemyBase : MonoBehaviour
 
     private void HandleDied()
     {
-        // Fix: Kẻ địch không còn tồn tại khi hết máu mà không được release về pool
         try
         {
-            EnemyKilled?.Invoke(this);   // Có thể có hàm lắng nghe ném lỗi
+            EnemyKilled?.Invoke(this);
         }
         finally
         {
-            // "finally" LUÔN chạy, kể cả khi phía trên có lỗi.
-            // Lỗi vẫn hiện trong Console để bạn biết mà sửa, nhưng quái không còn thành "quái ma".
-            PoolManager.Instance.Release(gameObject);   // Trả về pool thay vì Destroy
+            PoolManager.Instance.Release(gameObject);   // Luôn trả về pool, kể cả khi có hàm lắng nghe bị lỗi
         }
-    }
-
-    // OnEnable/OnDisable gọi mỗi khi quái được bật/tắt (lấy ra khỏi pool / trả về pool),
-    // nên bao quát mọi đường trả về, không phụ thuộc vào event.
-    private void OnEnable()
-    {
-        ActiveCount++;
-        Active.Add(this);
-    }
-
-    private void OnDisable()
-    {
-        ActiveCount--;
-        Active.Remove(this);
-    }
-
-    // Dịch chuyển quái tới vị trí mới
-    public void TeleportTo(Vector2 position)
-    {
-        rb.position = position;
-        transform.position = position;
     }
 }

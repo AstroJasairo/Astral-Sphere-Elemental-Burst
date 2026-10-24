@@ -64,7 +64,7 @@ public class DropSystem : MonoBehaviour
             Debug.LogWarning("DropSystem: một DropEntry thiếu PickupData hoặc Prefab. Kiểm tra lại EnemyData.", this);
             return;
         }
-        GameObject go = PoolManager.Instance.Get(data.prefab, position, Quaternion.identity);
+        GameObject go = PoolManager.Instance.Get(data.prefab, position, data.prefab.transform.rotation);
         go.GetComponent<Pickup>().Init(data.type, amount);
     }
 }

@@ -31,7 +31,7 @@ public class CrystalLevelSystem : MonoBehaviour
     private void TryLevelUp()
     {
         // Dùng while vì nhặt một lúc nhiều pha lê có thể vượt qua nhiều ngưỡng
-        while (!isChoosing && Crystals >= NextThreshold)
+        while (!isChoosing && !GameManager.Instance.IsGameOver && Crystals >= NextThreshold)
         {
             List<UpgradeOption> options = generator.Generate(3);
 

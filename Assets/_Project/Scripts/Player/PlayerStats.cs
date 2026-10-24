@@ -1,21 +1,27 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(HealthSystem))]
 public class PlayerStats : MonoBehaviour
 {
-    [Header("Chỉ số gốc (sau này lấy từ CharacterData + nâng cấp menu)")]
-    [SerializeField] private float baseMaxHp = 100f;
-    [SerializeField] private float baseAtk = 1f;
-    [SerializeField] private float baseDef = 0f;
-    [SerializeField] private float baseMoveSpeed = 5f;
-    [SerializeField] private float baseMagnetRadius = 1.5f;
+    [Header("Nhân vật (tạm gán tay để test; sau này lấy từ menu chọn nhân vật)")]
+    [SerializeField] private CharacterData character;
+    [SerializeField, Range(0, 5)] private int starLevel = 0;
 
-    // Bonus nhận được TRONG trận (từ màn chọn nâng cấp)
-    private float hpBonus, defBonus;                          // Cộng thẳng
-    private float atkBonusPct, speedBonusPct, magnetBonusPct; // Phần trăm (0.1 = 10%)
-    private float manaCostReductionPct;                       // Giảm mana cần cho All Out Assault (làm ở giai đoạn sau)
+    // Chỉ số gốc: nạp từ CharacterData (giá trị dưới đây chỉ là dự phòng khi chưa gán)
+    private float baseMaxHp = 100f;
+    private float baseAtk = 1f;
+    private float baseDef = 0f;
+    private float baseMoveSpeed = 5f;
+    private float baseMagnetRadius = 1.5f;
 
-    // Giá trị cuối cùng mà các hệ thống khác đọc
+    // Bonus nhận được TRONG trận
+    private float hpBonus, defBonus;
+    private float atkBonusPct, speedBonusPct, magnetBonusPct;
+    private float manaCostReductionPct;
+
+    private readonly List<StarPerk> activePerks = new List<StarPerk>();
+
     public float MaxHp => baseMaxHp + hpBonus;
     public float Atk => baseAtk * (1f + atkBonusPct);
     public float Def => baseDef + defBonus;
@@ -23,24 +29,54 @@ public class PlayerStats : MonoBehaviour
     public float MagnetRadius => baseMagnetRadius * (1f + magnetBonusPct);
     public float ManaCostMultiplier => Mathf.Max(0.2f, 1f - manaCostReductionPct);
 
-    //public HealthSystem Health { get; private set; }
+    public IReadOnlyList<StarPerk> ActivePerks => activePerks;
+
+    // AllOutAssaultSystem (giai đoạn sau) sẽ bật/tắt biến này để kích hoạt perk 5 sao
+    public bool AllOutAssaultActive { get; set; }
+
+    // Thuộc tính lấy lười: dùng lúc nào cũng an toàn, bất kể thứ tự Awake/OnEnable
     private HealthSystem health;
+    public HealthSystem Health
+    {
+        get
+        {
+            if (health == null && this != null) health = GetComponent<HealthSystem>();
+            return health;
+        }
+    }
 
     private void Awake()
     {
-        //Health = GetComponent<HealthSystem>();
+        LoadCharacter();
         Health.Init(MaxHp);
         Health.OnDied += HandleDied;
     }
 
-    // Áp dụng một lần nâng cấp chỉ số
+    private void LoadCharacter()
+    {
+        if (character == null)
+        {
+            Debug.LogWarning("PlayerStats: chưa gán CharacterData, đang dùng chỉ số dự phòng.", this);
+            return;
+        }
+
+        baseMaxHp = character.baseMaxHp;
+        baseAtk = character.baseAtk;
+        baseDef = character.baseDef;
+        baseMoveSpeed = character.baseMoveSpeed;
+        baseMagnetRadius = character.baseMagnetRadius;
+
+        activePerks.Clear();
+        activePerks.AddRange(character.GetActivePerks(starLevel));   // Chỉ tính một lần lúc vào trận
+    }
+
     public void ApplyStat(StatType stat, float amount)
     {
         switch (stat)
         {
             case StatType.Hp:
                 hpBonus += amount;
-                Health.IncreaseMax(amount);   // Tăng máu tối đa và hồi luôn phần tăng thêm
+                Health.IncreaseMax(amount);
                 break;
             case StatType.Mp: manaCostReductionPct += amount; break;
             case StatType.Atk: atkBonusPct += amount; break;
@@ -50,11 +86,22 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
-    // Bonus sát thương theo nguyên tố (nội tại nhân vật). Hiện chưa có nên trả về 0.
-    public float GetDamageBonus(ElementType element) => 0f;
+    // Cộng dồn bonus sát thương của nguyên tố từ các perk đang hoạt động
+    public float GetDamageBonus(ElementType element)
+    {
+        float bonus = 0f;
+        foreach (StarPerk perk in activePerks)   // foreach trên List không sinh rác
+        {
+            if (perk.element != element) continue;
 
-    // DEF giảm sát thương theo công thức 100/(100+DEF): DEF càng cao càng giảm nhiều
-    // nhưng không bao giờ miễn nhiễm hoàn toàn (DEF 100 giảm 50%, DEF 300 giảm 75%).
+            if (perk.type == PerkType.ElementDamageBonus)
+                bonus += perk.bonus;
+            else if (perk.type == PerkType.AllOutAssaultDamageBonus && AllOutAssaultActive)
+                bonus += perk.bonus;   // Chỉ tính khi đang trong All Out Assault
+        }
+        return bonus;
+    }
+
     public void TakeDamage(float amount)
     {
         Health.TakeDamage(amount * 100f / (100f + Def));
@@ -62,15 +109,6 @@ public class PlayerStats : MonoBehaviour
 
     private void HandleDied()
     {
-        Debug.Log("Player đã chết!");   // Game Over làm ở giai đoạn sau
-    }
-
-    public HealthSystem Health
-    {
-        get
-        {
-            if (health == null) health = GetComponent<HealthSystem>();   // Lấy lần đầu khi có người cần
-            return health;
-        }
+        GameManager.Instance.TriggerGameOver();
     }
 }

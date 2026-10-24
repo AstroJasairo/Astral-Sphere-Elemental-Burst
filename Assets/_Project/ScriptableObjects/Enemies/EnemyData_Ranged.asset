@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c367df97c8d939a429750252bb98cbaf, type: 3}
+  m_Name: EnemyData_Ranged
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyData
+  enemyName: Ranged
+  type: 1
+  prefab: {fileID: 8366031795934451168, guid: a50cb12fb932f8f4ebb8685bb24a455a, type: 3}
+  baseHp: 12
+  baseDamage: 8
+  moveSpeed: 2
+  scoreValue: 15
+  attackRange: 4.5
+  attackCooldown: 2
+  projectilePrefab: {fileID: 1986514635598821988, guid: c9ded42b546e1cc4e8969caa7e213e9c, type: 3}
+  projectileSpeed: 6
+  projectileLifetime: 4
+  guaranteedDrops:
+  - pickup: {fileID: 11400000, guid: c04cfc89dbf2a344b8a18dc54c40fada, type: 2}
+    amount: 1
+    weight: 1
+  randomDropChance: 0.7
+  randomDrops:
+  - pickup: {fileID: 11400000, guid: bde1041f45b792847b84baea3b5bbb41, type: 2}
+    amount: 1
+    weight: 1

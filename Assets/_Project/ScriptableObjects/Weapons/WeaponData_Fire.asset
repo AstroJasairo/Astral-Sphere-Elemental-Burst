@@ -21,17 +21,28 @@ MonoBehaviour:
   projectileSpeed: 12
   projectileLifetime: 2
   pierce: 0
+  chainRange: 3
   levels:
   - projectileCount: 1
     radius: 1.5
+    explosionRadius: 0
+    chainTargets: 0
   - projectileCount: 1
     radius: 2
+    explosionRadius: 0
+    chainTargets: 0
   - projectileCount: 1
     radius: 2.5
+    explosionRadius: 0
+    chainTargets: 0
   - projectileCount: 1
     radius: 3
+    explosionRadius: 0
+    chainTargets: 0
   - projectileCount: 1
     radius: 3.5
+    explosionRadius: 0
+    chainTargets: 0
   icon: {fileID: 0}
   description: "T\u1EA1o Aura xung quanh g\xE2y s\xE1t th\u01B0\u01A1ng li\xEAn t\u1EE5c"
   upgradeDescription: "M\u1EDF r\u1ED9ng b\xE1n k\xEDnh Aura"

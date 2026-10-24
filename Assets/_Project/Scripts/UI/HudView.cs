@@ -16,26 +16,32 @@ public class HudView : MonoBehaviour
     [SerializeField] private PlayerStats playerStats;
 
     private int lastSecond = -1;
+    private HealthSystem playerHealth;   // Lưu sẵn để OnDisable không phải gọi GetComponent nữa
 
     private void OnEnable()
     {
         levelSystem.OnChanged += RefreshLevel;
         runStats.OnChanged += RefreshRun;
+        // Fix: Lỗi Player bị hủy trước HUD nên không lấy được dữ liệu
+        playerHealth = playerStats.Health;            // Lấy MỘT LẦN, khi mọi thứ còn sống
         playerStats.Health.OnHealthChanged += RefreshHp;
     }
 
     private void OnDisable()
     {
-        levelSystem.OnChanged -= RefreshLevel;
-        runStats.OnChanged -= RefreshRun;
-        playerStats.Health.OnHealthChanged -= RefreshHp;
+        // Kiểm tra null trước khi hủy đăng ký: nếu object đã bị hủy thì bỏ qua,
+        // vì chính nó cũng đã mất nên không còn gì để rò rỉ.
+        if (levelSystem != null) levelSystem.OnChanged -= RefreshLevel;
+        if (runStats != null) runStats.OnChanged -= RefreshRun;
+        if (playerHealth != null) playerHealth.OnHealthChanged -= RefreshHp;
     }
 
     private void Start()
     {
         RefreshLevel();
         RefreshRun();
-        RefreshHp(playerStats.Health.CurrentHealth, playerStats.Health.MaxHealth);
+        // Fix: Lấy giá trị đã lưu thay vì truy cập phần tử đã bị hủy
+        RefreshHp(playerHealth.CurrentHealth, playerHealth.MaxHealth);
     }
 
     private void Update()
@@ -49,7 +55,7 @@ public class HudView : MonoBehaviour
 
     private void RefreshLevel()
     {
-        levelText.text = $"Lv.{levelSystem.Level}";
+        levelText.text = $"{levelSystem.Level}";
         // Thanh pha lê chỉ hiển thị tiến độ trong cấp hiện tại
         int have = levelSystem.Crystals - levelSystem.PreviousThreshold;
         int need = levelSystem.NextThreshold - levelSystem.PreviousThreshold;
