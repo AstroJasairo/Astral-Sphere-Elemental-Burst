@@ -10,6 +10,7 @@ public class HudView : MonoBehaviour
     [SerializeField] private TMP_Text levelText;
     [SerializeField] private Slider crystalBar;
     [SerializeField] private Slider hpBar;
+    [SerializeField] private Slider shieldBar;
 
     [SerializeField] private CrystalLevelSystem levelSystem;
     [SerializeField] private RunStats runStats;
@@ -25,6 +26,7 @@ public class HudView : MonoBehaviour
         // Fix: Lỗi Player bị hủy trước HUD nên không lấy được dữ liệu
         playerHealth = playerStats.Health;            // Lấy MỘT LẦN, khi mọi thứ còn sống
         playerStats.Health.OnHealthChanged += RefreshHp;
+        playerStats.OnShieldChanged += RefreshShield;
     }
 
     private void OnDisable()
@@ -34,6 +36,7 @@ public class HudView : MonoBehaviour
         if (levelSystem != null) levelSystem.OnChanged -= RefreshLevel;
         if (runStats != null) runStats.OnChanged -= RefreshRun;
         if (playerHealth != null) playerHealth.OnHealthChanged -= RefreshHp;
+        if (playerStats != null) playerStats.OnShieldChanged -= RefreshShield;
     }
 
     private void Start()
@@ -42,6 +45,7 @@ public class HudView : MonoBehaviour
         RefreshRun();
         // Fix: Lấy giá trị đã lưu thay vì truy cập phần tử đã bị hủy
         RefreshHp(playerHealth.CurrentHealth, playerHealth.MaxHealth);
+        RefreshShield(0f, playerStats.MaxHp);
     }
 
     private void Update()
@@ -71,5 +75,10 @@ public class HudView : MonoBehaviour
     private void RefreshHp(float current, float max)
     {
         hpBar.value = current / max;
+    }
+
+    private void RefreshShield(float current, float max)
+    {
+        shieldBar.value = max > 0f ? current / max : 0f;
     }
 }

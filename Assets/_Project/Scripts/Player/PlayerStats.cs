@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 [RequireComponent(typeof(HealthSystem))]
 public class PlayerStats : MonoBehaviour
@@ -25,12 +26,16 @@ public class PlayerStats : MonoBehaviour
     private readonly List<StarPerk> activePerks = new List<StarPerk>();
 
     public float MaxHp => baseMaxHp + hpBonus;
-    public float Atk => baseAtk * (1f + atkBonusPct + aoaAtkPct);
+    public float Atk => baseAtk * (1f + atkBonusPct + aoaAtkPct + Buffs.GetValue(BuffType.Rage));
     public float Def => baseDef + defBonus;
-    public float MoveSpeed => baseMoveSpeed * (1f + speedBonusPct + aoaSpeedPct);
-    public float MagnetRadius => baseMagnetRadius * (1f + magnetBonusPct);
+    public float MoveSpeed => baseMoveSpeed * (1f + speedBonusPct + aoaSpeedPct + Buffs.GetValue(BuffType.Speed));
+    public float MagnetRadius => baseMagnetRadius * (1f + magnetBonusPct + Buffs.GetValue(BuffType.Magnet));
     public float ManaCostMultiplier => Mathf.Max(0.2f, 1f - manaCostReductionPct);
     public float CooldownMultiplier => aoaCooldownMultiplier;
+    public float ScoreMultiplier => 1f + Buffs.GetValue(BuffType.ScoreBoost);
+
+    public float Shield { get; private set; }
+    public event Action<float, float> OnShieldChanged;   // (lá chắn hiện tại, tối đa) -> HUD lắng nghe
 
     public IReadOnlyList<StarPerk> ActivePerks => activePerks;
 
@@ -45,6 +50,17 @@ public class PlayerStats : MonoBehaviour
         {
             if (health == null && this != null) health = GetComponent<HealthSystem>();
             return health;
+        }
+    }
+
+    private BuffController buffs;
+    public BuffController Buffs
+    {
+        get
+        {
+            if (buffs == null && !TryGetComponent(out buffs))
+                buffs = gameObject.AddComponent<BuffController>();
+            return buffs;
         }
     }
 
@@ -107,7 +123,18 @@ public class PlayerStats : MonoBehaviour
 
     public void TakeDamage(float amount)
     {
-        Health.TakeDamage(amount * 100f / (100f + Def));
+        //Health.TakeDamage(amount * 100f / (100f + Def));
+        float damage = amount * 100f / (100f + Def);       // DEF giảm sát thương trước
+
+        if (Shield > 0f)
+        {
+            float absorbed = Mathf.Min(Shield, damage);    // Khiên chịu được bao nhiêu thì chịu bấy nhiêu
+            Shield -= absorbed;
+            damage -= absorbed;
+            OnShieldChanged?.Invoke(Shield, MaxHp);
+        }
+
+        if (damage > 0f) Health.TakeDamage(damage);        // Phần dư mới trừ vào máu
     }
 
     private void HandleDied()
@@ -122,5 +149,11 @@ public class PlayerStats : MonoBehaviour
         aoaAtkPct = active ? atkPct : 0f;
         aoaSpeedPct = active ? speedPct : 0f;
         aoaCooldownMultiplier = active ? cooldownMultiplier : 1f;   // Tắt thì trả về đúng 1, không "trừ ngược"
+    }
+
+    public void AddShield(float amount)
+    {
+        Shield = Mathf.Min(Shield + amount, MaxHp);       // Lá chắn tối đa bằng máu tối đa
+        OnShieldChanged?.Invoke(Shield, MaxHp);
     }
 }

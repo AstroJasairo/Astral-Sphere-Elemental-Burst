@@ -32,22 +32,41 @@ public class DropSystem : MonoBehaviour
             SpawnPickup(entry.pickup, entry.amount, pos + Random.insideUnitCircle * 0.3f);
 
         // 2) Có thể rơi thêm 1 món ngẫu nhiên theo trọng số
-        if (data.randomDrops.Count > 0 && Random.value <= data.randomDropChance)
+        List<DropEntry> shared = data.sharedDrops != null ? data.sharedDrops.entries : null;
+        bool hasPool = data.randomDrops.Count > 0 || (shared != null && shared.Count > 0);
+
+        if (hasPool && Random.value <= data.randomDropChance)
         {
-            DropEntry picked = PickWeighted(data.randomDrops);
+            DropEntry picked = PickWeighted(data.randomDrops, shared);   // Chọn trong bảng riêng + bảng chung
             if (picked != null)
                 SpawnPickup(picked.pickup, picked.amount, pos + Random.insideUnitCircle * 0.3f);
         }
     }
 
     // Random theo trọng số: trọng số càng lớn càng dễ trúng
-    private DropEntry PickWeighted(List<DropEntry> entries)
+    private DropEntry PickWeighted(List<DropEntry> own, List<DropEntry> shared)
     {
-        float total = 0f;
-        foreach (DropEntry e in entries) total += e.weight;
+        float total = SumWeights(own) + SumWeights(shared);
+        if (total <= 0f) return null;
 
-        float roll = Random.value * total;   // Một điểm ngẫu nhiên trên "thanh" tổng trọng số
-        foreach (DropEntry e in entries)
+        float roll = Random.value * total;     // Điểm ngẫu nhiên trên "thanh" tổng trọng số của CẢ HAI bảng
+        DropEntry picked = FindByRoll(own, ref roll);
+        if (picked == null) picked = FindByRoll(shared, ref roll);   // Phần còn lại của roll tiếp tục sang bảng chung
+        return picked;
+    }
+
+    private float SumWeights(List<DropEntry> list)
+    {
+        if (list == null) return 0f;
+        float sum = 0f;
+        foreach (DropEntry e in list) sum += e.weight;
+        return sum;
+    }
+
+    private DropEntry FindByRoll(List<DropEntry> list, ref float roll)
+    {
+        if (list == null) return null;
+        foreach (DropEntry e in list)
         {
             roll -= e.weight;
             if (roll <= 0f) return e;

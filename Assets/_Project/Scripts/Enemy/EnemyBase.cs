@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(HealthSystem))]
+[RequireComponent(typeof(Rigidbody2D), typeof(HealthSystem), typeof(StatusEffectHandler))]
 public class EnemyBase : MonoBehaviour
 {
     public static event Action<EnemyBase> EnemyKilled;
@@ -23,12 +23,15 @@ public class EnemyBase : MonoBehaviour
     private float nextAttackTime;
     private float stopDistanceSqr;       // Quái tầm xa dừng lại khi tới khoảng cách này
     private const float AttackCooldown = 1f;   // Hồi chiêu sát thương khi chạm
+    private StatusEffectHandler status;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         health = GetComponent<HealthSystem>();
         health.OnDied += HandleDied;
+        status = GetComponent<StatusEffectHandler>();
+        if (status == null) status = gameObject.AddComponent<StatusEffectHandler>();
     }
 
     private void OnEnable() { Active.Add(this); }
@@ -42,6 +45,7 @@ public class EnemyBase : MonoBehaviour
         target = GameManager.Instance.Player;
         rb.linearVelocity = Vector2.zero;
         nextAttackTime = 0f;
+        status.ResetEffects();
 
         // Quái tầm xa dừng ở 90% tầm đánh. Cận chiến (attackRange = 0) thì luôn lao vào.
         float stop = data.attackRange * 0.9f;
@@ -51,6 +55,11 @@ public class EnemyBase : MonoBehaviour
     private void FixedUpdate()
     {
         if (Data == null || target == null) return;
+        if (status.TryGetForcedVelocity(out Vector2 forced))
+        {
+            rb.linearVelocity = forced;    // Bị trói hoặc đẩy lùi: bỏ qua việc đuổi theo
+            return;
+        }
 
         Vector2 toTarget = (Vector2)target.position - rb.position;
 

@@ -1,9 +1,9 @@
 using System;
-using Unity.AppUI.UI;
 using UnityEngine;
 
 public class RunStats : MonoBehaviour
 {
+    [SerializeField] private PlayerStats stats;
     public int Gold { get; private set; }
     public int Score { get; private set; }
     public int Kills { get; private set; }
@@ -33,7 +33,7 @@ public class RunStats : MonoBehaviour
     private void HandleKilled(EnemyBase enemy)
     {
         Kills++;
-        Score += enemy.Data.scoreValue;   // Sau này nhân hệ số "Tăng điểm"
+        Score += Mathf.RoundToInt(enemy.Data.scoreValue * stats.ScoreMultiplier);
         OnChanged?.Invoke();
     }
 }

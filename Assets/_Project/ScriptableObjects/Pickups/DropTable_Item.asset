@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1f2771dbd25fbe41a4525f00bd5ffea, type: 3}
+  m_Name: DropTable_Item
+  m_EditorClassIdentifier: Assembly-CSharp::DropTableData
+  entries:
+  - pickup: {fileID: 11400000, guid: b8b1884e7652a614c88097a7a12e84d1, type: 2}
+    amount: 1
+    weight: 0.03
+  - pickup: {fileID: 11400000, guid: fb86bc6f6b7d15b4b8962192e5e66e80, type: 2}
+    amount: 1
+    weight: 0.06
+  - pickup: {fileID: 11400000, guid: 32e1d47d07cdfb24e816de1f8ffff293, type: 2}
+    amount: 1
+    weight: 0.03
+  - pickup: {fileID: 11400000, guid: 2167f8892ad054344b1359bdeac6aa39, type: 2}
+    amount: 1
+    weight: 0.03
+  - pickup: {fileID: 11400000, guid: a35689a9d69c8df4db710f269ae38aed, type: 2}
+    amount: 1
+    weight: 0.04
+  - pickup: {fileID: 11400000, guid: 76fbed9f5d1047742b43f52993521bf2, type: 2}
+    amount: 1
+    weight: 0.04
+  - pickup: {fileID: 11400000, guid: be68e32f6bbd5c449aec0291f5dc8684, type: 2}
+    amount: 1
+    weight: 0.04

@@ -27,3 +27,6 @@ public enum PerkType
     ElementDamageBonus,         // Tăng sát thương một nguyên tố
     AllOutAssaultDamageBonus    // Tăng sát thương một nguyên tố khi đang trong All Out Assault
 }
+
+// Các buff tạm thời có thời hạn (All Out Assault có kênh riêng nên không nằm ở đây)
+public enum BuffType { Speed, Rage, Magnet, ScoreBoost }

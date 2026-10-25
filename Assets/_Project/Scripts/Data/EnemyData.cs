@@ -32,4 +32,10 @@ public class EnemyData : ScriptableObject
     [Range(0f, 1f)] public float randomDropChance = 0.5f;
     [Tooltip("Nếu rơi thêm, chọn 1 món theo trọng số")]
     public List<DropEntry> randomDrops = new List<DropEntry>();
+    [Tooltip("Bảng rơi dùng chung (vật phẩm hiếm). Được gộp với Random Drops riêng của quái")]
+    public DropTableData sharedDrops;
+
+    [Header("Trạng thái")]
+    [Tooltip("Miễn nhiễm đẩy lùi và trói (dành cho BOSS)")]
+    public bool statusImmune = false;
 }
