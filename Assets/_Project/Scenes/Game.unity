@@ -3858,6 +3858,7 @@ GameObject:
   - component: {fileID: 1397015314}
   - component: {fileID: 1397015317}
   - component: {fileID: 1397015318}
+  - component: {fileID: 1397015319}
   m_Layer: 0
   m_Name: _Managers
   m_TagString: Untagged
@@ -4027,6 +4028,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PickupEffectSystem
   data: {fileID: 11400000, guid: 07f5122a9230d6746b4dddce9120e505, type: 2}
   stats: {fileID: 1761219960}
+--- !u!114 &1397015319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1397015308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5827751eca103f4983a9de5f37bfa41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TelegraphSpawner
+  sectorPrefab: {fileID: 6502030861599738045, guid: b8938ed3ec387e64e8f03f81365349b1, type: 3}
+  rectPrefab: {fileID: 5244121317503967677, guid: 635afb93725c1b140bd566f5a8b973fa, type: 3}
+  rayPrefab: {fileID: 444609607632351004, guid: caf6a96a204928a439399cfd53b6286e, type: 3}
+  sweepPrefab: {fileID: 6715670259319012365, guid: c6dfe6b805c26a644adfa910fec1b496, type: 3}
 --- !u!1 &1471285715
 GameObject:
   m_ObjectHideFlags: 0
@@ -5509,6 +5526,7 @@ GameObject:
   - component: {fileID: 1761219963}
   - component: {fileID: 1761219965}
   - component: {fileID: 1761219964}
+  - component: {fileID: 1761219966}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -5748,6 +5766,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 758522c67ae443644a6d852728ff142e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BuffController
+--- !u!114 &1761219966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1761219954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 708f147825bbe934daefddad21a46934, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TelegraphTester
+  testDamage: 10
 --- !u!1 &1894397056
 GameObject:
   m_ObjectHideFlags: 0
