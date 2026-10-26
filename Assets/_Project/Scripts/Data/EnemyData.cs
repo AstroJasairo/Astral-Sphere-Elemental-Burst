@@ -38,4 +38,6 @@ public class EnemyData : ScriptableObject
     [Header("Trạng thái")]
     [Tooltip("Miễn nhiễm đẩy lùi và trói (dành cho BOSS)")]
     public bool statusImmune = false;
+    [Tooltip("Là BOSS: không bị dịch chuyển (recycle) khi chạm trần số lượng quái")]
+    public bool isBoss = false;
 }

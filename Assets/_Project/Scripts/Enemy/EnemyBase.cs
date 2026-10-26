@@ -24,6 +24,8 @@ public class EnemyBase : MonoBehaviour
     private float stopDistanceSqr;       // Quái tầm xa dừng lại khi tới khoảng cách này
     private const float AttackCooldown = 1f;   // Hồi chiêu sát thương khi chạm
     private StatusEffectHandler status;
+    public bool OverrideMovement { get; set; }   // true: BOSS đang tự điều khiển (lao tới...), EnemyBase không đuổi theo nữa
+
 
     private void Awake()
     {
@@ -45,6 +47,7 @@ public class EnemyBase : MonoBehaviour
         target = GameManager.Instance.Player;
         rb.linearVelocity = Vector2.zero;
         nextAttackTime = 0f;
+        OverrideMovement = false;
         status.ResetEffects();
 
         // Quái tầm xa dừng ở 90% tầm đánh. Cận chiến (attackRange = 0) thì luôn lao vào.
@@ -55,6 +58,7 @@ public class EnemyBase : MonoBehaviour
     private void FixedUpdate()
     {
         if (Data == null || target == null) return;
+        if (OverrideMovement) return;
         if (status.TryGetForcedVelocity(out Vector2 forced))
         {
             rb.linearVelocity = forced;    // Bị trói hoặc đẩy lùi: bỏ qua việc đuổi theo

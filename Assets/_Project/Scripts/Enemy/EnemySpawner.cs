@@ -33,6 +33,7 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnWave()
     {
+        if (stage.stopNormalSpawnOnBoss && GameManager.Instance.ElapsedTime >= stage.bossTime) return;
         float time = GameManager.Instance.ElapsedTime;
         SpawnPhase phase = stage.GetPhase(time);
         if (phase == null) return;              // Chưa tới 00:15 thì chưa spawn
@@ -83,6 +84,7 @@ public class EnemySpawner : MonoBehaviour
         // Duyệt HashSet bằng foreach không sinh rác
         foreach (EnemyBase enemy in EnemyBase.Active)
         {
+            if (enemy.Data.isBoss) continue;      // Không bao giờ tái sử dụng BOSS
             if ((enemy.transform.position - playerPos).sqrMagnitude > minSqr)
             {
                 enemy.TeleportTo(newPos);

@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StatUpgradeData
   stat: 1
   displayName: MP+
-  description: "Gi\u1EA3m 5% mana c\u1EA7n cho All Out Assault (c\xF3 t\xE1c d\u1EE5ng
-    t\u1EEB giai \u0111o\u1EA1n mana)"
+  description: "Gi\u1EA3m 5% mana c\u1EA7n cho All Out Assault"
   icon: {fileID: 0}
   amount: 0.05

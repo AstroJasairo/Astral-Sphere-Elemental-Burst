@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f3cd63de3c8af44b38b4a842644110, type: 3}
+  m_Name: ThunderBirdData
+  m_EditorClassIdentifier: Assembly-CSharp::ThunderBirdData
+  enemyName: "Chim s\u1EA5m s\xE9t"
+  type: 1
+  prefab: {fileID: 8366031795934451168, guid: 218cddc53a0673043b7c249023ee0ed7, type: 3}
+  baseHp: 3000
+  baseDamage: 25
+  moveSpeed: 2.5
+  scoreValue: 1000
+  manaValue: 20
+  attackRange: 6
+  attackCooldown: 2
+  projectilePrefab: {fileID: 0}
+  projectileSpeed: 6
+  projectileLifetime: 4
+  guaranteedDrops:
+  - pickup: {fileID: 11400000, guid: c04cfc89dbf2a344b8a18dc54c40fada, type: 2}
+    amount: 30
+    weight: 1
+  randomDropChance: 0.5
+  randomDrops:
+  - pickup: {fileID: 11400000, guid: bde1041f45b792847b84baea3b5bbb41, type: 2}
+    amount: 1
+    weight: 1
+  sharedDrops: {fileID: 0}
+  statusImmune: 1
+  isBoss: 1
+  firstStrikeDelay: 2
+  strikeInterval: 2.5
+  strikesPerWave: 3
+  strikeRadius: 1.8
+  strikeWarning: 1.5
+  strikeSpread: 5
+  strikeDamage: 20
+  firstDashDelay: 6
+  dashInterval: 8
+  dashWarning: 1.5
+  dashLength: 20
+  dashWidth: 3.2
+  dashSpeed: 18

@@ -6,6 +6,7 @@ using UnityEngine;
 public class SectorTelegraph : Telegraph
 {
     private float radius;
+    public float Radius => radius;
     private float angle;
     private bool shrink;
 

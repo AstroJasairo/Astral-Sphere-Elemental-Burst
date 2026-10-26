@@ -28,6 +28,7 @@ public class StageData : ScriptableObject
 {
     public float spawnInterval = 2f;                     // Chu kỳ spawn (tài liệu: 2 giây)
     public float bossTime = 1800f;                       // 30:00 BOSS xuất hiện (dùng ở giai đoạn sau)
+    public bool stopNormalSpawnOnBoss = false;           // true: hết 30:00 thì ngừng spawn quái thường
 
     // Hệ số máu/sát thương theo thời gian. Trục X = PHÚT, trục Y = hệ số nhân.
     // Chỉnh trực tiếp đường cong trong Inspector để cân bằng độ khó, không cần sửa code.

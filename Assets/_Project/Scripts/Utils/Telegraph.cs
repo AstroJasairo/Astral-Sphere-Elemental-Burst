@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public abstract class Telegraph : MonoBehaviour
@@ -25,6 +26,9 @@ public abstract class Telegraph : MonoBehaviour
     protected float damage;
     protected Transform playerTransform;
     protected PlayerStats playerStats;
+
+    private static readonly HashSet<Telegraph> active = new HashSet<Telegraph>();
+    private static readonly List<Telegraph> cancelBuffer = new List<Telegraph>();   // Dùng lại, không sinh rác
 
     private Action<Telegraph> onTriggered;
     private Transform followTarget;
@@ -61,6 +65,7 @@ public abstract class Telegraph : MonoBehaviour
 
         outer.Show(true);
         inner.Show(false);   // Lớp trong do lớp con tự bật khi cần
+        active.Add(this);
     }
 
     private void Update()
@@ -79,6 +84,7 @@ public abstract class Telegraph : MonoBehaviour
     private void Finish()
     {
         finished = true;
+        active.Remove(this);
 
         if (DamageOnFinish && damage > 0f && playerStats != null && IsPlayerInside(playerTransform.position))
             playerStats.TakeDamage(damage);
@@ -92,6 +98,7 @@ public abstract class Telegraph : MonoBehaviour
     {
         if (finished) return;
         finished = true;
+        active.Remove(this);
         PoolManager.Instance.Release(gameObject);
     }
 
@@ -109,5 +116,16 @@ public abstract class Telegraph : MonoBehaviour
     protected void DealDamage()
     {
         if (playerStats != null) playerStats.TakeDamage(damage);
+    }
+
+    public static void ResetStatics() { active.Clear(); }
+
+    private void OnDisable() { active.Remove(this); }
+
+    public static void CancelAll()
+    {
+        cancelBuffer.Clear();
+        cancelBuffer.AddRange(active);          // Sao chép ra danh sách phụ vì Cancel() sẽ sửa tập "active"
+        foreach (Telegraph t in cancelBuffer) t.Cancel();
     }
 }

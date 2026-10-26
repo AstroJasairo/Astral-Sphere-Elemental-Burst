@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StageData
   spawnInterval: 2
   bossTime: 1800
+  stopNormalSpawnOnBoss: 0
   hpMultiplier:
     serializedVersion: 2
     m_Curve:

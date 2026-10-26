@@ -14,8 +14,11 @@ public class GameManager : MonoBehaviour
     public float ElapsedTime { get; private set; }
     public bool IsPaused { get; private set; }
     public bool IsGameOver { get; private set; }
+    public bool IsVictory { get; private set; }
+    public bool IsEnded => IsGameOver || IsVictory;   // Trận đã kết thúc (thắng hoặc thua)
 
     public event Action OnGameOver;
+    public event Action OnVictory;
 
     private void Awake()
     {
@@ -23,6 +26,7 @@ public class GameManager : MonoBehaviour
         Application.targetFrameRate = 60;
         ElapsedTime = startTimeOffset;
         EnemyBase.ResetStatics();   // Dọn biến static còn sót từ trận trước
+        Telegraph.ResetStatics();
     }
 
     private void Update()
@@ -45,7 +49,7 @@ public class GameManager : MonoBehaviour
     // PlayerStats gọi khi người chơi chết
     public void TriggerGameOver()
     {
-        if (IsGameOver) return;   // Chỉ xử lý một lần
+        if (IsEnded) return;   // Chỉ xử lý một lần
         IsGameOver = true;
         Pause();                  // Dừng toàn bộ game
         OnGameOver?.Invoke();
@@ -55,5 +59,13 @@ public class GameManager : MonoBehaviour
     {
         Resume();   // BẮT BUỘC trả timeScale về 1 trước khi nạp lại, nếu không trận mới sẽ đứng yên
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void TriggerVictory()
+    {
+        if (IsEnded) return;  // Nếu người chơi đã chết rồi thì không thắng nữa (và ngược lại)
+        IsVictory = true;
+        Pause();
+        OnVictory?.Invoke();
     }
 }
