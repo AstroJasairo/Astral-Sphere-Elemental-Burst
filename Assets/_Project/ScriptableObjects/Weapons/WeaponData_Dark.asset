@@ -23,23 +23,23 @@ MonoBehaviour:
   pierce: 0
   chainRange: 3
   levels:
-  - projectileCount: 2
+  - projectileCount: 1
     radius: 1.5
     explosionRadius: 1.2
     chainTargets: 0
-  - projectileCount: 2
+  - projectileCount: 1
     radius: 1.5
     explosionRadius: 1.6
     chainTargets: 0
-  - projectileCount: 2
+  - projectileCount: 1
     radius: 1.5
     explosionRadius: 2
     chainTargets: 0
-  - projectileCount: 2
+  - projectileCount: 1
     radius: 1.5
     explosionRadius: 2.4
     chainTargets: 0
-  - projectileCount: 2
+  - projectileCount: 1
     radius: 1.5
     explosionRadius: 2.8
     chainTargets: 0

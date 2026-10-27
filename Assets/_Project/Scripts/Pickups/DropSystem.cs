@@ -10,6 +10,13 @@ public class DropSystem : MonoBehaviour
     [SerializeField] private int startCrystalCount = 4;
     [SerializeField] private float scatterRadius = 8f;
 
+    private float manaWeightMultiplier = 1f;
+
+    private void Awake()
+    {
+        manaWeightMultiplier = 1f + MetaProgress.GetSharedBonus(SharedUpgradeType.ManaPotion);
+    }
+
     private void OnEnable() { EnemyBase.EnemyKilled += OnEnemyKilled; }
     private void OnDisable() { EnemyBase.EnemyKilled -= OnEnemyKilled; }
 
@@ -59,7 +66,7 @@ public class DropSystem : MonoBehaviour
     {
         if (list == null) return 0f;
         float sum = 0f;
-        foreach (DropEntry e in list) sum += e.weight;
+        foreach (DropEntry e in list) sum += WeightOf(e);
         return sum;
     }
 
@@ -68,7 +75,7 @@ public class DropSystem : MonoBehaviour
         if (list == null) return null;
         foreach (DropEntry e in list)
         {
-            roll -= e.weight;
+            roll -= WeightOf(e);
             if (roll <= 0f) return e;
         }
         return null;
@@ -85,5 +92,13 @@ public class DropSystem : MonoBehaviour
         }
         GameObject go = PoolManager.Instance.Get(data.prefab, position, data.prefab.transform.rotation);
         go.GetComponent<Pickup>().Init(data.type, amount);
+    }
+
+    // Thêm hàm: trọng số thực tế của một dòng trong bảng rơi
+    private float WeightOf(DropEntry e)
+    {
+        float w = e.weight;
+        if (e.pickup != null && e.pickup.type == PickupType.ManaPotion) w *= manaWeightMultiplier;
+        return w;
     }
 }

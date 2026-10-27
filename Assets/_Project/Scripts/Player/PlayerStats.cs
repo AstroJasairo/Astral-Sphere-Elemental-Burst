@@ -5,9 +5,14 @@ using System;
 [RequireComponent(typeof(HealthSystem))]
 public class PlayerStats : MonoBehaviour
 {
-    [Header("Nhân vật (tạm gán tay để test; sau này lấy từ menu chọn nhân vật)")]
-    [SerializeField] private CharacterData character;
+    //[Header("Nhân vật (tạm gán tay để test; sau này lấy từ menu chọn nhân vật)")]
+    //[SerializeField] private CharacterData character;
+    //[SerializeField, Range(0, 5)] private int starLevel = 0;
+    [Header("Nhân vật (Chỉ dùng khi chạy thẳng scene Game để test)")]
+    [SerializeField] private CharacterData character;      // Dự phòng khi chưa có MetaConfig
+    [SerializeField] private bool useDebugStarLevel;       // Bật để dùng "Star Level" bên dưới thay cho sao đã lưu
     [SerializeField, Range(0, 5)] private int starLevel = 0;
+    [SerializeField] private bool logMeta;                 // Bật để in bonus meta ra Console
 
     // Chỉ số gốc: nạp từ CharacterData (giá trị dưới đây chỉ là dự phòng khi chưa gán)
     private float baseMaxHp = 100f;
@@ -73,20 +78,35 @@ public class PlayerStats : MonoBehaviour
 
     private void LoadCharacter()
     {
+        // Nhân vật được chọn ở Home (lưu trong file). Chạy thẳng scene Game mà chưa có MetaConfig thì dùng nhân vật gán tay.
+        CharacterData selected = MetaProgress.GetSelectedCharacter();
+        if (selected != null) character = selected;
+
         if (character == null)
         {
-            Debug.LogWarning("PlayerStats: chưa gán CharacterData, đang dùng chỉ số dự phòng.", this);
+            Debug.LogWarning("PlayerStats: chưa có CharacterData, đang dùng chỉ số dự phòng.", this);
             return;
         }
 
-        baseMaxHp = character.baseMaxHp;
-        baseAtk = character.baseAtk;
-        baseDef = character.baseDef;
-        baseMoveSpeed = character.baseMoveSpeed;
-        baseMagnetRadius = character.baseMagnetRadius;
+        int stars = useDebugStarLevel ? starLevel : MetaProgress.GetStars(character.id);
+
+        // Chỉ số gốc = chỉ số cơ bản của nhân vật + bonus từ nâng cấp vĩnh viễn (menu)
+        baseMaxHp = character.baseMaxHp + MetaProgress.GetStatBonus(character, StatType.Hp);
+        baseAtk = character.baseAtk * (1f + MetaProgress.GetStatBonus(character, StatType.Atk));
+        baseDef = character.baseDef + MetaProgress.GetStatBonus(character, StatType.Def);
+        baseMoveSpeed = character.baseMoveSpeed * (1f + MetaProgress.GetStatBonus(character, StatType.Spd));
+        baseMagnetRadius = character.baseMagnetRadius * (1f + MetaProgress.GetStatBonus(character, StatType.Mag));
+
+        // MP là phần giảm mana cần để dùng All Out Assault, tính ngay từ đầu trận;
+        // nâng cấp MP trong trận sẽ cộng dồn thêm vào đây
+        manaCostReductionPct = MetaProgress.GetStatBonus(character, StatType.Mp);
 
         activePerks.Clear();
-        activePerks.AddRange(character.GetActivePerks(starLevel));   // Chỉ tính một lần lúc vào trận
+        activePerks.AddRange(character.GetActivePerks(stars));
+
+        if (logMeta)
+            Debug.Log($"[Meta] {character.id} sao {stars} | HP {baseMaxHp}, ATK {baseAtk:0.00}, DEF {baseDef}, " +
+                      $"SPD {baseMoveSpeed:0.00}, MAG {baseMagnetRadius:0.00}, giảm mana {manaCostReductionPct:P0}");
     }
 
     public void ApplyStat(StatType stat, float amount)

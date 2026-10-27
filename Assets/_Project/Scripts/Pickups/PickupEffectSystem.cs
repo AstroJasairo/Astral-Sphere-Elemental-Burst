@@ -9,30 +9,34 @@ public class PickupEffectSystem : MonoBehaviour
     private void OnEnable() { Pickup.Collected += HandleCollected; }
     private void OnDisable() { Pickup.Collected -= HandleCollected; }
 
+    private static float Meta(SharedUpgradeType type) => MetaProgress.GetSharedBonus(type);
+
     private void HandleCollected(PickupType type, int amount)
     {
         switch (type)
         {
             case PickupType.HealthPotion:
-                stats.Health.Heal(stats.Health.MaxHealth * data.healPercent);
+                // Bonus nâng cấp chung CỘNG THÊM vào phần trăm hồi máu
+                float healPct = Mathf.Clamp01(data.healPercent + Meta(SharedUpgradeType.HealthPotion));
+                stats.Health.Heal(stats.Health.MaxHealth * healPct);
                 break;
             case PickupType.SpeedPotion:
-                stats.Buffs.Apply(BuffType.Speed, data.speedBonusPct, data.speedDuration);
+                stats.Buffs.Apply(BuffType.Speed, data.speedBonusPct + Meta(SharedUpgradeType.SpeedPotion), data.speedDuration);
                 break;
             case PickupType.RagePotion:
-                stats.Buffs.Apply(BuffType.Rage, data.rageBonusPct, data.rageDuration);
+                stats.Buffs.Apply(BuffType.Rage, data.rageBonusPct + Meta(SharedUpgradeType.RagePotion), data.rageDuration);
                 break;
             case PickupType.Magnet:
-                stats.Buffs.Apply(BuffType.Magnet, data.magnetBonusPct, data.magnetDuration);
+                stats.Buffs.Apply(BuffType.Magnet, data.magnetBonusPct + Meta(SharedUpgradeType.Magnet), data.magnetDuration);
                 break;
             case PickupType.Shield:
-                // Lá chắn dựa theo DEF: DEF càng cao, khiên càng dày
-                stats.AddShield(data.shieldBase * (1f + stats.Def * data.shieldDefScale));
+                // Bonus nâng cấp chung NHÂN với lá chắn
+                float shield = data.shieldBase * (1f + stats.Def * data.shieldDefScale) * (1f + Meta(SharedUpgradeType.Shield));
+                stats.AddShield(shield);
                 break;
             case PickupType.ScoreBoost:
-                stats.Buffs.Apply(BuffType.ScoreBoost, data.scoreBonusPct, data.scoreDuration);
+                stats.Buffs.Apply(BuffType.ScoreBoost, data.scoreBonusPct + Meta(SharedUpgradeType.ScoreBoost), data.scoreDuration);
                 break;
-                // Gold, Crystal, ManaPotion do các hệ thống khác xử lý
         }
     }
 

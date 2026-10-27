@@ -8,8 +8,16 @@ public class RunStats : MonoBehaviour
     public int Score { get; private set; }
     public int Kills { get; private set; }
 
+    private readonly RemainderAccumulator goldAcc = new RemainderAccumulator();
+    private float goldMultiplier = 1f;
+
     // UI lắng nghe sự kiện này thay vì kiểm tra mỗi frame (đỡ tốn CPU và không sinh chuỗi mới liên tục)
     public event Action OnChanged;
+
+    private void Awake()
+    {
+        goldMultiplier = 1f + MetaProgress.GetSharedBonus(SharedUpgradeType.Gold);
+    }
 
     private void OnEnable()
     {
@@ -26,7 +34,7 @@ public class RunStats : MonoBehaviour
     private void HandleCollected(PickupType type, int amount)
     {
         if (type != PickupType.Gold) return;
-        Gold += amount;     // Sau này nhân thêm hệ số nâng cấp chung "Vàng"
+        Gold += goldAcc.Add(amount * goldMultiplier);   // Giữ phần lẻ để bonus nhỏ vẫn có tác dụng
         OnChanged?.Invoke();
     }
 

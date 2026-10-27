@@ -1,0 +1,166 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a47fd55623f831478be9e558c1c981e, type: 3}
+  m_Name: MetaConfig
+  m_EditorClassIdentifier: Assembly-CSharp::MetaConfig
+  characters:
+  - {fileID: 11400000, guid: c43ae3166301fda43a07bf7f4ab83e32, type: 2}
+  sharedUpgrades:
+  - type: 0
+    displayName: "V\xE0ng"
+    description: "T\u0103ng v\xE0ng nh\u1EADn \u0111\u01B0\u1EE3c m\u1ED7i l\u1EA7n
+      nh\u1EB7t"
+    icon: {fileID: 0}
+    bonusByLevel:
+    - 0
+    - 0.05
+    - 0.1
+    - 0.15
+    - 0.2
+    - 0.25
+    - 0.3
+    - 0.35
+    - 0.4
+    - 0.45000002
+    costByLevel: 000000004b0000002c010000a3020000b0040000530700008c0a00005b0e0000c0120000bb170000
+  - type: 1
+    displayName: "Pha l\xEA"
+    description: "T\u0103ng pha l\xEA nh\u1EADn \u0111\u01B0\u1EE3c m\u1ED7i l\u1EA7n
+      nh\u1EB7t"
+    icon: {fileID: 0}
+    bonusByLevel:
+    - 0
+    - 0.05
+    - 0.1
+    - 0.15
+    - 0.2
+    - 0.25
+    - 0.3
+    - 0.35
+    - 0.4
+    - 0.45000002
+    costByLevel: 000000004b0000002c010000a3020000b0040000530700008c0a00005b0e0000c0120000bb170000
+  - type: 2
+    displayName: "B\xECnh m\xE1u"
+    description: "T\u0103ng l\u01B0\u1EE3ng m\xE1u h\u1ED3i khi nh\u1EB7t b\xECnh
+      m\xE1u"
+    icon: {fileID: 0}
+    bonusByLevel:
+    - 0
+    - 0.02
+    - 0.04
+    - 0.06
+    - 0.08
+    - 0.099999994
+    - 0.12
+    - 0.14
+    - 0.16
+    - 0.17999999
+    costByLevel: 000000004b0000002c010000a3020000b0040000530700008c0a00005b0e0000c0120000bb170000
+  - type: 3
+    displayName: "B\xECnh t\u0103ng t\u1ED1c"
+    description: "T\u0103ng th\xEAm t\u1ED1c \u0111\u1ED9 di chuy\u1EC3n khi nh\u1EB7t
+      b\xECnh t\u1ED1c \u0111\u1ED9"
+    icon: {fileID: 0}
+    bonusByLevel:
+    - 0
+    - 0.03
+    - 0.06
+    - 0.089999996
+    - 0.12
+    - 0.14999999
+    - 0.17999999
+    - 0.21
+    - 0.24
+    - 0.26999998
+    costByLevel: 000000004b0000002c010000a3020000b0040000530700008c0a00005b0e0000c0120000bb170000
+  - type: 4
+    displayName: "B\xECnh cu\u1ED3ng n\u1ED9"
+    description: "T\u0103ng th\xEAm ATK khi nh\u1EB7t b\xECnh cu\u1ED3ng n\u1ED9"
+    icon: {fileID: 0}
+    bonusByLevel:
+    - 0
+    - 0.03
+    - 0.06
+    - 0.089999996
+    - 0.12
+    - 0.14999999
+    - 0.17999999
+    - 0.21
+    - 0.24
+    - 0.26999998
+    costByLevel: 000000004b0000002c010000a3020000b0040000530700008c0a00005b0e0000c0120000bb170000
+  - type: 5
+    displayName: "Khi\xEAn"
+    description: "T\u0103ng l\xE1 ch\u1EAFn t\u1EA1o ra khi nh\u1EB7t khi\xEAn"
+    icon: {fileID: 0}
+    bonusByLevel:
+    - 0
+    - 0.06
+    - 0.12
+    - 0.17999999
+    - 0.24
+    - 0.29999998
+    - 0.35999998
+    - 0.42
+    - 0.48
+    - 0.53999996
+    costByLevel: 000000004b0000002c010000a3020000b0040000530700008c0a00005b0e0000c0120000bb170000
+  - type: 6
+    displayName: "Nam ch\xE2m"
+    description: "T\u0103ng th\xEAm b\xE1n k\xEDnh h\xFAt khi nh\u1EB7t nam ch\xE2m"
+    icon: {fileID: 0}
+    bonusByLevel:
+    - 0
+    - 0.1
+    - 0.2
+    - 0.3
+    - 0.4
+    - 0.5
+    - 0.6
+    - 0.7
+    - 0.8
+    - 0.90000004
+    costByLevel: 000000004b0000002c010000a3020000b0040000530700008c0a00005b0e0000c0120000bb170000
+  - type: 7
+    displayName: "B\xECnh mana"
+    description: "T\u0103ng t\u1EC9 l\u1EC7 r\u01A1i b\xECnh mana"
+    icon: {fileID: 0}
+    bonusByLevel:
+    - 0
+    - 0.15
+    - 0.3
+    - 0.45000002
+    - 0.6
+    - 0.75
+    - 0.90000004
+    - 1.0500001
+    - 1.2
+    - 1.35
+    costByLevel: 000000004b0000002c010000a3020000b0040000530700008c0a00005b0e0000c0120000bb170000
+  - type: 8
+    displayName: "T\u0103ng \u0111i\u1EC3m"
+    description: "T\u0103ng th\xEAm \u0111i\u1EC3m khi nh\u1EB7t v\u1EADt ph\u1EA9m
+      t\u0103ng \u0111i\u1EC3m"
+    icon: {fileID: 0}
+    bonusByLevel:
+    - 0
+    - 0.05
+    - 0.1
+    - 0.15
+    - 0.2
+    - 0.25
+    - 0.3
+    - 0.35
+    - 0.4
+    - 0.45000002
+    costByLevel: 000000004b0000002c010000a3020000b0040000530700008c0a00005b0e0000c0120000bb170000

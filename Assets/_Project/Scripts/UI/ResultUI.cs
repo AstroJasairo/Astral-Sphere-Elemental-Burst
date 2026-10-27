@@ -20,6 +20,7 @@ public class ResultUI : MonoBehaviour
     [SerializeField] private Button retryButton;
     [SerializeField] private Button homeButton;
     [SerializeField] private Button quitButton;
+    [SerializeField] private TMP_Text bestText;     // Hiện "KỶ LỤC MỚI!" hoặc hạng (tùy chọn)
 
     private void OnEnable()
     {
@@ -44,10 +45,21 @@ public class ResultUI : MonoBehaviour
     private void Show()
     {
         int sec = (int)gameManager.ElapsedTime;
+        // Ghi kết quả vào tiến trình vĩnh viễn: cộng vàng vào ví, cập nhật bảng điểm
+        RunSubmitResult submit = MetaProgress.SubmitRun(new RunResult
+        {
+            score = runStats.Score,
+            timeSeconds = sec,
+            kills = runStats.Kills,
+            gold = runStats.Gold,
+            victory = type == ResultType.Victory
+        });
         timeText.text = $"Thời gian: {sec / 60:00}:{sec % 60:00}";
         killsText.text = $"Hạ gục: {runStats.Kills}";
         scoreText.text = $"Điểm: {runStats.Score}";
-        goldText.text = $"Vàng: {runStats.Gold}";
+        goldText.text = $"Vàng: +{submit.goldEarned}  (Ví: {MetaProgress.Gold})";
+        if (bestText != null)
+            bestText.text = submit.isNewBest ? "KỶ LỤC MỚI!" : (submit.rank > 0 ? $"Hạng {submit.rank}" : "");
         panel.SetActive(true);
     }
 }

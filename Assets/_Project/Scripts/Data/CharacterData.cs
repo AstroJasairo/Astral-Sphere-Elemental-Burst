@@ -1,6 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Tiến trình một chỉ số của một nhân vật: bonus và chi phí theo từng cấp 1 đến 10 (chỉ số mảng = cấp - 1)
+[System.Serializable]
+public class StatProgression
+{
+    public StatType stat;
+    public float[] bonusByLevel = new float[10];   // Bonus ở cấp đó (cấp 1 thường bằng 0)
+    public int[] costByLevel = new int[10];        // Vàng cần để LÊN TỚI cấp đó (cấp 1 = 0)
+}
+
 // Một đặc quyền mở khóa ở một mốc sao
 [System.Serializable]
 public class StarPerk
@@ -19,6 +28,18 @@ public class StarPerk
 [CreateAssetMenu(menuName = "Astral Sphere/Character Data")]
 public class CharacterData : ScriptableObject
 {
+    [Header("Meta: định danh và nâng cấp vĩnh viễn")]
+    public string id;                                   // Duy nhất, dùng làm khóa lưu. Ví dụ "acronomia". KHÔNG đổi sau khi phát hành
+    public int[] starCosts = new int[5];                // Vàng để lên sao 1, 2, 3, 4, 5
+    public List<StatProgression> statProgressions = new List<StatProgression>();
+
+    public StatProgression GetProgression(StatType stat)
+    {
+        foreach (StatProgression p in statProgressions)
+            if (p.stat == stat) return p;
+        return null;
+    }
+
     public string characterName;
     public Sprite icon;
 
@@ -50,5 +71,31 @@ public class CharacterData : ScriptableObject
         foreach (StarPerk p in unlocked)
             if (!replaced.Contains(p.id)) active.Add(p);
         return active;
+    }
+
+    // Chuột phải vào tiêu đề asset > chọn mục này để điền sẵn số mặc định, khỏi nhập tay 6 x 20 con số
+    [ContextMenu("Fill Default Meta Progression")]
+    private void FillDefaultMetaProgression()
+    {
+        starCosts = new[] { 1000, 3000, 8000, 20000, 50000 };
+
+        // Mức tăng mỗi cấp, theo thứ tự StatType: Hp, Mp, Atk, Def, Spd, Mag
+        // Hp và Def cộng thẳng; còn lại là phần trăm (0.04 = 4%)
+        float[] perLevel = { 10f, 0.02f, 0.04f, 2f, 0.02f, 0.06f };
+
+        statProgressions = new List<StatProgression>();
+        for (int s = 0; s < perLevel.Length; s++)
+        {
+            var p = new StatProgression { stat = (StatType)s, bonusByLevel = new float[10], costByLevel = new int[10] };
+            for (int i = 0; i < 10; i++)
+            {
+                p.bonusByLevel[i] = perLevel[s] * i;           // Cấp 1 (i = 0) không có bonus
+                p.costByLevel[i] = i == 0 ? 0 : 50 * i * i;    // Lên cấp 2 tốn 50, cấp 10 tốn 4050
+            }
+            statProgressions.Add(p);
+        }
+#if UNITY_EDITOR
+        UnityEditor.EditorUtility.SetDirty(this);
+#endif
     }
 }
