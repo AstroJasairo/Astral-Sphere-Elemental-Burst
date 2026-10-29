@@ -20,6 +20,7 @@ public class PlayerStats : MonoBehaviour
     private float baseDef = 0f;
     private float baseMoveSpeed = 5f;
     private float baseMagnetRadius = 1.5f;
+    public const float MinManaCostMultiplier = 0.2f;      // Mana cần không bao giờ giảm quá 80%
 
     // Bonus nhận được TRONG trận
     private float hpBonus, defBonus;
@@ -35,7 +36,7 @@ public class PlayerStats : MonoBehaviour
     public float Def => baseDef + defBonus;
     public float MoveSpeed => baseMoveSpeed * (1f + speedBonusPct + aoaSpeedPct + Buffs.GetValue(BuffType.Speed));
     public float MagnetRadius => baseMagnetRadius * (1f + magnetBonusPct + Buffs.GetValue(BuffType.Magnet));
-    public float ManaCostMultiplier => Mathf.Max(0.2f, 1f - manaCostReductionPct);
+    public float ManaCostMultiplier => Mathf.Max(MinManaCostMultiplier, 1f - manaCostReductionPct);
     public float CooldownMultiplier => aoaCooldownMultiplier;
     public float ScoreMultiplier => 1f + Buffs.GetValue(BuffType.ScoreBoost);
 
@@ -90,16 +91,25 @@ public class PlayerStats : MonoBehaviour
 
         int stars = useDebugStarLevel ? starLevel : MetaProgress.GetStars(character.id);
 
-        // Chỉ số gốc = chỉ số cơ bản của nhân vật + bonus từ nâng cấp vĩnh viễn (menu)
-        baseMaxHp = character.baseMaxHp + MetaProgress.GetStatBonus(character, StatType.Hp);
-        baseAtk = character.baseAtk * (1f + MetaProgress.GetStatBonus(character, StatType.Atk));
-        baseDef = character.baseDef + MetaProgress.GetStatBonus(character, StatType.Def);
-        baseMoveSpeed = character.baseMoveSpeed * (1f + MetaProgress.GetStatBonus(character, StatType.Spd));
-        baseMagnetRadius = character.baseMagnetRadius * (1f + MetaProgress.GetStatBonus(character, StatType.Mag));
+        //// Chỉ số gốc = chỉ số cơ bản của nhân vật + bonus từ nâng cấp vĩnh viễn (menu)
+        //baseMaxHp = character.baseMaxHp + MetaProgress.GetStatBonus(character, StatType.Hp);
+        //baseAtk = character.baseAtk * (1f + MetaProgress.GetStatBonus(character, StatType.Atk));
+        //baseDef = character.baseDef + MetaProgress.GetStatBonus(character, StatType.Def);
+        //baseMoveSpeed = character.baseMoveSpeed * (1f + MetaProgress.GetStatBonus(character, StatType.Spd));
+        //baseMagnetRadius = character.baseMagnetRadius * (1f + MetaProgress.GetStatBonus(character, StatType.Mag));
 
-        // MP là phần giảm mana cần để dùng All Out Assault, tính ngay từ đầu trận;
-        // nâng cấp MP trong trận sẽ cộng dồn thêm vào đây
-        manaCostReductionPct = MetaProgress.GetStatBonus(character, StatType.Mp);
+        //// MP là phần giảm mana cần để dùng All Out Assault, tính ngay từ đầu trận;
+        //// nâng cấp MP trong trận sẽ cộng dồn thêm vào đây
+        //manaCostReductionPct = MetaProgress.GetStatBonus(character, StatType.Mp);
+
+        // Chỉ số khi vào trận lấy từ CharacterStatSheet (cùng nguồn với menu Character)
+        CharacterStatSheet sheet = CharacterStatSheet.Build(character);
+        baseMaxHp = sheet.maxHp;
+        baseAtk = sheet.atk;
+        baseDef = sheet.def;
+        baseMoveSpeed = sheet.moveSpeed;
+        baseMagnetRadius = sheet.magnetRadius;
+        manaCostReductionPct = sheet.manaCostReduction;    // Nâng MP trong trận sẽ cộng dồn thêm vào đây
 
         activePerks.Clear();
         activePerks.AddRange(character.GetActivePerks(stars));

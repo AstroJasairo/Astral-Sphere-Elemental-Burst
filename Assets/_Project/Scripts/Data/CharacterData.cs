@@ -22,6 +22,7 @@ public class StarPerk
     public WeaponData weapon;       // Dùng cho StartWeapon
     public int weaponLevel = 1;     // Dùng cho StartWeapon: cấp khởi đầu
     public float bonus;             // Dùng cho 2 loại bonus: 0.5 = +50%
+    public string description;      // Mô tả hiệu quả để hiện trong menu, ví dụ "+50% sát thương Lôi"
 }
 
 // Dữ liệu nhân vật. Tạo bằng: Assets > Create > Astral Sphere > Character Data

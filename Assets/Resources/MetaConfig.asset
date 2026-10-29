@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MetaConfig
   characters:
   - {fileID: 11400000, guid: c43ae3166301fda43a07bf7f4ab83e32, type: 2}
+  - {fileID: 11400000, guid: 0d286f77e98ae4a4dbb5762ddc946178, type: 2}
+  allOutAssault: {fileID: 11400000, guid: 16c3ef2d274cf384eb538438421a14f2, type: 2}
   sharedUpgrades:
   - type: 0
     displayName: "V\xE0ng"

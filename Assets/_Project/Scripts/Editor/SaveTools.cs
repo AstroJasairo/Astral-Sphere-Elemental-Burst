@@ -18,5 +18,11 @@ public static class SaveTools
         if (EditorUtility.DisplayDialog("Xóa save", "Xóa toàn bộ tiến trình đã lưu?", "Xóa", "Hủy"))
             SaveSystem.ResetAll();
     }
+
+    [MenuItem("Tools/Astral Sphere/Save/Add 10000 Gold")]
+    private static void AddGold()
+    {
+        MetaProgress.DebugAddGold(10000);
+    }
 }
 #endif

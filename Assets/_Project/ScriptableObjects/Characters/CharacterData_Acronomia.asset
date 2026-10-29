@@ -94,7 +94,7 @@ MonoBehaviour:
     - 0.53999996
     costByLevel: 0000000032000000c8000000c201000020030000e20400000807000092090000800c0000d20f0000
   characterName: Acronomia
-  icon: {fileID: 0}
+  icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   baseMaxHp: 100
   baseAtk: 1
   baseDef: 0
@@ -109,6 +109,7 @@ MonoBehaviour:
     weapon: {fileID: 11400000, guid: 901fe598a5ca9884c9b969d56c8ed686, type: 2}
     weaponLevel: 1
     bonus: 0
+    description: "Kh\u1EDFi \u0111\u1EA7u: L\xF4i Lv.1"
   - id: dark_start
     replacesId: 
     requiredStar: 1
@@ -117,6 +118,7 @@ MonoBehaviour:
     weapon: {fileID: 11400000, guid: 12e12c1e4e75867489096b7875d3a515, type: 2}
     weaponLevel: 1
     bonus: 0
+    description: "Kh\u1EDFi \u0111\u1EA7u: B\xF3ng t\u1ED1i Lv.2"
   - id: lightning_dmg_a
     replacesId: 
     requiredStar: 2
@@ -125,6 +127,7 @@ MonoBehaviour:
     weapon: {fileID: 0}
     weaponLevel: 0
     bonus: 0.5
+    description: "+50% s\xE1t th\u01B0\u01A1ng nguy\xEAn t\u1ED1 L\xF4i"
   - id: lightning_start_2
     replacesId: lightning_start
     requiredStar: 3
@@ -133,6 +136,7 @@ MonoBehaviour:
     weapon: {fileID: 11400000, guid: 901fe598a5ca9884c9b969d56c8ed686, type: 2}
     weaponLevel: 2
     bonus: 0
+    description: "Kh\u1EDFi \u0111\u1EA7u: L\xF4i Lv.2"
   - id: lightning_dmg_b
     replacesId: lightning_dmg_a
     requiredStar: 4
@@ -141,6 +145,7 @@ MonoBehaviour:
     weapon: {fileID: 0}
     weaponLevel: 0
     bonus: 0.5
+    description: "+50% s\xE1t th\u01B0\u01A1ng nguy\xEAn t\u1ED1 L\xF4i"
   - id: dark_dmg_b
     replacesId: 
     requiredStar: 4
@@ -148,7 +153,8 @@ MonoBehaviour:
     element: 9
     weapon: {fileID: 0}
     weaponLevel: 0
-    bonus: 0.25
+    bonus: 0.5
+    description: "+50% s\xE1t th\u01B0\u01A1ng nguy\xEAn t\u1ED1 B\xF3ng t\u1ED1i "
   - id: aoa_lightning
     replacesId: 
     requiredStar: 5
@@ -157,6 +163,8 @@ MonoBehaviour:
     weapon: {fileID: 0}
     weaponLevel: 0
     bonus: 2
+    description: "All Out Assault: +200% s\xE1t th\u01B0\u01A1ng nguy\xEAn t\u1ED1
+      L\xF4i"
   - id: aoa_dark
     replacesId: 
     requiredStar: 5
@@ -165,3 +173,5 @@ MonoBehaviour:
     weapon: {fileID: 0}
     weaponLevel: 0
     bonus: 1
+    description: "All Out Assault: +100% s\xE1t th\u01B0\u01A1ng nguy\xEAn t\u1ED1
+      B\xF3ng t\u1ED1i"

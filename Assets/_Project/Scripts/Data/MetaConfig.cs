@@ -19,6 +19,7 @@ public class SharedUpgradeEntry
 public class MetaConfig : ScriptableObject
 {
     public List<CharacterData> characters = new List<CharacterData>();
+    public AllOutAssaultData allOutAssault;
     public List<SharedUpgradeEntry> sharedUpgrades = new List<SharedUpgradeEntry>();
 
     public CharacterData GetCharacter(string id)

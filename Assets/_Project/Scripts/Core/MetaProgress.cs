@@ -149,6 +149,28 @@ public static class MetaProgress
         return true;
     }
 
+    // Bonus của chỉ số ở cấp KẾ TIẾP (dùng để hiện "20 > 30" trên nút nâng cấp)
+    public static float GetNextStatBonus(CharacterData c, StatType stat)
+    {
+        StatProgression p = c.GetProgression(stat);
+        if (p == null || p.bonusByLevel == null || p.bonusByLevel.Length == 0) return 0f;
+
+        int next = Mathf.Min(GetStatLevel(c.id, stat) + 1, MaxLevel);
+        return p.bonusByLevel[Mathf.Clamp(next, 1, p.bonusByLevel.Length) - 1];
+    }
+
+    public static float GetNextSharedBonus(SharedUpgradeType type)
+    {
+        MetaConfig cfg = Config;
+        if (cfg == null) return 0f;
+
+        SharedUpgradeEntry e = cfg.GetShared(type);
+        if (e == null || e.bonusByLevel == null || e.bonusByLevel.Length == 0) return 0f;
+
+        int next = Mathf.Min(GetSharedLevel(type) + 1, MaxLevel);
+        return e.bonusByLevel[Mathf.Clamp(next, 1, e.bonusByLevel.Length) - 1];
+    }
+
     // ---------------- Nâng cấp chung ----------------
 
     public static int GetSharedLevel(SharedUpgradeType type)
