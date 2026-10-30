@@ -15,6 +15,11 @@ MonoBehaviour:
   characters:
   - {fileID: 11400000, guid: c43ae3166301fda43a07bf7f4ab83e32, type: 2}
   - {fileID: 11400000, guid: 0d286f77e98ae4a4dbb5762ddc946178, type: 2}
+  maps:
+  - {fileID: 11400000, guid: ff3a48d50c0522e4f978b51a116441c1, type: 2}
+  - {fileID: 11400000, guid: c0d2ba2500b32394f99b80987392c2a9, type: 2}
+  - {fileID: 11400000, guid: 6389817daa02e9c40a07be3482171670, type: 2}
+  - {fileID: 11400000, guid: 7ace9b8aa540e9c418bb5ac906cee526, type: 2}
   allOutAssault: {fileID: 11400000, guid: 16c3ef2d274cf384eb538438421a14f2, type: 2}
   sharedUpgrades:
   - type: 0

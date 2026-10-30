@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using TMPro;
 using UnityEngine;
-using System.Collections.Generic;
+using UnityEngine.UI;
 
 // Bảng nâng cấp nhân vật (trượt từ đáy lên): Nâng sao + 6 hàng Nâng chỉ số + hiệu quả theo sao
 public class CharacterUpgradePanel : MonoBehaviour
@@ -12,6 +13,7 @@ public class CharacterUpgradePanel : MonoBehaviour
     [SerializeField] private TMP_Text starEffectsText;             // Danh sách hiệu quả theo mốc sao
     [SerializeField] private UpgradeRowView statRowPrefab;         // Prefab một hàng
     [SerializeField] private Transform statRowsParent;             // Nơi chứa 6 hàng
+    [SerializeField] private RectTransform contentRoot;
 
     private static readonly StatType[] Stats = (StatType[])Enum.GetValues(typeof(StatType));
 
@@ -77,6 +79,7 @@ public class CharacterUpgradePanel : MonoBehaviour
             statRows[i].Set(StatDisplay.Label(stat), StatDisplay.Describe(stat),
                             $"Lv {MetaProgress.GetStatLevel(c.id, stat)}/{MetaProgress.MaxLevel}", value, cost, wallet);
         }
+        RebuildLayout();
     }
 
     // Danh sách hiệu quả theo từng mốc sao, tô 3 màu: đang hiệu lực / bị mốc cao thay thế / chưa mở khóa
@@ -101,5 +104,12 @@ public class CharacterUpgradePanel : MonoBehaviour
             }
         }
         return builder.ToString();
+    }
+
+    private void RebuildLayout()
+    {
+        // Ép tính lại chiều cao ngay lập tức sau khi đổi chữ/số hàng,
+        // để ScrollView biết đúng chiều cao nội dung ngay từ lần mở đầu tiên
+        if (contentRoot != null) LayoutRebuilder.ForceRebuildLayoutImmediate(contentRoot);
     }
 }

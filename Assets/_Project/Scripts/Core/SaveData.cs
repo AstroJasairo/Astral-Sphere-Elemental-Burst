@@ -11,6 +11,7 @@ public class ScoreEntry
     public int kills;
     public bool victory;
     public string characterId;
+    public string mapId;
     public string date;
 }
 
@@ -51,6 +52,7 @@ public class SaveData
     public int version = 1;                  // Dùng để chuyển đổi định dạng sau này
     public int gold;                         // Ví vàng
     public string selectedCharacterId = "";
+    public string lastMapId = "";
     public List<CharacterProgress> characters = new List<CharacterProgress>();
     public int[] sharedLevels;               // Cấp của 9 nâng cấp chung theo thứ tự enum SharedUpgradeType
     public List<ScoreEntry> highScores = new List<ScoreEntry>();

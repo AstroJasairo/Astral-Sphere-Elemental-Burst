@@ -21,6 +21,7 @@ public class ResultUI : MonoBehaviour
     [SerializeField] private Button homeButton;
     [SerializeField] private Button quitButton;
     [SerializeField] private TMP_Text bestText;     // Hiện "KỶ LỤC MỚI!" hoặc hạng (tùy chọn)
+    [SerializeField] private HomeScreenId backDestination = HomeScreenId.CharacterSelect;   // Nút "quay lại" dẫn tới đâu
 
     private void OnEnable()
     {
@@ -38,7 +39,8 @@ public class ResultUI : MonoBehaviour
     private void Start()
     {
         if (retryButton != null) retryButton.onClick.AddListener(gameManager.Restart);
-        if (homeButton != null) homeButton.onClick.AddListener(SceneNavigator.LoadHome);
+        //if (homeButton != null) homeButton.onClick.AddListener(SceneNavigator.LoadHome);
+        if (homeButton != null) homeButton.onClick.AddListener(GoBack);
         if (quitButton != null) quitButton.onClick.AddListener(SceneNavigator.QuitGame);
     }
 
@@ -61,5 +63,11 @@ public class ResultUI : MonoBehaviour
         if (bestText != null)
             bestText.text = submit.isNewBest ? "KỶ LỤC MỚI!" : (submit.rank > 0 ? $"Hạng {submit.rank}" : "");
         panel.SetActive(true);
+    }
+
+    private void GoBack()
+    {
+        if (backDestination == HomeScreenId.CharacterSelect) SceneNavigator.LoadCharacterSelect();
+        else SceneNavigator.LoadHome();
     }
 }

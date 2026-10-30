@@ -214,13 +214,17 @@ public static class MetaProgress
 
     // ---------------- Kết thúc trận ----------------
 
-    public static IReadOnlyList<ScoreEntry> TopScores => SaveSystem.Data.highScores;
+    //public static IReadOnlyList<ScoreEntry> TopScores => SaveSystem.Data.highScores;
 
-    // Cộng vàng của trận vào ví và ghi bảng điểm. Gọi MỘT LẦN khi trận kết thúc.
+    // Cộng vàng của trận vào ví và ghi bảng điểm của map đang chơi. Gọi MỘT LẦN khi trận kết thúc.
     public static RunSubmitResult SubmitRun(RunResult run)
     {
         SaveData d = SaveSystem.Data;
         d.gold += run.gold;
+
+        MapData map = GetSelectedMap();
+        string mapId = map != null ? map.id : "";
+        CharacterData character = GetSelectedCharacter();
 
         var entry = new ScoreEntry
         {
@@ -228,19 +232,17 @@ public static class MetaProgress
             timeSeconds = run.timeSeconds,
             kills = run.kills,
             victory = run.victory,
-            characterId = GetSelectedCharacter() != null ? GetSelectedCharacter().id : "",
+            characterId = character != null ? character.id : "",
+            mapId = mapId,
             date = DateTime.Now.ToString("yyyy-MM-dd HH:mm")
         };
 
-        // Kỷ lục mới = cao hơn điểm cao nhất trước đó
-        bool isNewBest = run.score > 0 && (d.highScores.Count == 0 || run.score > d.highScores[0].score);
+        // Kỷ lục của RIÊNG map này. Phải tính TRƯỚC khi thêm điểm mới vào danh sách.
+        bool isNewBest = run.score > 0 && run.score > BestScore(mapId);
 
         d.highScores.Add(entry);
-        d.highScores.Sort((a, b) => b.score.CompareTo(a.score));        // Điểm cao xếp trước
-        if (d.highScores.Count > MaxScores)
-            d.highScores.RemoveRange(MaxScores, d.highScores.Count - MaxScores);
-
-        int rank = d.highScores.IndexOf(entry) + 1;                     // IndexOf = -1 nếu bị loại, nên rank = 0
+        TrimScores(mapId);
+        int rank = GetTopScores(mapId).IndexOf(entry) + 1;     // IndexOf = -1 nếu bị loại khỏi top, nên rank = 0
 
         Commit();
         return new RunSubmitResult { goldEarned = run.gold, isNewBest = isNewBest, rank = rank };
@@ -258,5 +260,69 @@ public static class MetaProgress
     {
         SaveSystem.ResetAll();
         OnChanged?.Invoke();
+    }
+
+    // ---------------- Map ----------------
+
+    // Map đang chọn (lần cuối chọn ở màn Map). Chưa chọn hoặc map đã khóa thì dùng map đầu tiên còn mở.
+    public static MapData GetSelectedMap()
+    {
+        MetaConfig cfg = Config;
+        if (cfg == null || cfg.maps.Count == 0) return null;
+
+        MapData found = cfg.GetMap(SaveSystem.Data.lastMapId);
+        if (found != null && found.isAvailable) return found;
+
+        foreach (MapData m in cfg.maps)
+            if (m != null && m.isAvailable) return m;
+        return cfg.maps[0];
+    }
+
+    public static void SelectMap(string id)
+    {
+        SaveSystem.Data.lastMapId = id;
+        Commit();
+    }
+
+    // ---------------- Xếp hạng theo map ----------------
+
+    // Top điểm của MỘT map, xếp từ cao xuống thấp (tạo danh sách mới mỗi lần gọi, chỉ dùng cho giao diện)
+    public static List<ScoreEntry> GetTopScores(string mapId)
+    {
+        var list = new List<ScoreEntry>();
+        foreach (ScoreEntry e in SaveSystem.Data.highScores)
+            if (BelongsToMap(e, mapId)) list.Add(e);
+
+        list.Sort((a, b) => b.score.CompareTo(a.score));
+        return list;
+    }
+
+    private static bool BelongsToMap(ScoreEntry e, string mapId)
+    {
+        if (e.mapId == mapId) return true;
+        // Điểm cũ từ trước khi có map (giai đoạn 7A) không có mapId: xếp vào map mặc định
+        return string.IsNullOrEmpty(e.mapId) && mapId == DefaultMapId();
+    }
+
+    private static string DefaultMapId()
+    {
+        MetaConfig cfg = Config;
+        return (cfg != null && cfg.maps.Count > 0 && cfg.maps[0] != null) ? cfg.maps[0].id : "";
+    }
+
+    private static int BestScore(string mapId)
+    {
+        int best = 0;
+        foreach (ScoreEntry e in SaveSystem.Data.highScores)
+            if (BelongsToMap(e, mapId) && e.score > best) best = e.score;
+        return best;
+    }
+
+    // Chỉ giữ MaxScores điểm cao nhất CỦA MAP NÀY, xóa phần dư khỏi danh sách chung
+    private static void TrimScores(string mapId)
+    {
+        List<ScoreEntry> top = GetTopScores(mapId);
+        for (int i = MaxScores; i < top.Count; i++)
+            SaveSystem.Data.highScores.Remove(top[i]);
     }
 }

@@ -19,6 +19,7 @@ public class SharedUpgradeEntry
 public class MetaConfig : ScriptableObject
 {
     public List<CharacterData> characters = new List<CharacterData>();
+    public List<MapData> maps = new List<MapData>();
     public AllOutAssaultData allOutAssault;
     public List<SharedUpgradeEntry> sharedUpgrades = new List<SharedUpgradeEntry>();
 
@@ -26,6 +27,13 @@ public class MetaConfig : ScriptableObject
     {
         foreach (CharacterData c in characters)
             if (c != null && c.id == id) return c;
+        return null;
+    }
+
+    public MapData GetMap(string id)
+    {
+        foreach (MapData m in maps)
+            if (m != null && m.id == id) return m;
         return null;
     }
 
