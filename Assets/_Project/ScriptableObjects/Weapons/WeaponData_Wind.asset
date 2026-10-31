@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce4d8e1ca9032e041af0d9fea07b9588, type: 3}
+  m_Name: WeaponData_Wind
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponData
+  weaponName: Wind
+  element: 3
+  baseDamage: 7
+  cooldown: 2
+  targetRange: 6
+  projectilePrefab: {fileID: 0}
+  projectileSpeed: 12
+  projectileLifetime: 2
+  pierce: 0
+  chainRange: 3
+  burstInterval: 0
+  orbitSpeed: 150
+  orbitRadius: 2
+  hitInterval: 0.5
+  beamLength: 10
+  levels:
+  - projectileCount: 1
+    radius: 4
+    explosionRadius: 0
+    chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 1.5
+    beamWidth: 0.6
+    rootDuration: 0
+  - projectileCount: 1
+    radius: 4.5
+    explosionRadius: 0
+    chainTargets: 0
+    coneAngle: 75
+    knockbackDistance: 2
+    beamWidth: 0.6
+    rootDuration: 0
+  - projectileCount: 1
+    radius: 5
+    explosionRadius: 0
+    chainTargets: 0
+    coneAngle: 90
+    knockbackDistance: 2.5
+    beamWidth: 0.6
+    rootDuration: 0
+  - projectileCount: 1
+    radius: 5.5
+    explosionRadius: 0
+    chainTargets: 0
+    coneAngle: 105
+    knockbackDistance: 3
+    beamWidth: 0.6
+    rootDuration: 0
+  - projectileCount: 1
+    radius: 6
+    explosionRadius: 0
+    chainTargets: 0
+    coneAngle: 120
+    knockbackDistance: 3.5
+    beamWidth: 0.6
+    rootDuration: 0
+  icon: {fileID: 0}
+  description: "\u0110\u1ECBnh k\u1EF3 g\xE2y s\xE1t th\u01B0\u01A1ng theo h\xECnh
+    n\xF3n v\xE0 \u0111\u1EA9y l\xF9i"
+  upgradeDescription: "M\u1EDF r\u1ED9ng h\xECnh n\xF3n v\xE0 t\u0103ng \u0111\u1EA9y
+    l\xF9i"
+  weaponPrefab: {fileID: 2674514862427494762, guid: fad87e40c08eadc4a85715ce833ac7a2, type: 3}

@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce4d8e1ca9032e041af0d9fea07b9588, type: 3}
+  m_Name: WeaponData_Wood
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponData
+  weaponName: Wood
+  element: 8
+  baseDamage: 6
+  cooldown: 2.2
+  targetRange: 8
+  projectilePrefab: {fileID: 0}
+  projectileSpeed: 12
+  projectileLifetime: 2
+  pierce: 0
+  chainRange: 3
+  burstInterval: 0
+  orbitSpeed: 150
+  orbitRadius: 2
+  hitInterval: 0.5
+  beamLength: 8
+  levels:
+  - projectileCount: 1
+    radius: 1.5
+    explosionRadius: 0
+    chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 1
+  - projectileCount: 1
+    radius: 1.5
+    explosionRadius: 0
+    chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 1.5
+  - projectileCount: 1
+    radius: 1.5
+    explosionRadius: 0
+    chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 2
+  - projectileCount: 1
+    radius: 1.5
+    explosionRadius: 0
+    chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 2.5
+  - projectileCount: 1
+    radius: 1.5
+    explosionRadius: 0
+    chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 3
+  icon: {fileID: 0}
+  description: "\u0110\u1ECBnh k\u1EF3 g\xE2y s\xE1t th\u01B0\u01A1ng v\xE0 tr\xF3i
+    ch\xE2n k\u1EBB \u0111\u1ECBch theo \u0111\u01B0\u1EDDng th\u1EB3ng"
+  upgradeDescription: "T\u0103ng th\u1EDDi gian tr\xF3i"
+  weaponPrefab: {fileID: 5758896452292670102, guid: 6f511ae9f492f2741868b3dca7673e9c, type: 3}

@@ -13,6 +13,10 @@ public class WeaponInventory : MonoBehaviour
     public IReadOnlyList<WeaponBase> Weapons => weapons;
     public bool HasFreeSlot => weapons.Count < MaxSlots;
 
+    [Header("CHỈ ĐỂ TEST: vũ khí thêm vào đầu trận")]
+    [SerializeField] private WeaponData[] debugWeapons;
+    [SerializeField, Range(1, 5)] private int debugWeaponLevel = 1;
+
     private void Start()
     {
         //foreach (WeaponData data in startingWeapons)
@@ -25,6 +29,9 @@ public class WeaponInventory : MonoBehaviour
             if (perk.type == PerkType.StartWeapon && perk.weapon != null)
                 AddWeapon(perk.weapon, perk.weaponLevel);
         }
+        //Debug code: thêm vũ khí test vào đầu trận
+        foreach (WeaponData d in debugWeapons)
+            if (d != null) AddWeapon(d, debugWeaponLevel);
     }
 
     public bool Has(WeaponData data)

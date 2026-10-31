@@ -15,34 +15,59 @@ MonoBehaviour:
   weaponName: Metal
   element: 0
   baseDamage: 10
-  cooldown: 1
+  cooldown: 1.5
   targetRange: 8
   projectilePrefab: {fileID: 3626163807850389992, guid: 7166ae1c6392d604a883e7310f0fe295, type: 3}
   projectileSpeed: 12
   projectileLifetime: 2
   pierce: 0
   chainRange: 3
+  burstInterval: 0.12
+  orbitSpeed: 150
+  orbitRadius: 2
+  hitInterval: 0.5
+  beamLength: 10
   levels:
   - projectileCount: 1
     radius: 1.5
     explosionRadius: 0
     chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
   - projectileCount: 2
     radius: 1.5
     explosionRadius: 0
     chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
   - projectileCount: 3
     radius: 1.5
     explosionRadius: 0
     chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
   - projectileCount: 4
     radius: 1.5
     explosionRadius: 0
     chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
   - projectileCount: 5
     radius: 1.5
     explosionRadius: 0
     chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
   icon: {fileID: 0}
   description: "\u0110\u1ECBnh k\u1EF3 ph\xF3ng dao v\u1EC1 m\u1EE5c ti\xEAu g\u1EA7n
     nh\u1EA5t"

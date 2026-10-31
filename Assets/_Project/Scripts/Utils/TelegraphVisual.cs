@@ -10,6 +10,7 @@ public class TelegraphVisual
     private readonly Mesh mesh;
     private readonly LineRenderer line;
     private readonly Color fillColor;
+    private readonly Color borderColor;
 
     private Vector3[] vertices;
     private int[] triangles;
@@ -20,6 +21,7 @@ public class TelegraphVisual
                            Color fill, Color border, float borderWidth)
     {
         fillColor = fill;
+        borderColor = border;
 
         // Phần tô màu
         fillObject = new GameObject(name + "_Fill");
@@ -62,6 +64,23 @@ public class TelegraphVisual
 
         if (line.positionCount != count) line.positionCount = count;
         for (int i = 0; i < count; i++) line.SetPosition(i, points[i]);
+    }
+
+    // Thêm hàm: đổi độ trong suốt toàn bộ hình, a từ 0 (ẩn) đến 1 (đúng màu gốc).
+    // PHẢI gọi sau SetPolygon (mảng màu được tạo ở đó).
+    public void SetAlpha(float a)
+    {
+        if (colors == null) return;
+
+        Color fill = fillColor;
+        fill.a = fillColor.a * a;
+        for (int i = 0; i < colors.Length; i++) colors[i] = fill;
+        mesh.SetColors(colors);
+
+        Color border = borderColor;
+        border.a = borderColor.a * a;
+        line.startColor = border;
+        line.endColor = border;
     }
 
     public void Show(bool visible)

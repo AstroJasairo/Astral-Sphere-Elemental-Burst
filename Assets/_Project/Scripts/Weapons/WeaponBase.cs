@@ -39,7 +39,7 @@ public abstract class WeaponBase : MonoBehaviour
         OnLevelChanged();
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         if (data == null) return;
         timer += Time.deltaTime;

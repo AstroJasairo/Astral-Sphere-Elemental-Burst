@@ -29,6 +29,14 @@ public static class TargetFinder
         return nearest;
     }
 
+    // Tìm mọi collider trong một hình chữ nhật xoay góc angleDeg. Kết quả nằm trong Results.
+    public static int FindBox(Vector2 center, Vector2 size, float angleDeg, LayerMask mask)
+    {
+        filter.SetLayerMask(mask);
+        filter.useTriggers = true;           // Collider quái là Trigger
+        return Physics2D.OverlapBox(center, size, angleDeg, filter, buffer);
+    }
+
     // Trả về số collider tìm được, kết quả nằm trong Results
     public static int FindAll(Vector2 origin, float radius, LayerMask mask)
     {
