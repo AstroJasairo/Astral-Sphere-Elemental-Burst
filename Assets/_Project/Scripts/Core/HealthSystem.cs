@@ -7,6 +7,7 @@ public class HealthSystem : MonoBehaviour
     public float MaxHealth { get; private set; }
     public float CurrentHealth { get; private set; }
     public bool IsDead => CurrentHealth <= 0f;
+    public bool Invulnerable { get; set; }          // Đang bất tử: mọi sát thương đều bị bỏ qua
 
     public event Action<float, float> OnHealthChanged;   // (máu hiện tại, máu tối đa) -> dùng cho thanh máu UI
     public event Action OnDied;
@@ -16,12 +17,13 @@ public class HealthSystem : MonoBehaviour
     {
         MaxHealth = maxHealth;
         CurrentHealth = maxHealth;
+        Invulnerable = false;
         OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
     }
 
     public void TakeDamage(float amount)
     {
-        if (IsDead) return;                       // Đã chết thì không nhận thêm sát thương
+        if (IsDead || Invulnerable) return;                       // Đã chết hoặc bất tử thì không nhận thêm sát thương
         CurrentHealth = Mathf.Max(0f, CurrentHealth - amount);
         OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
         if (IsDead) OnDied?.Invoke();

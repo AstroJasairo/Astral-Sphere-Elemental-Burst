@@ -9,4 +9,11 @@ public class MapData : ScriptableObject
     public Sprite background;              // Hình nền thẻ (trống thì hiện màu xám)
     public string sceneName = "Game";      // Scene sẽ nạp khi chơi map này (phải có trong Build Profiles)
     public bool isAvailable = true;        // false: hiện "Sắp ra mắt", chưa chơi được
+
+    [Header("Cấu hình trận đấu của map")]
+    public StageData stage;                    // Bảng spawn, độ khó theo thời gian, thời điểm BOSS
+    public EnemyData boss;                     // BOSS của map (ThunderBirdData, LordOfTheWolfData...)
+    public bool overrideBackground = false;    // Bật để map này đổi nền (tắt thì giữ nền của scene)
+    public Sprite gameBackground;              // Hình nền (tùy chọn, dùng khi nền là một SpriteRenderer)
+    public Color backgroundColor = Color.white;
 }

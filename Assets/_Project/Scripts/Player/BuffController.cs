@@ -11,8 +11,11 @@ public class BuffController : MonoBehaviour
         public float duration;   // Tổng thời lượng lần nhặt gần nhất (để UI tính tỉ lệ còn lại)
     }
 
-    // Một ô cho mỗi loại buff, theo thứ tự enum BuffType
-    private readonly Buff[] buffs = new Buff[Enum.GetValues(typeof(BuffType)).Length];
+    // Số loại buff/debuff (tự tăng khi thêm giá trị vào enum BuffType)
+    public static readonly int TypeCount = Enum.GetValues(typeof(BuffType)).Length;
+
+    // Cũ:  private readonly Buff[] buffs = new Buff[Enum.GetValues(typeof(BuffType)).Length];
+    private readonly Buff[] buffs = new Buff[TypeCount];
 
     // Áp dụng buff. Đang có sẵn thì làm mới thời gian và giữ giá trị cao hơn (không cộng dồn vô hạn)
     public void Apply(BuffType type, float value, float duration)

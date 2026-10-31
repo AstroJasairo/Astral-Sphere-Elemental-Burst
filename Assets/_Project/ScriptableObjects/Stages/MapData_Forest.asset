@@ -17,3 +17,8 @@ MonoBehaviour:
   background: {fileID: 0}
   sceneName: Game
   isAvailable: 1
+  stage: {fileID: 11400000, guid: ca3ef5e28ab4aa843914496f18e006cf, type: 2}
+  boss: {fileID: 11400000, guid: 7ba5562b44f0b0c4184184e9555535dc, type: 2}
+  overrideBackground: 0
+  gameBackground: {fileID: 0}
+  backgroundColor: {r: 1, g: 1, b: 1, a: 1}

@@ -92,4 +92,9 @@ public class EnemySpawner : MonoBehaviour
             }
         }
     }
+
+    public void SetStage(StageData newStage)
+    {
+        stage = newStage;
+    }
 }

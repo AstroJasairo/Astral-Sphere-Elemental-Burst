@@ -16,4 +16,9 @@ MonoBehaviour:
   displayName: Cave
   background: {fileID: 0}
   sceneName: Game
-  isAvailable: 0
+  isAvailable: 1
+  stage: {fileID: 11400000, guid: a396dd4186b7783469cb65cfd0e9cb68, type: 2}
+  boss: {fileID: 11400000, guid: 3aaa8437d3564e14d81ebd40a72c489f, type: 2}
+  overrideBackground: 0
+  gameBackground: {fileID: 0}
+  backgroundColor: {r: 1, g: 1, b: 1, a: 1}

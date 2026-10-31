@@ -10,6 +10,8 @@ public abstract class BossBase : MonoBehaviour
 
     public EnemyBase Enemy { get; private set; }
     public HealthSystem Health { get; private set; }
+    public bool IsImmune { get; private set; }
+    public event Action<bool> ImmunityChanged;      // HUD lắng nghe để hiện nhãn "MIỄN NHIỄM"
     public string BossName => Enemy.Data != null ? Enemy.Data.enemyName : "BOSS";
 
     protected Transform player;
@@ -27,6 +29,8 @@ public abstract class BossBase : MonoBehaviour
     public void Begin()
     {
         player = GameManager.Instance.Player;
+        IsImmune = false;
+        Health.Invulnerable = false;
         OnBegin();
         BossSpawned?.Invoke(this);
     }
@@ -40,5 +44,14 @@ public abstract class BossBase : MonoBehaviour
 
         Telegraph.CancelAll();                  // Xóa mọi vùng cảnh báo còn đang chạy
         GameManager.Instance.TriggerVictory();  // Đánh bại BOSS = thắng màn
+    }
+
+    // Lớp con gọi để bật/tắt miễn nhiễm
+    protected void SetImmune(bool immune)
+    {
+        if (IsImmune == immune) return;
+        IsImmune = immune;
+        Health.Invulnerable = immune;
+        ImmunityChanged?.Invoke(immune);
     }
 }

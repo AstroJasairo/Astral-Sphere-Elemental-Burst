@@ -40,4 +40,11 @@ public class BossSpawner : MonoBehaviour
     {
         if (!spawned) SpawnBoss();
     }
+
+    // Cấu hình BOSS và màn chơi từ bên ngoài (null thì giữ nguyên giá trị đã gán trong Inspector)
+    public void Configure(StageData newStage, EnemyData newBoss)
+    {
+        if (newStage != null) stage = newStage;
+        if (newBoss != null) bossData = newBoss;
+    }
 }
