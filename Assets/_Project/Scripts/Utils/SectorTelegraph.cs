@@ -8,6 +8,7 @@ public class SectorTelegraph : Telegraph
     private float radius;
     public float Radius => radius;
     private float angle;
+    public float Angle => angle;
     private bool shrink;
 
     // Hướng của quạt = hướng xoay của object (đặt bởi TelegraphSpawner)

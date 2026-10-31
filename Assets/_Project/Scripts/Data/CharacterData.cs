@@ -44,6 +44,10 @@ public class CharacterData : ScriptableObject
     public string characterName;
     public Sprite icon;
 
+    [Header("Màu sắc nhân vật")]
+    public Color primaryColor = new Color(1f, 0.75f, 0.1f);      // Màu chính: thanh mana khi All Out Assault (sau này: giao diện, hiệu ứng...)
+    public Color secondaryColor = Color.white;                   // Màu phụ: dành cho tương lai
+
     [Header("Chỉ số cơ bản riêng của nhân vật (lv0, trước khi nâng ở menu)")]
     public float baseMaxHp = 100f;
     public float baseAtk = 1f;

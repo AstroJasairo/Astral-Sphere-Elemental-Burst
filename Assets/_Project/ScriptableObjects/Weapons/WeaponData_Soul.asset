@@ -27,49 +27,62 @@ MonoBehaviour:
   orbitRadius: 2
   hitInterval: 0.5
   beamLength: 10
-  levels:
-  - projectileCount: 1
-    radius: 1.5
-    explosionRadius: 0
-    chainTargets: 0
-    coneAngle: 60
-    knockbackDistance: 0
-    beamWidth: 0.6
-    rootDuration: 0
-  - projectileCount: 2
-    radius: 1.5
-    explosionRadius: 0
-    chainTargets: 0
-    coneAngle: 60
-    knockbackDistance: 0
-    beamWidth: 0.6
-    rootDuration: 0
-  - projectileCount: 3
-    radius: 1.5
-    explosionRadius: 0
-    chainTargets: 0
-    coneAngle: 60
-    knockbackDistance: 0
-    beamWidth: 0.6
-    rootDuration: 0
-  - projectileCount: 4
-    radius: 1.5
-    explosionRadius: 0
-    chainTargets: 0
-    coneAngle: 60
-    knockbackDistance: 0
-    beamWidth: 0.6
-    rootDuration: 0
-  - projectileCount: 5
-    radius: 1.5
-    explosionRadius: 0
-    chainTargets: 0
-    coneAngle: 60
-    knockbackDistance: 0
-    beamWidth: 0.6
-    rootDuration: 0
+  isUnique: 0
+  tickInterval: 0.5
+  damageGrowthPerLevel: 0.2
   icon: {fileID: 0}
   description: "T\u1EA1o c\xE1c qu\u1EA3 c\u1EA7u linh h\u1ED3n bay xung quanh g\xE2y
     s\xE1t th\u01B0\u01A1ng"
   upgradeDescription: "T\u0103ng s\u1ED1 l\u01B0\u1EE3ng qu\u1EA3 c\u1EA7u"
   weaponPrefab: {fileID: 2717221103582620894, guid: 91c77cef4ebf59042bd4e2760da4f24b, type: 3}
+  levels:
+  - baseDamage: 5
+    projectileCount: 1
+    radius: 1.5
+    explosionRadius: 0
+    chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
+    duration: 0
+  - baseDamage: 6
+    projectileCount: 2
+    radius: 1.5
+    explosionRadius: 0
+    chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
+    duration: 0
+  - baseDamage: 7
+    projectileCount: 3
+    radius: 1.5
+    explosionRadius: 0
+    chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
+    duration: 0
+  - baseDamage: 8
+    projectileCount: 4
+    radius: 1.5
+    explosionRadius: 0
+    chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
+    duration: 0
+  - baseDamage: 9
+    projectileCount: 5
+    radius: 1.5
+    explosionRadius: 0
+    chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
+    duration: 0

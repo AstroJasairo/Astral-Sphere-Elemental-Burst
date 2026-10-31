@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class AllOutAssaultView : MonoBehaviour
 {
     [SerializeField] private AllOutAssaultSystem system;
+    [SerializeField] private PlayerStats playerStats;     // Để lấy màu chính của nhân vật đang dùng
     [SerializeField] private Slider manaBar;
     [SerializeField] private GameObject activeOverlay;      // Lớp phủ màn hình + chữ "ALL OUT ASSAULT!"
     [SerializeField] private SpriteRenderer playerSprite;   // Tùy chọn: đổi màu nhân vật khi đang hiệu lực
@@ -50,7 +51,9 @@ public class AllOutAssaultView : MonoBehaviour
 
     private void ShowActive()
     {
-        manaFill.color = activeColor;
+        // Thanh mana chuyển sang MÀU CHÍNH của nhân vật
+        manaFill.color = playerStats != null ? playerStats.PrimaryColor : activeColor;
+
         activeOverlay.SetActive(true);
         if (playerSprite != null) playerSprite.color = playerActiveColor;
     }

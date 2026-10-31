@@ -22,28 +22,66 @@ MonoBehaviour:
   projectileLifetime: 2
   pierce: 0
   chainRange: 3
-  levels:
-  - projectileCount: 1
-    radius: 1.5
-    explosionRadius: 0
-    chainTargets: 0
-  - projectileCount: 1
-    radius: 2
-    explosionRadius: 0
-    chainTargets: 0
-  - projectileCount: 1
-    radius: 2.5
-    explosionRadius: 0
-    chainTargets: 0
-  - projectileCount: 1
-    radius: 3
-    explosionRadius: 0
-    chainTargets: 0
-  - projectileCount: 1
-    radius: 3.5
-    explosionRadius: 0
-    chainTargets: 0
+  burstInterval: 0
+  orbitSpeed: 150
+  orbitRadius: 2
+  hitInterval: 0.5
+  beamLength: 10
+  isUnique: 0
+  tickInterval: 0.5
+  damageGrowthPerLevel: 0.2
   icon: {fileID: 0}
   description: "T\u1EA1o Aura xung quanh g\xE2y s\xE1t th\u01B0\u01A1ng li\xEAn t\u1EE5c"
   upgradeDescription: "M\u1EDF r\u1ED9ng b\xE1n k\xEDnh Aura"
   weaponPrefab: {fileID: 5115811615392275794, guid: 78a9ce67cb506af4c8522e664fb0027b, type: 3}
+  levels:
+  - baseDamage: 4
+    projectileCount: 1
+    radius: 1.5
+    explosionRadius: 0
+    chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
+    duration: 0
+  - baseDamage: 4.8
+    projectileCount: 1
+    radius: 2
+    explosionRadius: 0
+    chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
+    duration: 0
+  - baseDamage: 5.6
+    projectileCount: 1
+    radius: 2.5
+    explosionRadius: 0
+    chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
+    duration: 0
+  - baseDamage: 6.4
+    projectileCount: 1
+    radius: 3
+    explosionRadius: 0
+    chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
+    duration: 0
+  - baseDamage: 7.2
+    projectileCount: 1
+    radius: 3.5
+    explosionRadius: 0
+    chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
+    duration: 0

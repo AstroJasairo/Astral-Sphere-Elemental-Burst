@@ -7,6 +7,7 @@ public abstract class WeaponBase : MonoBehaviour
     protected PlayerStats owner;
     private float timer;
     private const float MinCooldown = 0.1f;   // Sàn: không bao giờ bắn nhanh hơn 10 lần/giây, bảo vệ hiệu năng
+    protected float AreaScale => owner != null ? owner.GetAreaMultiplier(data.element) : 1f;        // Hệ số bán kính từ nội tại nhân vật (Claire 5 sao: +100% bán kính hỏa khi All Out Assault)
 
     public WeaponData Data => data;
     public int Level => level;
@@ -14,6 +15,16 @@ public abstract class WeaponBase : MonoBehaviour
 
     // Thông số của cấp hiện tại (level 1 -> phần tử 0)
     protected WeaponLevel CurrentLevel => data.levels[Mathf.Clamp(level, 1, data.levels.Length) - 1];
+
+    // Sát thương cơ bản của cấp hiện tại (không có thì dùng giá trị chung của vũ khí)
+    protected float CurrentBaseDamage
+    {
+        get
+        {
+            float d = CurrentLevel.baseDamage;
+            return d > 0f ? d : data.baseDamage;
+        }
+    }
 
     // Hồi chiêu thực tế = hồi chiêu gốc x hệ số hiện tại (bình thường = 1, trong All Out Assault < 1)
     private float CurrentCooldown
@@ -66,6 +77,6 @@ public abstract class WeaponBase : MonoBehaviour
 
     protected float CalculateDamage()
     {
-        return DamageCalculator.Calculate(data.baseDamage, owner.Atk, owner.GetDamageBonus(data.element));
+        return DamageCalculator.Calculate(CurrentBaseDamage, owner.Atk, owner.GetDamageBonus(data.element));
     }
 }

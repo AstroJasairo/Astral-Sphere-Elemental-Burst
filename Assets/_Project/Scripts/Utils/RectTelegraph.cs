@@ -11,7 +11,9 @@ public enum RectFill
 public class RectTelegraph : Telegraph
 {
     private float length;
+    public float Length => length;
     private float width;
+    public float Width => width;
     private RectFill fill;
 
     public void Begin(float length, float width, float duration, RectFill fill, float damage,

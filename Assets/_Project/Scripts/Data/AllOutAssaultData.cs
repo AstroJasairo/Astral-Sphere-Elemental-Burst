@@ -13,4 +13,8 @@ public class AllOutAssaultData : ScriptableObject
     public float speedBonusPct = 0.25f;      // +25% tốc độ di chuyển
     [Range(0.1f, 1f)]
     public float cooldownMultiplier = 0.25f; // Hồi chiêu vũ khí còn 25% (bắn nhanh gấp 4)
+    [Header("Quả cầu xoay (Linh hồn)")]
+    public float orbitSpeedMultiplier = 2f;                          // Xoay nhanh gấp 2
+    [Range(0.1f, 1f)]
+    public float orbitHitIntervalMultiplier = 0.4f;                  // Khoảng cách giữa hai lần đánh còn 40% (đánh dày gấp 2.5)
 }

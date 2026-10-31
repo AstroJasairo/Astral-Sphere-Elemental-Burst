@@ -27,8 +27,17 @@ MonoBehaviour:
   orbitRadius: 2
   hitInterval: 0.5
   beamLength: 10
+  isUnique: 0
+  tickInterval: 0.5
+  damageGrowthPerLevel: 0.2
+  icon: {fileID: 0}
+  description: "\u0110\u1ECBnh k\u1EF3 b\u1EAFn tia beam v\u1EC1 ph\xEDa k\u1EBB
+    \u0111\u1ECBch"
+  upgradeDescription: "Tia beam to h\u01A1n"
+  weaponPrefab: {fileID: 3850450875836819479, guid: a13d000c85c104749a6c78a7d7783c0a, type: 3}
   levels:
-  - projectileCount: 1
+  - baseDamage: 10
+    projectileCount: 1
     radius: 1.5
     explosionRadius: 0
     chainTargets: 0
@@ -36,7 +45,9 @@ MonoBehaviour:
     knockbackDistance: 0
     beamWidth: 0.5
     rootDuration: 0
-  - projectileCount: 1
+    duration: 0
+  - baseDamage: 12
+    projectileCount: 1
     radius: 1.5
     explosionRadius: 0
     chainTargets: 0
@@ -44,7 +55,9 @@ MonoBehaviour:
     knockbackDistance: 0
     beamWidth: 0.75
     rootDuration: 0
-  - projectileCount: 1
+    duration: 0
+  - baseDamage: 14
+    projectileCount: 1
     radius: 1.5
     explosionRadius: 0
     chainTargets: 0
@@ -52,7 +65,9 @@ MonoBehaviour:
     knockbackDistance: 0
     beamWidth: 1
     rootDuration: 0
-  - projectileCount: 1
+    duration: 0
+  - baseDamage: 16
+    projectileCount: 1
     radius: 1.5
     explosionRadius: 0
     chainTargets: 0
@@ -60,7 +75,9 @@ MonoBehaviour:
     knockbackDistance: 0
     beamWidth: 1.25
     rootDuration: 0
-  - projectileCount: 1
+    duration: 0
+  - baseDamage: 18
+    projectileCount: 1
     radius: 1.5
     explosionRadius: 0
     chainTargets: 0
@@ -68,8 +85,4 @@ MonoBehaviour:
     knockbackDistance: 0
     beamWidth: 1.5
     rootDuration: 0
-  icon: {fileID: 0}
-  description: "\u0110\u1ECBnh k\u1EF3 b\u1EAFn tia beam v\u1EC1 ph\xEDa k\u1EBB
-    \u0111\u1ECBch"
-  upgradeDescription: "Tia beam to h\u01A1n"
-  weaponPrefab: {fileID: 3850450875836819479, guid: a13d000c85c104749a6c78a7d7783c0a, type: 3}
+    duration: 0

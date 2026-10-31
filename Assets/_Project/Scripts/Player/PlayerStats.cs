@@ -21,6 +21,12 @@ public class PlayerStats : MonoBehaviour
     private float baseMoveSpeed = 5f;
     private float baseMagnetRadius = 1.5f;
     public const float MinManaCostMultiplier = 0.2f;      // Mana cần không bao giờ giảm quá 80%
+    private float orbitSpeedMultiplier = 1f;
+    private float orbitHitIntervalMultiplier = 1f;
+
+    // ----- Màu sắc của nhân vật đang dùng -----
+    public Color PrimaryColor => character != null ? character.primaryColor : new Color(1f, 0.75f, 0.1f);
+    public Color SecondaryColor => character != null ? character.secondaryColor : Color.white;
 
     // Bonus nhận được TRONG trận
     private float hpBonus, defBonus;
@@ -39,6 +45,8 @@ public class PlayerStats : MonoBehaviour
     public float ManaCostMultiplier => Mathf.Max(MinManaCostMultiplier, 1f - manaCostReductionPct);
     public float CooldownMultiplier => aoaCooldownMultiplier;
     public float ScoreMultiplier => 1f + Buffs.GetValue(BuffType.ScoreBoost);
+    public float OrbitSpeedMultiplier => orbitSpeedMultiplier;
+    public float OrbitHitIntervalMultiplier => orbitHitIntervalMultiplier;
 
     public float Shield { get; private set; }
     public event Action<float, float> OnShieldChanged;   // (lá chắn hiện tại, tối đa) -> HUD lắng nghe
@@ -185,5 +193,24 @@ public class PlayerStats : MonoBehaviour
     {
         Shield = Mathf.Min(Shield + amount, MaxHp);       // Lá chắn tối đa bằng máu tối đa
         OnShieldChanged?.Invoke(Shield, MaxHp);
+    }
+
+    public void SetOrbitModifiers(float speedMultiplier, float hitIntervalMultiplier)
+    {
+        orbitSpeedMultiplier = speedMultiplier;
+        orbitHitIntervalMultiplier = hitIntervalMultiplier;
+    }
+
+    // ----- Hệ số bán kính từ nội tại (Claire 5 sao: bán kính hỏa +100% khi All Out Assault) -----
+    public float GetAreaMultiplier(ElementType element)
+    {
+        float bonus = 0f;
+        if (AllOutAssaultActive)
+        {
+            foreach (StarPerk perk in activePerks)     // foreach trên List không sinh rác
+                if (perk.type == PerkType.AllOutAssaultRadiusBonus && perk.element == element)
+                    bonus += perk.bonus;
+        }
+        return 1f + bonus;
     }
 }

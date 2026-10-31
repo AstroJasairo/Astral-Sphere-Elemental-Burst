@@ -7,10 +7,13 @@ public class OrbitWeapon : WeaponBase
     [SerializeField] private GameObject orbPrefab;           // Hình quả cầu (chỉ cần hình ảnh, không cần collider)
     [SerializeField] private float orbHitRadius = 0.45f;     // Bán kính va chạm của mỗi quả cầu
 
+    private const float ScanInterval = 0.05f;                // Quét va chạm 20 lần mỗi giây, không phụ thuộc hồi chiêu
+
     private readonly List<Transform> orbs = new List<Transform>();
     private readonly Dictionary<int, float> lastHitTime = new Dictionary<int, float>();   // Kẻ địch -> lần cuối bị đánh
     private readonly List<int> staleKeys = new List<int>();
     private float angle;
+    private float scanTimer;
 
     // Khi lên cấp: bổ sung thêm quả cầu cho đủ số lượng của cấp mới
     protected override void OnLevelChanged()
@@ -26,19 +29,26 @@ public class OrbitWeapon : WeaponBase
             orbs[i].gameObject.SetActive(i < count);
     }
 
+    // Vũ khí này không dùng hồi chiêu của WeaponBase (nên KHÔNG gọi base.Update): tự xoay và tự quét
     protected override void Update()
-    {
-        base.Update();         // Gọi Fire() theo hồi chiêu
-        Rotate();
-    }
-
-    // Xoay đều các quả cầu quanh người chơi, chia đều quanh vòng tròn
-    private void Rotate()
     {
         if (data == null) return;
 
+        Rotate();
+
+        scanTimer += Time.deltaTime;
+        if (scanTimer < ScanInterval) return;
+        scanTimer = 0f;
+        Scan();
+    }
+
+    // Xoay đều các quả cầu quanh người chơi. All Out Assault làm xoay nhanh hơn.
+    private void Rotate()
+    {
         int count = CurrentLevel.projectileCount;
-        angle = Mathf.Repeat(angle + data.orbitSpeed * Time.deltaTime, 360f);
+        float speedMultiplier = owner != null ? owner.OrbitSpeedMultiplier : 1f;
+
+        angle = Mathf.Repeat(angle + data.orbitSpeed * speedMultiplier * Time.deltaTime, 360f);
         float step = 360f / count;
 
         for (int i = 0; i < count; i++)
@@ -48,13 +58,13 @@ public class OrbitWeapon : WeaponBase
         }
     }
 
-    // "Fire" ở đây là một lần quét va chạm quanh các quả cầu
-    protected override bool Fire()
+    // Một lần quét va chạm quanh các quả cầu. Mỗi kẻ địch chỉ bị đánh tối đa một lần mỗi hitInterval.
+    private void Scan()
     {
         int count = CurrentLevel.projectileCount;
         float damage = CalculateDamage();
-        float multiplier = owner != null ? owner.CooldownMultiplier : 1f;
-        float hitInterval = data.hitInterval * multiplier;        // All Out Assault làm các quả cầu đánh dày hơn
+        float intervalMultiplier = owner != null ? owner.OrbitHitIntervalMultiplier : 1f;
+        float hitInterval = data.hitInterval * intervalMultiplier;      // All Out Assault: đánh dày hơn
         float now = Time.time;
 
         for (int i = 0; i < count; i++)
@@ -73,7 +83,12 @@ public class OrbitWeapon : WeaponBase
         }
 
         CleanUpHitMemory(now);
-        return true;
+    }
+
+    // Abstract của WeaponBase, nhưng vũ khí này không dùng (không gọi base.Update nên Fire không bao giờ được gọi)
+    protected override bool Fire()
+    {
+        return false;
     }
 
     // Dọn các bản ghi cũ để từ điển không phình mãi

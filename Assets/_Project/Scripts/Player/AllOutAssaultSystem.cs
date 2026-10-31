@@ -61,6 +61,7 @@ public class AllOutAssaultSystem : MonoBehaviour
 
         IsActive = true;
         stats.SetAllOutAssault(true, data.atkBonusPct, data.speedBonusPct, data.cooldownMultiplier);
+        stats.SetOrbitModifiers(data.orbitSpeedMultiplier, data.orbitHitIntervalMultiplier);
         OnActivated?.Invoke();
         LogBonus("BẬT");
     }
@@ -70,6 +71,7 @@ public class AllOutAssaultSystem : MonoBehaviour
         IsActive = false;
         Mana = 0f;
         stats.SetAllOutAssault(false, 0f, 0f, 1f);
+        stats.SetOrbitModifiers(1f, 1f);
         OnEnded?.Invoke();
         OnProgressChanged?.Invoke(0f);
         LogBonus("TẮT");
@@ -98,7 +100,8 @@ public class AllOutAssaultSystem : MonoBehaviour
     {
         if (!logPerkBonus) return;
         Debug.Log($"All Out Assault {state} | bonus Lôi = {stats.GetDamageBonus(ElementType.Lightning)}, " +
-                  $"bonus Bóng tối = {stats.GetDamageBonus(ElementType.Dark)}");
+                  $"Bóng tối = {stats.GetDamageBonus(ElementType.Dark)}, Lửa = {stats.GetDamageBonus(ElementType.Fire)}, " +
+                  $"bán kính Lửa x{stats.GetAreaMultiplier(ElementType.Fire)}");
     }
 
     // Chuột phải vào component trong Inspector (khi đang Play) để thử nhanh, khỏi phải giết 50 con quái

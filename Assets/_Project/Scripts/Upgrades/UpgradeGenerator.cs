@@ -32,6 +32,7 @@ public class UpgradeGenerator : MonoBehaviour
         {
             foreach (WeaponData d in allWeapons)
             {
+                if (d.isUnique) continue;     // Vũ khí đặc trưng chỉ nhận qua phần thưởng sao, không bao giờ ra như "vũ khí mới"
                 if (inventory.Has(d)) continue;
                 WeaponData data = d;
                 candidates.Add(new UpgradeOption

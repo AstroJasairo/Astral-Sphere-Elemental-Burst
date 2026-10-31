@@ -3230,8 +3230,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 36625489}
-  - {fileID: 1584021139}
   - {fileID: 176559744}
+  - {fileID: 1584021139}
   - {fileID: 1046865207}
   - {fileID: 1018695688}
   - {fileID: 1114270949}
@@ -5984,6 +5984,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AllOutAssaultView
   system: {fileID: 1397015317}
+  playerStats: {fileID: 1761219960}
   manaBar: {fileID: 208928172}
   activeOverlay: {fileID: 176559743}
   playerSprite: {fileID: 1761219957}

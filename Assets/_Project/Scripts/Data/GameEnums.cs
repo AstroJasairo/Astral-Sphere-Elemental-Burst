@@ -1,7 +1,7 @@
 // Mười nguyên tố của game (theo tài liệu vũ khí)
 public enum ElementType
 {
-    Metal, Fire, Lightning, Wind, Soul, Light, Earth, Water, Wood, Dark
+    Metal, Fire, Lightning, Wind, Soul, Light, Earth, Water, Plant, Dark
 }
 
 // Năm loại kẻ địch thường. THỨ TỰ phải khớp với format (Cận chiến/Xạ thủ/Đỡ đòn/Pháp sư/Sát thủ)
@@ -25,7 +25,8 @@ public enum PerkType
 {
     StartWeapon,                // Khởi đầu trận với một vũ khí ở cấp nhất định
     ElementDamageBonus,         // Tăng sát thương một nguyên tố
-    AllOutAssaultDamageBonus    // Tăng sát thương một nguyên tố khi đang trong All Out Assault
+    AllOutAssaultDamageBonus,   // Tăng sát thương một nguyên tố khi đang trong All Out Assault
+    AllOutAssaultRadiusBonus    // MỚI: tăng bán kính vùng của một nguyên tố khi đang All Out Assault
 }
 
 // Các buff tạm thời có thời hạn (All Out Assault có kênh riêng nên không nằm ở đây)

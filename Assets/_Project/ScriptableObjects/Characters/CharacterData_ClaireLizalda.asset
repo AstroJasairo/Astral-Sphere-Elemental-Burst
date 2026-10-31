@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f59888042de1e9e428962d4303dbd5f6, type: 3}
-  m_Name: CharacterData_Test
+  m_Name: CharacterData_ClaireLizalda
   m_EditorClassIdentifier: Assembly-CSharp::CharacterData
-  id: test
+  id: claire_lizalda
   starCosts: e8030000b80b0000401f0000204e000050c30000
   statProgressions:
   - stat: 0
@@ -93,85 +93,77 @@ MonoBehaviour:
     - 0.48
     - 0.53999996
     costByLevel: 0000000032000000c8000000c201000020030000e20400000807000092090000800c0000d20f0000
-  characterName: Test
+  characterName: Claire Lizalda
   icon: {fileID: 0}
+  primaryColor: {r: 1, g: 0.10196078, b: 0.13246064, a: 1}
+  secondaryColor: {r: 1, g: 1, b: 1, a: 1}
   baseMaxHp: 100
   baseAtk: 1
   baseDef: 0
   baseMoveSpeed: 5
   baseMagnetRadius: 1.5
   perks:
-  - id: lightning_start
+  - id: clarius_start
     replacesId: 
     requiredStar: 0
     type: 0
-    element: 2
-    weapon: {fileID: 11400000, guid: 901fe598a5ca9884c9b969d56c8ed686, type: 2}
+    element: 0
+    weapon: {fileID: 11400000, guid: 7c0194e030d492445b8ddbb252a7fa35, type: 2}
     weaponLevel: 1
     bonus: 0
-    description: "Kh\u1EDFi \u0111\u1EA7u: L\xF4i Lv.1"
-  - id: dark_start
+    description: "Kh\u1EDFi \u0111\u1EA7u: Clarius Lv1"
+  - id: fire_dmg_a
     replacesId: 
     requiredStar: 1
-    type: 0
-    element: 9
-    weapon: {fileID: 11400000, guid: 12e12c1e4e75867489096b7875d3a515, type: 2}
-    weaponLevel: 1
-    bonus: 0
-    description: "Kh\u1EDFi \u0111\u1EA7u: B\xF3ng t\u1ED1i Lv.2"
-  - id: lightning_dmg_a
+    type: 1
+    element: 1
+    weapon: {fileID: 0}
+    weaponLevel: 0
+    bonus: 0.5
+    description: "+50% s\xE1t th\u01B0\u01A1ng L\u1EEDa"
+  - id: fire_start
     replacesId: 
     requiredStar: 2
-    type: 1
-    element: 2
-    weapon: {fileID: 0}
-    weaponLevel: 0
-    bonus: 0.5
-    description: "+50% s\xE1t th\u01B0\u01A1ng nguy\xEAn t\u1ED1 L\xF4i"
-  - id: lightning_start_2
-    replacesId: lightning_start
-    requiredStar: 3
     type: 0
-    element: 2
-    weapon: {fileID: 11400000, guid: 901fe598a5ca9884c9b969d56c8ed686, type: 2}
-    weaponLevel: 2
+    element: 0
+    weapon: {fileID: 11400000, guid: e3bba5eb3a80e8c4ea2448c5fc5af57f, type: 2}
+    weaponLevel: 1
     bonus: 0
-    description: "Kh\u1EDFi \u0111\u1EA7u: L\xF4i Lv.2"
-  - id: lightning_dmg_b
-    replacesId: lightning_dmg_a
-    requiredStar: 4
+    description: "Kh\u1EDFi \u0111\u1EA7u: L\u1EEDa Lv1"
+  - id: fire_dmg_b
+    replacesId: fire_dmg_a
+    requiredStar: 3
     type: 1
-    element: 2
-    weapon: {fileID: 0}
-    weaponLevel: 0
-    bonus: 0.5
-    description: "+50% s\xE1t th\u01B0\u01A1ng nguy\xEAn t\u1ED1 L\xF4i"
-  - id: dark_dmg_b
-    replacesId: 
-    requiredStar: 4
-    type: 1
-    element: 9
-    weapon: {fileID: 0}
-    weaponLevel: 0
-    bonus: 0.5
-    description: "+50% s\xE1t th\u01B0\u01A1ng nguy\xEAn t\u1ED1 B\xF3ng t\u1ED1i "
-  - id: aoa_lightning
-    replacesId: 
-    requiredStar: 5
-    type: 2
-    element: 2
-    weapon: {fileID: 0}
-    weaponLevel: 0
-    bonus: 2
-    description: "All Out Assault: +200% s\xE1t th\u01B0\u01A1ng nguy\xEAn t\u1ED1
-      L\xF4i"
-  - id: aoa_dark
-    replacesId: 
-    requiredStar: 5
-    type: 2
-    element: 9
+    element: 0
     weapon: {fileID: 0}
     weaponLevel: 0
     bonus: 1
-    description: "All Out Assault: +100% s\xE1t th\u01B0\u01A1ng nguy\xEAn t\u1ED1
-      B\xF3ng t\u1ED1i"
+    description: "+100% s\xE1t th\u01B0\u01A1ng L\u1EEDa"
+  - id: fire_start_2
+    replacesId: fire_start
+    requiredStar: 4
+    type: 0
+    element: 0
+    weapon: {fileID: 11400000, guid: e3bba5eb3a80e8c4ea2448c5fc5af57f, type: 2}
+    weaponLevel: 2
+    bonus: 0
+    description: "Kh\u1EDFi \u0111\u1EA7u: L\u1EEDa Lv2"
+  - id: aoa_fire_radius
+    replacesId: 
+    requiredStar: 5
+    type: 3
+    element: 1
+    weapon: {fileID: 0}
+    weaponLevel: 0
+    bonus: 1
+    description: "All Out Assault: +100% b\xE1n k\xEDnh L\u1EEDa (c\u1EA3 L\u1EEDa
+      v\xE0 Clarius)"
+  - id: aoa_fire_dmg
+    replacesId: 
+    requiredStar: 5
+    type: 2
+    element: 1
+    weapon: {fileID: 0}
+    weaponLevel: 0
+    bonus: 2
+    description: "All Out Assault: +200% s\xE1t th\u01B0\u01A1ng L\u1EEDa"

@@ -22,30 +22,68 @@ MonoBehaviour:
   projectileLifetime: 2
   pierce: 0
   chainRange: 3
-  levels:
-  - projectileCount: 1
-    radius: 1.5
-    explosionRadius: 0
-    chainTargets: 3
-  - projectileCount: 1
-    radius: 1.5
-    explosionRadius: 0
-    chainTargets: 4
-  - projectileCount: 1
-    radius: 1.5
-    explosionRadius: 0
-    chainTargets: 5
-  - projectileCount: 1
-    radius: 1.5
-    explosionRadius: 0
-    chainTargets: 6
-  - projectileCount: 1
-    radius: 1.5
-    explosionRadius: 0
-    chainTargets: 7
+  burstInterval: 0
+  orbitSpeed: 150
+  orbitRadius: 2
+  hitInterval: 0.5
+  beamLength: 10
+  isUnique: 0
+  tickInterval: 0.5
+  damageGrowthPerLevel: 0.2
   icon: {fileID: 0}
   description: "\u0110\u1ECBnh k\u1EF3 gi\u1EADt \u0111i\u1EC7n c\xE1c k\u1EBB \u0111\u1ECBch
     g\u1EA7n nhau"
   upgradeDescription: "T\u0103ng s\u1ED1 l\u01B0\u1EE3ng k\u1EBB \u0111\u1ECBch m\u1ED7i
     l\u1EA7n gi\u1EADt"
   weaponPrefab: {fileID: 3999045955954168128, guid: 79ceeeb367b962e4eb72e43aea4d4375, type: 3}
+  levels:
+  - baseDamage: 8
+    projectileCount: 1
+    radius: 1.5
+    explosionRadius: 0
+    chainTargets: 3
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
+    duration: 0
+  - baseDamage: 9.6
+    projectileCount: 1
+    radius: 1.5
+    explosionRadius: 0
+    chainTargets: 4
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
+    duration: 0
+  - baseDamage: 11.2
+    projectileCount: 1
+    radius: 1.5
+    explosionRadius: 0
+    chainTargets: 5
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
+    duration: 0
+  - baseDamage: 12.8
+    projectileCount: 1
+    radius: 1.5
+    explosionRadius: 0
+    chainTargets: 6
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
+    duration: 0
+  - baseDamage: 14.4
+    projectileCount: 1
+    radius: 1.5
+    explosionRadius: 0
+    chainTargets: 7
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
+    duration: 0

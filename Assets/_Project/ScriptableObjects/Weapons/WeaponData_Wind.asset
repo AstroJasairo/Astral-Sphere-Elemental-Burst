@@ -27,8 +27,18 @@ MonoBehaviour:
   orbitRadius: 2
   hitInterval: 0.5
   beamLength: 10
+  isUnique: 0
+  tickInterval: 0.5
+  damageGrowthPerLevel: 0.2
+  icon: {fileID: 0}
+  description: "\u0110\u1ECBnh k\u1EF3 g\xE2y s\xE1t th\u01B0\u01A1ng theo h\xECnh
+    n\xF3n v\xE0 \u0111\u1EA9y l\xF9i"
+  upgradeDescription: "M\u1EDF r\u1ED9ng h\xECnh n\xF3n v\xE0 t\u0103ng \u0111\u1EA9y
+    l\xF9i"
+  weaponPrefab: {fileID: 2674514862427494762, guid: fad87e40c08eadc4a85715ce833ac7a2, type: 3}
   levels:
-  - projectileCount: 1
+  - baseDamage: 7
+    projectileCount: 1
     radius: 4
     explosionRadius: 0
     chainTargets: 0
@@ -36,7 +46,9 @@ MonoBehaviour:
     knockbackDistance: 1.5
     beamWidth: 0.6
     rootDuration: 0
-  - projectileCount: 1
+    duration: 0
+  - baseDamage: 8.4
+    projectileCount: 1
     radius: 4.5
     explosionRadius: 0
     chainTargets: 0
@@ -44,7 +56,9 @@ MonoBehaviour:
     knockbackDistance: 2
     beamWidth: 0.6
     rootDuration: 0
-  - projectileCount: 1
+    duration: 0
+  - baseDamage: 9.8
+    projectileCount: 1
     radius: 5
     explosionRadius: 0
     chainTargets: 0
@@ -52,7 +66,9 @@ MonoBehaviour:
     knockbackDistance: 2.5
     beamWidth: 0.6
     rootDuration: 0
-  - projectileCount: 1
+    duration: 0
+  - baseDamage: 11.2
+    projectileCount: 1
     radius: 5.5
     explosionRadius: 0
     chainTargets: 0
@@ -60,7 +76,9 @@ MonoBehaviour:
     knockbackDistance: 3
     beamWidth: 0.6
     rootDuration: 0
-  - projectileCount: 1
+    duration: 0
+  - baseDamage: 12.6
+    projectileCount: 1
     radius: 6
     explosionRadius: 0
     chainTargets: 0
@@ -68,9 +86,4 @@ MonoBehaviour:
     knockbackDistance: 3.5
     beamWidth: 0.6
     rootDuration: 0
-  icon: {fileID: 0}
-  description: "\u0110\u1ECBnh k\u1EF3 g\xE2y s\xE1t th\u01B0\u01A1ng theo h\xECnh
-    n\xF3n v\xE0 \u0111\u1EA9y l\xF9i"
-  upgradeDescription: "M\u1EDF r\u1ED9ng h\xECnh n\xF3n v\xE0 t\u0103ng \u0111\u1EA9y
-    l\xF9i"
-  weaponPrefab: {fileID: 2674514862427494762, guid: fad87e40c08eadc4a85715ce833ac7a2, type: 3}
+    duration: 0

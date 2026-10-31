@@ -27,47 +27,9 @@ MonoBehaviour:
   orbitRadius: 2
   hitInterval: 0.5
   beamLength: 10
-  levels:
-  - projectileCount: 1
-    radius: 0.8
-    explosionRadius: 0.8
-    chainTargets: 0
-    coneAngle: 60
-    knockbackDistance: 0
-    beamWidth: 0.6
-    rootDuration: 0
-  - projectileCount: 2
-    radius: 0.8
-    explosionRadius: 0.8
-    chainTargets: 0
-    coneAngle: 60
-    knockbackDistance: 0
-    beamWidth: 0.6
-    rootDuration: 0
-  - projectileCount: 3
-    radius: 0.8
-    explosionRadius: 0.8
-    chainTargets: 0
-    coneAngle: 60
-    knockbackDistance: 0
-    beamWidth: 0.6
-    rootDuration: 0
-  - projectileCount: 4
-    radius: 0.8
-    explosionRadius: 0.8
-    chainTargets: 0
-    coneAngle: 60
-    knockbackDistance: 0
-    beamWidth: 0.6
-    rootDuration: 0
-  - projectileCount: 5
-    radius: 0.8
-    explosionRadius: 0.8
-    chainTargets: 0
-    coneAngle: 60
-    knockbackDistance: 0
-    beamWidth: 0.6
-    rootDuration: 0
+  isUnique: 0
+  tickInterval: 0.5
+  damageGrowthPerLevel: 0.2
   icon: {fileID: 0}
   description: "\u0110\u1ECBnh k\u1EF3 ph\xF3ng qu\u1EA3 c\u1EA7u n\u01B0\u1EDBc
     v\u1EC1 m\u1EE5c ti\xEAu g\u1EA7n nh\u1EA5t (g\xE2y s\xE1t th\u01B0\u01A1ng n\u1ED5
@@ -75,3 +37,54 @@ MonoBehaviour:
   upgradeDescription: "T\u0103ng s\u1ED1 l\u01B0\u1EE3ng qu\u1EA3 c\u1EA7u m\u1ED7i
     l\u1EA7n ph\xF3ng"
   weaponPrefab: {fileID: 7238863903826535645, guid: 8a5b7161c381fb041b2b1637bf90ad6b, type: 3}
+  levels:
+  - baseDamage: 6
+    projectileCount: 1
+    radius: 0.8
+    explosionRadius: 0.8
+    chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
+    duration: 0
+  - baseDamage: 7.2
+    projectileCount: 2
+    radius: 0.8
+    explosionRadius: 0.8
+    chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
+    duration: 0
+  - baseDamage: 8.4
+    projectileCount: 3
+    radius: 0.8
+    explosionRadius: 0.8
+    chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
+    duration: 0
+  - baseDamage: 9.6
+    projectileCount: 4
+    radius: 0.8
+    explosionRadius: 0.8
+    chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
+    duration: 0
+  - baseDamage: 10.8
+    projectileCount: 5
+    radius: 0.8
+    explosionRadius: 0.8
+    chainTargets: 0
+    coneAngle: 60
+    knockbackDistance: 0
+    beamWidth: 0.6
+    rootDuration: 0
+    duration: 0

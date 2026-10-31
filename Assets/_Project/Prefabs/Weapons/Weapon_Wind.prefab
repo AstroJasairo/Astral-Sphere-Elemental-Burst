@@ -48,4 +48,6 @@ MonoBehaviour:
   enemyMask:
     serializedVersion: 2
     m_Bits: 128
-  flashPrefab: {fileID: 8823334079224371352, guid: 88601f6771ef7d542842b8ee279ebc99, type: 3}
+  flashPrefab: {fileID: 0}
+  coneTelegraphPrefab: {fileID: 7913828367689600287, guid: 91a0857e895a17f4b9b4be037c082b6f, type: 3}
+  telegraphDuration: 0.2

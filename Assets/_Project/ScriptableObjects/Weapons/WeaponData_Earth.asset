@@ -27,8 +27,16 @@ MonoBehaviour:
   orbitRadius: 2
   hitInterval: 0.5
   beamLength: 10
+  isUnique: 0
+  tickInterval: 0.5
+  damageGrowthPerLevel: 0.2
+  icon: {fileID: 0}
+  description: "\u0110\u1ECBnh k\u1EF3 g\xE2y s\xE1t th\u01B0\u01A1ng xung quanh"
+  upgradeDescription: "M\u1EDF r\u1ED9ng b\xE1n k\xEDnh"
+  weaponPrefab: {fileID: 4833084951708334774, guid: 9744f0be2f9ea1c429ee93eca7ca546b, type: 3}
   levels:
-  - projectileCount: 1
+  - baseDamage: 9
+    projectileCount: 1
     radius: 2.5
     explosionRadius: 0
     chainTargets: 0
@@ -36,7 +44,9 @@ MonoBehaviour:
     knockbackDistance: 0
     beamWidth: 0.6
     rootDuration: 0
-  - projectileCount: 1
+    duration: 0
+  - baseDamage: 10.8
+    projectileCount: 1
     radius: 3
     explosionRadius: 0
     chainTargets: 0
@@ -44,7 +54,9 @@ MonoBehaviour:
     knockbackDistance: 0
     beamWidth: 0.6
     rootDuration: 0
-  - projectileCount: 1
+    duration: 0
+  - baseDamage: 12.6
+    projectileCount: 1
     radius: 3.5
     explosionRadius: 0
     chainTargets: 0
@@ -52,7 +64,9 @@ MonoBehaviour:
     knockbackDistance: 0
     beamWidth: 0.6
     rootDuration: 0
-  - projectileCount: 1
+    duration: 0
+  - baseDamage: 14.4
+    projectileCount: 1
     radius: 4
     explosionRadius: 0
     chainTargets: 0
@@ -60,7 +74,9 @@ MonoBehaviour:
     knockbackDistance: 0
     beamWidth: 0.6
     rootDuration: 0
-  - projectileCount: 1
+    duration: 0
+  - baseDamage: 16.2
+    projectileCount: 1
     radius: 4.5
     explosionRadius: 0
     chainTargets: 0
@@ -68,7 +84,4 @@ MonoBehaviour:
     knockbackDistance: 0
     beamWidth: 0.6
     rootDuration: 0
-  icon: {fileID: 0}
-  description: "\u0110\u1ECBnh k\u1EF3 g\xE2y s\xE1t th\u01B0\u01A1ng xung quanh"
-  upgradeDescription: "M\u1EDF r\u1ED9ng b\xE1n k\xEDnh"
-  weaponPrefab: {fileID: 4833084951708334774, guid: 9744f0be2f9ea1c429ee93eca7ca546b, type: 3}
+    duration: 0
