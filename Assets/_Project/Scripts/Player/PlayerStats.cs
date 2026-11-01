@@ -11,6 +11,7 @@ public class PlayerStats : MonoBehaviour
     [Header("Nhân vật (Chỉ dùng khi chạy thẳng scene Game để test)")]
     [SerializeField] private CharacterData character;      // Dự phòng khi chưa có MetaConfig
     [SerializeField] private bool useDebugStarLevel;       // Bật để dùng "Star Level" bên dưới thay cho sao đã lưu
+    [SerializeField] private bool debugInvincible;       // CHỈ ĐỂ TEST HIỆU NĂNG: người chơi không bao giờ chết
     [SerializeField, Range(0, 5)] private int starLevel = 0;
     [SerializeField] private bool logMeta;                 // Bật để in bonus meta ra Console
 
@@ -97,20 +98,9 @@ public class PlayerStats : MonoBehaviour
             return;
         }
 
-        int stars = useDebugStarLevel ? starLevel : MetaProgress.GetStars(character.id);
+        bool useDebug = useDebugStarLevel && Debug.isDebugBuild;
+        int stars = useDebug ? starLevel : MetaProgress.GetStars(character.id);
 
-        //// Chỉ số gốc = chỉ số cơ bản của nhân vật + bonus từ nâng cấp vĩnh viễn (menu)
-        //baseMaxHp = character.baseMaxHp + MetaProgress.GetStatBonus(character, StatType.Hp);
-        //baseAtk = character.baseAtk * (1f + MetaProgress.GetStatBonus(character, StatType.Atk));
-        //baseDef = character.baseDef + MetaProgress.GetStatBonus(character, StatType.Def);
-        //baseMoveSpeed = character.baseMoveSpeed * (1f + MetaProgress.GetStatBonus(character, StatType.Spd));
-        //baseMagnetRadius = character.baseMagnetRadius * (1f + MetaProgress.GetStatBonus(character, StatType.Mag));
-
-        //// MP là phần giảm mana cần để dùng All Out Assault, tính ngay từ đầu trận;
-        //// nâng cấp MP trong trận sẽ cộng dồn thêm vào đây
-        //manaCostReductionPct = MetaProgress.GetStatBonus(character, StatType.Mp);
-
-        // Chỉ số khi vào trận lấy từ CharacterStatSheet (cùng nguồn với menu Character)
         CharacterStatSheet sheet = CharacterStatSheet.Build(character);
         baseMaxHp = sheet.maxHp;
         baseAtk = sheet.atk;
@@ -161,7 +151,7 @@ public class PlayerStats : MonoBehaviour
 
     public void TakeDamage(float amount)
     {
-        //Health.TakeDamage(amount * 100f / (100f + Def));
+        if (debugInvincible && Debug.isDebugBuild) return;
         float damage = amount * 100f / (100f + Def);       // DEF giảm sát thương trước
 
         if (Shield > 0f)

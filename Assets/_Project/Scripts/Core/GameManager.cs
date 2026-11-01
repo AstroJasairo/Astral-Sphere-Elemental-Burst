@@ -24,7 +24,8 @@ public class GameManager : MonoBehaviour
     {
         Instance = this;
         Application.targetFrameRate = 60;
-        ElapsedTime = startTimeOffset;
+        ElapsedTime = Debug.isDebugBuild ? startTimeOffset : 0f;
+        Pickup.ResetStatics();
         EnemyBase.ResetStatics();   // Dọn biến static còn sót từ trận trước
         Telegraph.ResetStatics();
     }

@@ -1,6 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public enum ResultType { GameOver, Victory }
 
@@ -42,6 +43,13 @@ public class ResultUI : MonoBehaviour
         //if (homeButton != null) homeButton.onClick.AddListener(SceneNavigator.LoadHome);
         if (homeButton != null) homeButton.onClick.AddListener(GoBack);
         if (quitButton != null) quitButton.onClick.AddListener(SceneNavigator.QuitGame);
+    }
+
+    private void Update()
+    {
+        // Nút Back của Android khi màn kết quả đang hiện: quay lại màn hình chọn nhân vật
+        if (!panel.activeSelf || Keyboard.current == null) return;
+        if (Keyboard.current.escapeKey.wasPressedThisFrame) GoBack();
     }
 
     private void Show()

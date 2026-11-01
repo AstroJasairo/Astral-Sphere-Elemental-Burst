@@ -70,6 +70,14 @@ public static class MetaProgress
         OnChanged?.Invoke();
     }
 
+    // Rời trận giữa chừng (từ menu tạm dừng): cộng vàng đã nhặt vào ví nhưng KHÔNG ghi điểm xếp hạng
+    public static void BankGold(int gold)
+    {
+        if (gold <= 0) return;
+        SaveSystem.Data.gold += gold;
+        Commit();
+    }
+
     // ---------------- Nhân vật ----------------
 
     // Nhân vật đang được chọn. Chưa chọn (hoặc id cũ không còn) thì dùng nhân vật đầu tiên trong MetaConfig.

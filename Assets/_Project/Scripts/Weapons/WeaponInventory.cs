@@ -29,9 +29,13 @@ public class WeaponInventory : MonoBehaviour
             if (perk.type == PerkType.StartWeapon && perk.weapon != null)
                 AddWeapon(perk.weapon, perk.weaponLevel);
         }
-        //Debug code: thêm vũ khí test vào đầu trận
-        foreach (WeaponData d in debugWeapons)
-            if (d != null) AddWeapon(d, debugWeaponLevel);
+
+        // Debug: thêm vũ khí test vào đầu trận
+        if (Debug.isDebugBuild)
+        {
+            foreach (WeaponData d in debugWeapons)
+                if (d != null) AddWeapon(d, debugWeaponLevel);
+        }
     }
 
     public bool Has(WeaponData data)

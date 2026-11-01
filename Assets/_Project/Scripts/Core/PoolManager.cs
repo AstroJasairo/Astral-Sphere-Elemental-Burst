@@ -55,4 +55,22 @@ public class PoolManager : MonoBehaviour
         obj.SetActive(false);
         pools[prefab].Enqueue(obj);
     }
+
+    // Tạo sẵn "count" đối tượng (đang tắt) để lần đầu dùng không phải tạo mới lúc đang chơi
+    public void Prewarm(GameObject prefab, int count)
+    {
+        if (!pools.TryGetValue(prefab, out Queue<GameObject> queue))
+        {
+            queue = new Queue<GameObject>();
+            pools[prefab] = queue;
+        }
+
+        for (int i = queue.Count; i < count; i++)
+        {
+            GameObject obj = Instantiate(prefab, transform);
+            instanceToPrefab[obj] = prefab;
+            obj.SetActive(false);
+            queue.Enqueue(obj);
+        }
+    }
 }

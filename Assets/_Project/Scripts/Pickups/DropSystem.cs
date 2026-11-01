@@ -9,6 +9,7 @@ public class DropSystem : MonoBehaviour
     [SerializeField] private int startGoldCount = 8;
     [SerializeField] private int startCrystalCount = 4;
     [SerializeField] private float scatterRadius = 8f;
+    [SerializeField] private int maxPickups = 120;      // Quá số này thì vàng/pha lê mới được gộp thay vì tạo thêm
 
     private float manaWeightMultiplier = 1f;
 
@@ -83,15 +84,44 @@ public class DropSystem : MonoBehaviour
 
     private void SpawnPickup(PickupData data, int amount, Vector2 position)
     {
-        // Cấu hình thiếu thì cảnh báo rõ ràng và bỏ qua, không làm hỏng các hệ thống khác
-        // Fix: Thông báo thiếu component
         if (data == null || data.prefab == null)
         {
             Debug.LogWarning("DropSystem: một DropEntry thiếu PickupData hoặc Prefab. Kiểm tra lại EnemyData.", this);
             return;
         }
-        GameObject go = PoolManager.Instance.Get(data.prefab, position, data.prefab.transform.rotation);
+
+        // Sân đã đầy: gộp vào vật phẩm cùng loại gần nhất (không mất giá trị). Vật phẩm hiếm luôn được tạo.
+        if (Pickup.ActiveCount >= maxPickups && IsMergeable(data.type) && TryMerge(data.type, amount, position))
+            return;
+
+        GameObject go = PoolManager.Instance.Get(data.prefab, position, Quaternion.identity);
         go.GetComponent<Pickup>().Init(data.type, amount);
+    }
+
+    private static bool IsMergeable(PickupType type)
+    {
+        return type == PickupType.Gold || type == PickupType.Crystal;
+    }
+
+    private bool TryMerge(PickupType type, int amount, Vector2 position)
+    {
+        Pickup nearest = null;
+        float best = float.MaxValue;
+
+        foreach (Pickup p in Pickup.Active)                              // foreach trên HashSet không sinh rác
+        {
+            if (p.Type != type || p.IsAttracted) continue;               // Bỏ qua vật phẩm khác loại hoặc đang bay về người chơi
+            float sqr = ((Vector2)p.transform.position - position).sqrMagnitude;
+            if (sqr < best)
+            {
+                best = sqr;
+                nearest = p;
+            }
+        }
+
+        if (nearest == null) return false;
+        nearest.AddAmount(amount);
+        return true;
     }
 
     // Thêm hàm: trọng số thực tế của một dòng trong bảng rơi
