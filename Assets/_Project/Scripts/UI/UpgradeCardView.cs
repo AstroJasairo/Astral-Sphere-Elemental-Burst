@@ -19,6 +19,11 @@ public class UpgradeCardView : MonoBehaviour
         iconImage.enabled = option.Icon != null;   // Chưa có icon thì ẩn ô ảnh
 
         button.onClick.RemoveAllListeners();       // Xóa lựa chọn cũ của lần trước
-        button.onClick.AddListener(() => onClick(option));
+        // button.onClick.AddListener(() => onClick(option));
+        button.onClick.AddListener(() =>
+        {
+            AudioManager.Play(AudioManager.Library?.upgradeChosen);
+            onClick(option);
+        });
     }
 }

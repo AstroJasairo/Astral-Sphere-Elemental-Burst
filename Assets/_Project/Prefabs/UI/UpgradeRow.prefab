@@ -946,6 +946,7 @@ GameObject:
   - component: {fileID: 7672219708043200285}
   - component: {fileID: 1162049629852581477}
   - component: {fileID: 7349599496291607552}
+  - component: {fileID: 6000536465475416438}
   m_Layer: 5
   m_Name: LevelUpButton
   m_TagString: Untagged
@@ -1055,6 +1056,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6000536465475416438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7952336562444636318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eef993cfc4d8fce4699811e08ac587bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonClickSound
 --- !u!1 &9012455998936220023
 GameObject:
   m_ObjectHideFlags: 0

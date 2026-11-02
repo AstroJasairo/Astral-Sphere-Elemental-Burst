@@ -10,7 +10,7 @@ public class LevelUpUI : MonoBehaviour
     public void Show(List<UpgradeOption> options, Action<UpgradeOption> onChosen)
     {
         panel.SetActive(true);
-
+        AudioManager.Play(AudioManager.Library?.levelUp);
         for (int i = 0; i < cards.Length; i++)
         {
             bool hasOption = i < options.Count;

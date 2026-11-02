@@ -14,6 +14,10 @@ public abstract class Telegraph : MonoBehaviour
     [SerializeField] protected int outerSortingOrder = -8;   // PHẢI cao hơn Order in Layer của nền
     [SerializeField] protected int innerSortingOrder = -6;
 
+    [Header("Âm thanh")]
+    [SerializeField] protected AudioCue startCue = new AudioCue { minInterval = 0.1f };
+    [SerializeField] protected AudioCue triggerCue = new AudioCue { minInterval = 0.1f };
+
     [Header("Trúng đòn")]
     [SerializeField] protected float playerMargin = 0.3f;    // Bán kính thân người chơi: vừa chạm mép là trúng
 
@@ -66,6 +70,7 @@ public abstract class Telegraph : MonoBehaviour
         outer.Show(true);
         inner.Show(false);   // Lớp trong do lớp con tự bật khi cần
         active.Add(this);
+        AudioManager.Play(startCue);
     }
 
     private void Update()
@@ -88,7 +93,7 @@ public abstract class Telegraph : MonoBehaviour
 
         if (DamageOnFinish && damage > 0f && playerStats != null && IsPlayerInside(playerTransform.position))
             playerStats.TakeDamage(damage);
-
+        AudioManager.Play(triggerCue);
         onTriggered?.Invoke(this);                              // BOSS làm hiệu ứng (sét đánh, lao tới...)
         PoolManager.Instance.Release(gameObject);
     }

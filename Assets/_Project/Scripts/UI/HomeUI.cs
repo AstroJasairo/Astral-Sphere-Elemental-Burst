@@ -30,6 +30,10 @@ public class HomeUI : MonoBehaviour
     [SerializeField] private SlidePanel upgradePanel;
     [SerializeField] private SlidePanel sharedPanel;
 
+    [Header("Màn hình Settings")]
+    [SerializeField] private GameObject settingsScreen;
+    [SerializeField] private Button settingsBackButton;
+
     [Header("Hộp thoại xếp hạng (nằm ngoài các màn hình, vẽ đè lên trên)")]
     [SerializeField] private LeaderboardPopup leaderboard;
 
@@ -39,13 +43,16 @@ public class HomeUI : MonoBehaviour
 
         playButton.onClick.AddListener(() => Show(mapScreen));
         characterButton.onClick.AddListener(() => Show(characterScreen));
+        settingsButton.onClick.AddListener(() => Show(settingsScreen));
         quitButton.onClick.AddListener(SceneNavigator.QuitGame);
         mapBackButton.onClick.AddListener(() => Show(homeScreen));
         selectBackButton.onClick.AddListener(() => Show(mapScreen));
         characterBackButton.onClick.AddListener(() => Show(homeScreen));
+        settingsBackButton.onClick.AddListener(() => Show(homeScreen));
+
+        AudioManager.PlayMusic(AudioManager.Library != null ? AudioManager.Library.homeMusic : null);
 
         inventoryButton.interactable = false;
-        settingsButton.interactable = false;
 
         mapWheel.MapChosen += OnMapChosen;
         mapWheel.RankingRequested += leaderboard.Show;
@@ -93,6 +100,7 @@ public class HomeUI : MonoBehaviour
         mapScreen.SetActive(screen == mapScreen);
         characterSelectScreen.SetActive(screen == characterSelectScreen);
         characterScreen.SetActive(screen == characterScreen);
+        settingsScreen.SetActive(screen == settingsScreen);
     }
 
     // Back: đóng lớp trên cùng trước
@@ -102,7 +110,7 @@ public class HomeUI : MonoBehaviour
         if (sharedPanel.IsOpen) { sharedPanel.Close(); return; }
         if (upgradePanel.IsOpen) { upgradePanel.Close(); return; }
         if (characterSelectScreen.activeSelf) { Show(mapScreen); return; }
-        if (mapScreen.activeSelf || characterScreen.activeSelf) { Show(homeScreen); return; }
+        if (mapScreen.activeSelf || characterScreen.activeSelf || settingsScreen.activeSelf) { Show(homeScreen); return; }
         SceneNavigator.QuitGame();
     }
 }

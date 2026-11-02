@@ -40,4 +40,7 @@ public class EnemyData : ScriptableObject
     public bool statusImmune = false;
     [Tooltip("Là BOSS: không bị dịch chuyển (recycle) khi chạm trần số lượng quái")]
     public bool isBoss = false;
+
+    [Header("Âm thanh (chỉ BOSS)")]
+    public AudioCue bossMusic = new AudioCue();       // Có file thì chuyển sang khi BOSS xuất hiện
 }

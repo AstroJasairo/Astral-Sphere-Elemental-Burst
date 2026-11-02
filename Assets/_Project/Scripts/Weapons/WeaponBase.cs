@@ -60,7 +60,10 @@ public abstract class WeaponBase : MonoBehaviour
 
         // Bắn được thì đặt lại đồng hồ. Không có mục tiêu thì thử lại sau tối đa 0.2s,
         // nhưng không chờ lâu hơn chính hồi chiêu (nên khi bắn nhanh vẫn kịp phản ứng)
-        timer = Fire() ? 0f : cooldown - Mathf.Min(0.2f, cooldown);
+        // timer = Fire() ? 0f : cooldown - Mathf.Min(0.2f, cooldown);
+        bool fired = Fire();
+        timer = fired ? 0f : cooldown - Mathf.Min(0.2f, cooldown);
+        if (fired) AudioManager.Play(data.fireCue);
     }
 
     protected abstract bool Fire();

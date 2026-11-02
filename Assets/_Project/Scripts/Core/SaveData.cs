@@ -57,6 +57,12 @@ public class SaveData
     public int[] sharedLevels;               // Cấp của 9 nâng cấp chung theo thứ tự enum SharedUpgradeType
     public List<ScoreEntry> highScores = new List<ScoreEntry>();
 
+    // Âm lượng người chơi chỉnh trong màn hình Settings (0 đến 1)
+    public float masterVolume = 1f;
+    public float musicVolume = 0.8f;
+    public float sfxVolume = 1f;
+    public float uiVolume = 1f;
+
     public CharacterProgress GetOrCreateCharacter(string id)
     {
         foreach (CharacterProgress c in characters)
@@ -70,6 +76,11 @@ public class SaveData
 
     public void Normalize()
     {
+        masterVolume = Mathf.Clamp01(masterVolume);
+        musicVolume = Mathf.Clamp01(musicVolume);
+        sfxVolume = Mathf.Clamp01(sfxVolume);
+        uiVolume = Mathf.Clamp01(uiVolume);
+
         gold = Mathf.Max(0, gold);
         if (characters == null) characters = new List<CharacterProgress>();
         if (highScores == null) highScores = new List<ScoreEntry>();

@@ -87,6 +87,7 @@ GameObject:
   - component: {fileID: 4431724919429663782}
   - component: {fileID: 6457696418529280725}
   - component: {fileID: 2110686525109649029}
+  - component: {fileID: 7379811582665446305}
   m_Layer: 5
   m_Name: RankingButton
   m_TagString: Untagged
@@ -195,6 +196,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7379811582665446305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1591409318776282741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eef993cfc4d8fce4699811e08ac587bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonClickSound
 --- !u!1 &1922284095537036313
 GameObject:
   m_ObjectHideFlags: 0
@@ -283,6 +296,7 @@ GameObject:
   - component: {fileID: 5114291618846803881}
   - component: {fileID: 7766688971258057784}
   - component: {fileID: 3917381895820946745}
+  - component: {fileID: -3452157241503668339}
   m_Layer: 5
   m_Name: MapCard
   m_TagString: Untagged
@@ -388,6 +402,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &-3452157241503668339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3555341800910352662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eef993cfc4d8fce4699811e08ac587bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonClickSound
 --- !u!1 &6399171022621741748
 GameObject:
   m_ObjectHideFlags: 0

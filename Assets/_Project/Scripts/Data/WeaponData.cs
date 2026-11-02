@@ -75,6 +75,9 @@ public class WeaponData : ScriptableObject
     [TextArea] public string upgradeDescription;   // Mô tả khi nâng cấp
     public GameObject weaponPrefab;                // Prefab chứa script vũ khí (ProjectileWeapon, AuraWeapon...)
 
+    [Header("Âm thanh")]
+    public AudioCue fireCue = new AudioCue();         // Tiếng khi vũ khí tấn công
+
     [Header("Thông số theo cấp: phần tử 0 = Lv1 ... phần tử 4 = Lv5")]
     public WeaponLevel[] levels = new WeaponLevel[5];
 }

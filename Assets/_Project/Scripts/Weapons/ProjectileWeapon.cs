@@ -74,6 +74,7 @@ public class ProjectileWeapon : WeaponBase
         }
 
         ShootAt(target, Random.Range(-burstJitter, burstJitter));
+        AudioManager.Play(data.fireCue);
         burstRemaining--;
         burstTimer = BurstInterval;
     }

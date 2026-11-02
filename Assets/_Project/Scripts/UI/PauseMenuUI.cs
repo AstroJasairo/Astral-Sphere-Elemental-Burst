@@ -55,6 +55,7 @@ public class PauseMenuUI : MonoBehaviour
         isOpen = true;
         panel.SetActive(true);
         gameManager.Pause();
+        AudioManager.SetMusicDuck(0.35f);
     }
 
     private void Close()
@@ -64,6 +65,7 @@ public class PauseMenuUI : MonoBehaviour
         isOpen = false;
         panel.SetActive(false);
         gameManager.Resume();
+        AudioManager.SetMusicDuck(1f);
     }
 
     // Rời trận giữa chừng: vàng đã nhặt được giữ lại, điểm không được ghi

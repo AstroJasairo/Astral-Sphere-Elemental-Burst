@@ -16,4 +16,7 @@ public class MapData : ScriptableObject
     public bool overrideBackground = false;    // Bật để map này đổi nền (tắt thì giữ nền của scene)
     public Sprite gameBackground;              // Hình nền (tùy chọn, dùng khi nền là một SpriteRenderer)
     public Color backgroundColor = Color.white;
+
+    [Header("Âm thanh")]
+    public AudioCue music = new AudioCue();           // Nhạc nền của map (lặp lại)
 }
