@@ -18,20 +18,20 @@ MonoBehaviour:
   - type: 0
     displayName: Speed
     shortLabel: SPD
-    icon: {fileID: 0}
+    icon: {fileID: -1017320246, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     isDebuff: 0
   - type: 1
     displayName: Rage
     shortLabel: ATK
-    icon: {fileID: 0}
+    icon: {fileID: 1310689690, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     isDebuff: 0
   - type: 2
     displayName: Magnet
     shortLabel: MAG
-    icon: {fileID: 0}
+    icon: {fileID: -1887280746, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     isDebuff: 0
   - type: 3
     displayName: ScoreBoost
     shortLabel: PTS
-    icon: {fileID: 0}
+    icon: {fileID: 90270191, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     isDebuff: 0

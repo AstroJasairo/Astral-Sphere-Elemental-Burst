@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 8918114220076120661}
   - component: {fileID: 2157474704800517298}
-  - component: {fileID: 5201611878558752947}
+  - component: {fileID: 8056779846914292448}
   - component: {fileID: 2487950851889299936}
   m_Layer: 10
-  m_Name: Pickup_Speed
+  m_Name: Pickup_Haste
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -83,8 +83,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
-  m_Color: {r: 0.6784314, g: 1, b: 0.1843137, a: 1}
+  m_Sprite: {fileID: -1017320246, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -93,8 +93,8 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!70 &5201611878558752947
-CapsuleCollider2D:
+--- !u!58 &8056779846914292448
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -128,8 +128,7 @@ CapsuleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 1, y: 2}
-  m_Direction: 0
+  m_Radius: 0.5
 --- !u!114 &2487950851889299936
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -145,3 +144,5 @@ MonoBehaviour:
   startSpeed: 3
   acceleration: 25
   collectDistance: 0.3
+  scalePerExtra: 0.08
+  maxMergeScale: 2

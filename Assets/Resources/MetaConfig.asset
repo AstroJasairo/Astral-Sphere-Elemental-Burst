@@ -26,7 +26,7 @@ MonoBehaviour:
     displayName: "V\xE0ng"
     description: "T\u0103ng v\xE0ng nh\u1EADn \u0111\u01B0\u1EE3c m\u1ED7i l\u1EA7n
       nh\u1EB7t"
-    icon: {fileID: 0}
+    icon: {fileID: 399831762, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     bonusByLevel:
     - 0
     - 0.05
@@ -43,7 +43,7 @@ MonoBehaviour:
     displayName: "Pha l\xEA"
     description: "T\u0103ng pha l\xEA nh\u1EADn \u0111\u01B0\u1EE3c m\u1ED7i l\u1EA7n
       nh\u1EB7t"
-    icon: {fileID: 0}
+    icon: {fileID: -167562612, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     bonusByLevel:
     - 0
     - 0.05
@@ -60,7 +60,7 @@ MonoBehaviour:
     displayName: "B\xECnh m\xE1u"
     description: "T\u0103ng l\u01B0\u1EE3ng m\xE1u h\u1ED3i khi nh\u1EB7t b\xECnh
       m\xE1u"
-    icon: {fileID: 0}
+    icon: {fileID: -869786658, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     bonusByLevel:
     - 0
     - 0.02
@@ -77,7 +77,7 @@ MonoBehaviour:
     displayName: "B\xECnh t\u0103ng t\u1ED1c"
     description: "T\u0103ng th\xEAm t\u1ED1c \u0111\u1ED9 di chuy\u1EC3n khi nh\u1EB7t
       b\xECnh t\u1ED1c \u0111\u1ED9"
-    icon: {fileID: 0}
+    icon: {fileID: -1017320246, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     bonusByLevel:
     - 0
     - 0.03
@@ -93,7 +93,7 @@ MonoBehaviour:
   - type: 4
     displayName: "B\xECnh cu\u1ED3ng n\u1ED9"
     description: "T\u0103ng th\xEAm ATK khi nh\u1EB7t b\xECnh cu\u1ED3ng n\u1ED9"
-    icon: {fileID: 0}
+    icon: {fileID: 1310689690, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     bonusByLevel:
     - 0
     - 0.03
@@ -109,7 +109,7 @@ MonoBehaviour:
   - type: 5
     displayName: "Khi\xEAn"
     description: "T\u0103ng l\xE1 ch\u1EAFn t\u1EA1o ra khi nh\u1EB7t khi\xEAn"
-    icon: {fileID: 0}
+    icon: {fileID: 1936401044, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     bonusByLevel:
     - 0
     - 0.06
@@ -125,7 +125,7 @@ MonoBehaviour:
   - type: 6
     displayName: "Nam ch\xE2m"
     description: "T\u0103ng th\xEAm b\xE1n k\xEDnh h\xFAt khi nh\u1EB7t nam ch\xE2m"
-    icon: {fileID: 0}
+    icon: {fileID: -1887280746, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     bonusByLevel:
     - 0
     - 0.1
@@ -141,7 +141,7 @@ MonoBehaviour:
   - type: 7
     displayName: "B\xECnh mana"
     description: "T\u0103ng t\u1EC9 l\u1EC7 r\u01A1i b\xECnh mana"
-    icon: {fileID: 0}
+    icon: {fileID: -282156456, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     bonusByLevel:
     - 0
     - 0.15
@@ -158,7 +158,7 @@ MonoBehaviour:
     displayName: "T\u0103ng \u0111i\u1EC3m"
     description: "T\u0103ng th\xEAm \u0111i\u1EC3m khi nh\u1EB7t v\u1EADt ph\u1EA9m
       t\u0103ng \u0111i\u1EC3m"
-    icon: {fileID: 0}
+    icon: {fileID: 90270191, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     bonusByLevel:
     - 0
     - 0.05

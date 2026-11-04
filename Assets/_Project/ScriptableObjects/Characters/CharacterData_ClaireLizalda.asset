@@ -94,7 +94,7 @@ MonoBehaviour:
     - 0.53999996
     costByLevel: 0000000032000000c8000000c201000020030000e20400000807000092090000800c0000d20f0000
   characterName: Claire Lizalda
-  icon: {fileID: 0}
+  icon: {fileID: 1764554070, guid: 261fb792f1a28f449a2e9bb35b137d41, type: 3}
   primaryColor: {r: 1, g: 0.10196078, b: 0.13246064, a: 1}
   secondaryColor: {r: 1, g: 1, b: 1, a: 1}
   baseMaxHp: 100
