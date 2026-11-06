@@ -51,8 +51,19 @@ MonoBehaviour:
   innerBorder: {r: 1, g: 0.55, b: 0.1, a: 1}
   borderWidth: 0.08
   outerSortingOrder: -8
-  innerSortingOrder: -6
+  innerSortingOrder: -7
+  startCue:
+    label: 
+    clips: []
+    volume: 1
+    pitchRange: {x: 0.95, y: 1.05}
+    minInterval: 0.1
+    category: 1
+  triggerCue:
+    label: 
+    clips: []
+    volume: 1
+    pitchRange: {x: 0.95, y: 1.05}
+    minInterval: 0.1
+    category: 1
   playerMargin: 0.3
-  blinkInterval: 0.12
-  tickInterval: 0.4
-  edgeBarWidth: 0.25

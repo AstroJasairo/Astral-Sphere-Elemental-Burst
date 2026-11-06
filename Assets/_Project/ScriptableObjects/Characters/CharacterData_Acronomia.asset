@@ -98,9 +98,9 @@ MonoBehaviour:
   primaryColor: {r: 1, g: 0.75, b: 0.1, a: 1}
   secondaryColor: {r: 1, g: 1, b: 1, a: 1}
   baseMaxHp: 100
-  baseAtk: 1
+  baseAtk: 2
   baseDef: 0
-  baseMoveSpeed: 5
+  baseMoveSpeed: 3
   baseMagnetRadius: 1.5
   perks:
   - id: lightning_start

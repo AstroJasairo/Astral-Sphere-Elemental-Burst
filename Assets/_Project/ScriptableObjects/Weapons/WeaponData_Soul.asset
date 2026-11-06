@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
   weaponName: Soul
   element: 4
-  baseDamage: 5
+  baseDamage: 10
   cooldown: 0.1
   targetRange: 8
   projectilePrefab: {fileID: 0}
@@ -35,8 +35,15 @@ MonoBehaviour:
     s\xE1t th\u01B0\u01A1ng"
   upgradeDescription: "T\u0103ng s\u1ED1 l\u01B0\u1EE3ng qu\u1EA3 c\u1EA7u"
   weaponPrefab: {fileID: 2717221103582620894, guid: 91c77cef4ebf59042bd4e2760da4f24b, type: 3}
+  fireCue:
+    label: 
+    clips: []
+    volume: 1
+    pitchRange: {x: 0.95, y: 1.05}
+    minInterval: 0.05
+    category: 1
   levels:
-  - baseDamage: 5
+  - baseDamage: 10
     projectileCount: 1
     radius: 1.5
     explosionRadius: 0
@@ -46,7 +53,7 @@ MonoBehaviour:
     beamWidth: 0.6
     rootDuration: 0
     duration: 0
-  - baseDamage: 6
+  - baseDamage: 12
     projectileCount: 2
     radius: 1.5
     explosionRadius: 0
@@ -56,7 +63,7 @@ MonoBehaviour:
     beamWidth: 0.6
     rootDuration: 0
     duration: 0
-  - baseDamage: 7
+  - baseDamage: 14
     projectileCount: 3
     radius: 1.5
     explosionRadius: 0
@@ -66,7 +73,7 @@ MonoBehaviour:
     beamWidth: 0.6
     rootDuration: 0
     duration: 0
-  - baseDamage: 8
+  - baseDamage: 16
     projectileCount: 4
     radius: 1.5
     explosionRadius: 0
@@ -76,7 +83,7 @@ MonoBehaviour:
     beamWidth: 0.6
     rootDuration: 0
     duration: 0
-  - baseDamage: 9
+  - baseDamage: 18
     projectileCount: 5
     radius: 1.5
     explosionRadius: 0

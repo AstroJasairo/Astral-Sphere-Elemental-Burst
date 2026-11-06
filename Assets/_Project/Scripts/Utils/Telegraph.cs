@@ -12,7 +12,7 @@ public abstract class Telegraph : MonoBehaviour
     [SerializeField] protected Color innerBorder = new Color(1f, 0.55f, 0.1f, 1f);
     [SerializeField] protected float borderWidth = 0.08f;
     [SerializeField] protected int outerSortingOrder = -8;   // PHẢI cao hơn Order in Layer của nền
-    [SerializeField] protected int innerSortingOrder = -6;
+    [SerializeField] protected int innerSortingOrder = -7;
 
     [Header("Âm thanh")]
     [SerializeField] protected AudioCue startCue = new AudioCue { minInterval = 0.1f };

@@ -23,6 +23,7 @@ public class MapLoader : MonoBehaviour
         {
             if (map.gameBackground != null) backgroundRenderer.sprite = map.gameBackground;
             backgroundRenderer.color = map.backgroundColor;
+            backgroundRenderer.size = new Vector2(100f, 100f);
         }
         else if (backgroundCamera != null)
         {

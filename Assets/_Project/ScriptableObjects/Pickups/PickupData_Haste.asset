@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea3c57c9abc5a7841a4231c3b41424d5, type: 3}
-  m_Name: PickupData_Speed
+  m_Name: PickupData_Haste
   m_EditorClassIdentifier: Assembly-CSharp::PickupData
   type: 3
   prefab: {fileID: 1459178894358972660, guid: d24b3201945181f43bb8d2f480f4e96a, type: 3}

@@ -23,9 +23,8 @@ MonoBehaviour:
   allOutAssault: {fileID: 11400000, guid: 16c3ef2d274cf384eb538438421a14f2, type: 2}
   sharedUpgrades:
   - type: 0
-    displayName: "V\xE0ng"
-    description: "T\u0103ng v\xE0ng nh\u1EADn \u0111\u01B0\u1EE3c m\u1ED7i l\u1EA7n
-      nh\u1EB7t"
+    displayName: Bling bling
+    description: Increase the amount of gold collected
     icon: {fileID: 399831762, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     bonusByLevel:
     - 0
@@ -41,8 +40,7 @@ MonoBehaviour:
     costByLevel: 000000004b0000002c010000a3020000b0040000530700008c0a00005b0e0000c0120000bb170000
   - type: 1
     displayName: "Pha l\xEA"
-    description: "T\u0103ng pha l\xEA nh\u1EADn \u0111\u01B0\u1EE3c m\u1ED7i l\u1EA7n
-      nh\u1EB7t"
+    description: Increase the amount of crystal collected
     icon: {fileID: -167562612, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     bonusByLevel:
     - 0
@@ -57,9 +55,8 @@ MonoBehaviour:
     - 0.45000002
     costByLevel: 000000004b0000002c010000a3020000b0040000530700008c0a00005b0e0000c0120000bb170000
   - type: 2
-    displayName: "B\xECnh m\xE1u"
-    description: "T\u0103ng l\u01B0\u1EE3ng m\xE1u h\u1ED3i khi nh\u1EB7t b\xECnh
-      m\xE1u"
+    displayName: Vampire's snack
+    description: Increase the amount of health restored from a health potion
     icon: {fileID: -869786658, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     bonusByLevel:
     - 0
@@ -74,7 +71,7 @@ MonoBehaviour:
     - 0.17999999
     costByLevel: 000000004b0000002c010000a3020000b0040000530700008c0a00005b0e0000c0120000bb170000
   - type: 3
-    displayName: "B\xECnh t\u0103ng t\u1ED1c"
+    displayName: Can't catch me
     description: "T\u0103ng th\xEAm t\u1ED1c \u0111\u1ED9 di chuy\u1EC3n khi nh\u1EB7t
       b\xECnh t\u1ED1c \u0111\u1ED9"
     icon: {fileID: -1017320246, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
@@ -91,7 +88,7 @@ MonoBehaviour:
     - 0.26999998
     costByLevel: 000000004b0000002c010000a3020000b0040000530700008c0a00005b0e0000c0120000bb170000
   - type: 4
-    displayName: "B\xECnh cu\u1ED3ng n\u1ED9"
+    displayName: Get out of my way
     description: "T\u0103ng th\xEAm ATK khi nh\u1EB7t b\xECnh cu\u1ED3ng n\u1ED9"
     icon: {fileID: 1310689690, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     bonusByLevel:
@@ -107,7 +104,7 @@ MonoBehaviour:
     - 0.26999998
     costByLevel: 000000004b0000002c010000a3020000b0040000530700008c0a00005b0e0000c0120000bb170000
   - type: 5
-    displayName: "Khi\xEAn"
+    displayName: I can do this all day
     description: "T\u0103ng l\xE1 ch\u1EAFn t\u1EA1o ra khi nh\u1EB7t khi\xEAn"
     icon: {fileID: 1936401044, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     bonusByLevel:
@@ -123,8 +120,8 @@ MonoBehaviour:
     - 0.53999996
     costByLevel: 000000004b0000002c010000a3020000b0040000530700008c0a00005b0e0000c0120000bb170000
   - type: 6
-    displayName: "Nam ch\xE2m"
-    description: "T\u0103ng th\xEAm b\xE1n k\xEDnh h\xFAt khi nh\u1EB7t nam ch\xE2m"
+    displayName: All roads lead back to me
+    description: Increase the magnet radius
     icon: {fileID: -1887280746, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     bonusByLevel:
     - 0
@@ -139,7 +136,7 @@ MonoBehaviour:
     - 0.90000004
     costByLevel: 000000004b0000002c010000a3020000b0040000530700008c0a00005b0e0000c0120000bb170000
   - type: 7
-    displayName: "B\xECnh mana"
+    displayName: No mana no life
     description: "T\u0103ng t\u1EC9 l\u1EC7 r\u01A1i b\xECnh mana"
     icon: {fileID: -282156456, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     bonusByLevel:

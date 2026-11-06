@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc9bba9fb7873a54ca9eb43228f28b41, type: 3}
   m_Name: AllOutAssaultData_Default
   m_EditorClassIdentifier: Assembly-CSharp::AllOutAssaultData
-  maxMana: 100
+  maxMana: 300
   duration: 8
   atkBonusPct: 0.5
   speedBonusPct: 0.25
   cooldownMultiplier: 0.25
+  orbitSpeedMultiplier: 2
+  orbitHitIntervalMultiplier: 0.4

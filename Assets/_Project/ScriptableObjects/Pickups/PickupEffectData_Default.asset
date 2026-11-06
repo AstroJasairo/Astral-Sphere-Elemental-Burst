@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86afb4d4f63fa9742b1b72d4aa46a88d, type: 3}
   m_Name: PickupEffectData_Default
   m_EditorClassIdentifier: Assembly-CSharp::PickupEffectData
-  healPercent: 0.3
-  speedBonusPct: 0.5
+  healPercent: 0.1
+  speedBonusPct: 0.1
   speedDuration: 8
   rageBonusPct: 0.5
   rageDuration: 8
-  magnetBonusPct: 3
+  magnetBonusPct: 0.5
   magnetDuration: 8
-  shieldBase: 30
+  shieldBase: 10
   shieldDefScale: 0.1
-  scoreBonusPct: 1
+  scoreBonusPct: 0.2
   scoreDuration: 10
