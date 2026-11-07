@@ -78,6 +78,10 @@ public class CharacterData : ScriptableObject
         return active;
     }
 
+    [Header("Kỹ năng (để trống nếu nhân vật chưa có)")]
+    public PassiveSkillData passiveSkill;
+    public ActiveSkillData activeSkill;
+
     // Chuột phải vào tiêu đề asset > chọn mục này để điền sẵn số mặc định, khỏi nhập tay 6 x 20 con số
     [ContextMenu("Fill Default Meta Progression")]
     private void FillDefaultMetaProgression()

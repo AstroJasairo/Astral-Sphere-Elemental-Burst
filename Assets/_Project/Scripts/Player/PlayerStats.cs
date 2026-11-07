@@ -38,8 +38,9 @@ public class PlayerStats : MonoBehaviour
 
     private readonly List<StarPerk> activePerks = new List<StarPerk>();
 
+    public CharacterData Character => character;
     public float MaxHp => baseMaxHp + hpBonus;
-    public float Atk => baseAtk * (1f + atkBonusPct + aoaAtkPct + Buffs.GetValue(BuffType.Rage));
+    public float Atk => baseAtk * (1f + atkBonusPct + aoaAtkPct + Buffs.GetValue(BuffType.Rage) + Buffs.GetValue(BuffType.ActiveSkill));
     public float Def => baseDef + defBonus;
     public float MoveSpeed => baseMoveSpeed * (1f + speedBonusPct + aoaSpeedPct + Buffs.GetValue(BuffType.Speed));
     public float MagnetRadius => baseMagnetRadius * (1f + magnetBonusPct + Buffs.GetValue(BuffType.Magnet));
@@ -50,6 +51,7 @@ public class PlayerStats : MonoBehaviour
     public float OrbitHitIntervalMultiplier => orbitHitIntervalMultiplier;
 
     public float Shield { get; private set; }
+    public float IncomingDamageMultiplier { get; set; } = 1f;
     public event Action<float, float> OnShieldChanged;   // (lá chắn hiện tại, tối đa) -> HUD lắng nghe
 
     public IReadOnlyList<StarPerk> ActivePerks => activePerks;
@@ -65,6 +67,16 @@ public class PlayerStats : MonoBehaviour
         {
             if (health == null && this != null) health = GetComponent<HealthSystem>();
             return health;
+        }
+    }
+
+    private SkillSystem skills;
+    public SkillSystem Skills
+    {
+        get
+        {
+            if (skills == null) TryGetComponent(out skills);
+            return skills;
         }
     }
 
@@ -152,7 +164,7 @@ public class PlayerStats : MonoBehaviour
     public void TakeDamage(float amount)
     {
         if (debugInvincible && Debug.isDebugBuild) return;
-        float damage = amount * 100f / (100f + Def);       // DEF giảm sát thương trước
+        float damage = amount * 100f / (100f + Def) * IncomingDamageMultiplier;       // DEF giảm sát thương trước
 
         if (Shield > 0f)
         {

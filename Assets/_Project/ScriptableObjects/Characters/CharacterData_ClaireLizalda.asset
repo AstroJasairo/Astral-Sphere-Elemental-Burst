@@ -167,3 +167,5 @@ MonoBehaviour:
     weaponLevel: 0
     bonus: 2
     description: "All Out Assault: +200% s\xE1t th\u01B0\u01A1ng L\u1EEDa"
+  passiveSkill: {fileID: 11400000, guid: 7ca352e800cc7d34a9a7126d2d07e394, type: 2}
+  activeSkill: {fileID: 11400000, guid: cc053a17a32e43249bf3560bddad39ca, type: 2}

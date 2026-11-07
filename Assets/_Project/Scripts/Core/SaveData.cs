@@ -22,6 +22,8 @@ public class CharacterProgress
     public string id;
     public int stars;            // 0 đến 5
     public int[] statLevels;     // Cấp của 6 chỉ số theo thứ tự enum StatType, bắt đầu từ 1
+    public int passiveLevel;     // 0 = chưa mở khóa
+    public int activeLevel;
 
     // Sửa dữ liệu thiếu hoặc sai (file cũ, file bị sửa tay, thêm chỉ số mới...)
     public void Normalize()

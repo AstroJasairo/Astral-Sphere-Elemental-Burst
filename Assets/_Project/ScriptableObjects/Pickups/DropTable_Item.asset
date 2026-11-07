@@ -34,3 +34,6 @@ MonoBehaviour:
   - pickup: {fileID: 11400000, guid: be68e32f6bbd5c449aec0291f5dc8684, type: 2}
     amount: 1
     weight: 0.04
+  - pickup: {fileID: 11400000, guid: ae09c4fe92ed4024d80be01d9005c747, type: 2}
+    amount: 1
+    weight: 0.03

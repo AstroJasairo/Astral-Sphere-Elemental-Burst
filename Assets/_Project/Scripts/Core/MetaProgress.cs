@@ -179,11 +179,59 @@ public static class MetaProgress
         return e.bonusByLevel[Mathf.Clamp(next, 1, e.bonusByLevel.Length) - 1];
     }
 
+    // ---------------- Skill nhân vật ----------------
+
+    public const int MaxSkillLevel = SkillDataBase.MaxLevel;
+
+    public static int GetSkillLevel(string id, SkillKind kind)
+    {
+        if (string.IsNullOrEmpty(id)) return 0;
+        CharacterProgress p = SaveSystem.Data.GetOrCreateCharacter(id);
+        return kind == SkillKind.Passive ? p.passiveLevel : p.activeLevel;
+    }
+
+    private static SkillDataBase GetSkillData(CharacterData c, SkillKind kind)
+    {
+        if (kind == SkillKind.Passive) return c.passiveSkill;
+        return c.activeSkill;                                   // (không dùng toán tử ?: vì hai kiểu không chung kiểu cha rõ ràng)
+    }
+
+    // Cấp skill KHÔNG được vượt số sao hiện có (2 sao: tối đa Lv2)
+    public static SkillUpgradeStatus GetSkillUpgradeStatus(CharacterData c, SkillKind kind)
+    {
+        SkillDataBase data = GetSkillData(c, kind);
+        if (data == null) return SkillUpgradeStatus.NoSkill;
+        int level = GetSkillLevel(c.id, kind);
+        if (level >= MaxSkillLevel || data.GetUpgradeCost(level) < 0) return SkillUpgradeStatus.MaxLevel;
+        if (level >= GetStars(c.id)) return SkillUpgradeStatus.NeedMoreStars;
+        return SkillUpgradeStatus.Available;
+    }
+
+    // Vàng để lên cấp kế. -1 nếu không có skill hoặc đã tối đa. (Chưa đủ sao vẫn trả giá để UI hiển thị.)
+    public static int GetSkillUpgradeCost(CharacterData c, SkillKind kind)
+    {
+        SkillDataBase data = GetSkillData(c, kind);
+        if (data == null) return -1;
+        int level = GetSkillLevel(c.id, kind);
+        return level >= MaxSkillLevel ? -1 : data.GetUpgradeCost(level);
+    }
+
+    public static bool TryUpgradeSkill(CharacterData c, SkillKind kind)
+    {
+        if (GetSkillUpgradeStatus(c, kind) != SkillUpgradeStatus.Available) return false;
+        if (!TrySpend(GetSkillUpgradeCost(c, kind))) return false;
+
+        CharacterProgress p = SaveSystem.Data.GetOrCreateCharacter(c.id);
+        if (kind == SkillKind.Passive) p.passiveLevel++; else p.activeLevel++;
+        Commit();
+        return true;
+    }
+
     // ---------------- Nâng cấp chung ----------------
 
     public static int GetSharedLevel(SharedUpgradeType type)
     {
-        return SaveSystem.Data.sharedLevels[(int)type];
+        return Mathf.Max(1, SaveSystem.Data.sharedLevels[(int)type]);
     }
 
     // Bonus hiện tại của nâng cấp chung (0 nếu chưa cấu hình MetaConfig)
@@ -215,7 +263,7 @@ public static class MetaProgress
         int cost = GetSharedUpgradeCost(type);
         if (!TrySpend(cost)) return false;
 
-        SaveSystem.Data.sharedLevels[(int)type]++;
+        SaveSystem.Data.sharedLevels[(int)type] = GetSharedLevel(type) + 1; // thay cho ++ để không lệch khi giá trị lưu là 0
         Commit();
         return true;
     }

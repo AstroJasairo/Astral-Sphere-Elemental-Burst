@@ -27,4 +27,7 @@ public class PickupEffectData : ScriptableObject
     [Header("Tăng điểm")]
     public float scoreBonusPct = 1f;                     // +100% điểm (nhân đôi)
     public float scoreDuration = 10f;
+
+    [Header("Đồng hồ cát")]
+    public float hourglassSeconds = 10f;                 // Số giây hồi chiêu skill chủ động được giảm (TẠM)
 }

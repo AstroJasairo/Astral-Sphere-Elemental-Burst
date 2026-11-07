@@ -37,6 +37,11 @@ public class PickupEffectSystem : MonoBehaviour
             case PickupType.ScoreBoost:
                 stats.Buffs.Apply(BuffType.ScoreBoost, data.scoreBonusPct + Meta(SharedUpgradeType.ScoreBoost), data.scoreDuration);
                 break;
+            case PickupType.Hourglass:
+                // Bonus nâng cấp chung là SỐ GIÂY cộng thêm
+                SkillSystem skills = stats.Skills;
+                if (skills != null) skills.ReduceCooldown(data.hourglassSeconds + Meta(SharedUpgradeType.Hourglass));
+                break;
         }
     }
 
@@ -45,7 +50,7 @@ public class PickupEffectSystem : MonoBehaviour
     private void DebugApplyAll()
     {
         foreach (PickupType t in new[] { PickupType.HealthPotion, PickupType.SpeedPotion, PickupType.RagePotion,
-                                         PickupType.Magnet, PickupType.Shield, PickupType.ScoreBoost })
+                                         PickupType.Magnet, PickupType.Shield, PickupType.ScoreBoost, PickupType.Hourglass })
             HandleCollected(t, 1);
     }
 }

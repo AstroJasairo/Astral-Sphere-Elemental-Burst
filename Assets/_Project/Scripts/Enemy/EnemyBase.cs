@@ -18,6 +18,7 @@ public class EnemyBase : MonoBehaviour
 
     private Rigidbody2D rb;
     private HealthSystem health;
+    public float MaxHealth => health.MaxHealth;     // Máu tối đa thực tế (đã nhân hệ số độ khó). Vẫn đọc được lúc phát EnemyKilled
     private Transform target;
     private float damage;
     private float nextAttackTime;

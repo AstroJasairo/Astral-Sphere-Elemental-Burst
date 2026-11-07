@@ -168,6 +168,23 @@ MonoBehaviour:
     - 0.4
     - 0.45000002
     costByLevel: 000000004b0000002c010000a3020000b0040000530700008c0a00005b0e0000c0120000bb170000
+  - type: 9
+    displayName: "\u0110\u1ED3ng h\u1ED3 c\xE1t"
+    description: "T\u0103ng s\u1ED1 gi\xE2y h\u1ED3i chi\xEAu \u0111\u01B0\u1EE3c
+      gi\u1EA3m khi nh\u1EB7t \u0111\u1ED3ng h\u1ED3 c\xE1t"
+    icon: {fileID: 0}
+    bonusByLevel:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9
+    costByLevel: 000000004b0000002c010000a3020000b0040000530700008c0a00005b0e0000c0120000bb170000
   statIcons:
   - {fileID: -2278566297644842510, guid: 2d730b8904b444d49a021ed37aeb2e3e, type: 3}
   - {fileID: -1028222185, guid: 2d730b8904b444d49a021ed37aeb2e3e, type: 3}

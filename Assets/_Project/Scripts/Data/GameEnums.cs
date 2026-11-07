@@ -14,7 +14,7 @@ public enum EnemyType
 public enum PickupType
 {
     Gold, Crystal, HealthPotion, SpeedPotion, RagePotion,
-    Magnet, ManaPotion, Shield, ScoreBoost
+    Magnet, ManaPotion, Shield, ScoreBoost, Hourglass
 }
 
 // 6 chỉ số cơ bản của nhân vật
@@ -30,10 +30,14 @@ public enum PerkType
 }
 
 // Các buff tạm thời có thời hạn (All Out Assault có kênh riêng nên không nằm ở đây)
-public enum BuffType { Speed, Rage, Magnet, ScoreBoost }
+public enum BuffType { Speed, Rage, Magnet, ScoreBoost, ActiveSkill }
 
 // 9 loại nâng cấp chung (theo tài liệu hệ thống)
 public enum SharedUpgradeType
 {
-    Gold, Crystal, HealthPotion, SpeedPotion, RagePotion, Shield, Magnet, ManaPotion, ScoreBoost
+    Gold, Crystal, HealthPotion, SpeedPotion, RagePotion, Shield, Magnet, ManaPotion, ScoreBoost, Hourglass
 }
+
+public enum CooldownStart { OnActivate, AfterEffectEnds }   // Hồi chiêu tính từ lúc kích hoạt hay lúc hết hiệu lực
+public enum SkillKind { Passive, Active }
+public enum SkillUpgradeStatus { NoSkill, MaxLevel, NeedMoreStars, Available }   // để UI biết hiện gì trên nút

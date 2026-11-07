@@ -23,6 +23,9 @@ public class ClariusSword : MonoBehaviour
     private ClariusWeapon weapon;
     private TelegraphVisual aura;
     private readonly Vector2[] points = new Vector2[TelegraphGeometry.MaxPoints];
+    public static readonly System.Collections.Generic.HashSet<ClariusSword> Instances = new System.Collections.Generic.HashSet<ClariusSword>();
+    public bool IsAuraActive => phase == Phase.Active;          // Aura chỉ gây sát thương khi kiếm đã cắm xuống
+    public float AuraRadius => weapon != null ? weapon.CurrentRadius : 0f;
 
     private Phase phase;
     private float phaseTimer;
@@ -36,6 +39,9 @@ public class ClariusSword : MonoBehaviour
         // Aura vẽ bằng lưới và viền tạo bằng code, cùng hệ thống với telegraph
         aura = new TelegraphVisual(transform, "Aura", auraMaterial, auraSortingOrder, auraFill, auraBorder, 0.08f);
     }
+
+    private void OnEnable() { Instances.Add(this); }
+    private void OnDisable() { Instances.Remove(this); }
 
     private void OnDestroy()
     {

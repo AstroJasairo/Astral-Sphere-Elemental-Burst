@@ -76,7 +76,19 @@ public class MetaConfig : ScriptableObject
             Make(SharedUpgradeType.Magnet, "Nam châm", "Tăng thêm bán kính hút khi nhặt nam châm", 0.1f),
             Make(SharedUpgradeType.ManaPotion, "Bình mana", "Tăng tỉ lệ rơi bình mana", 0.15f),
             Make(SharedUpgradeType.ScoreBoost, "Tăng điểm", "Tăng thêm điểm khi nhặt vật phẩm tăng điểm", 0.05f),
+            Make(SharedUpgradeType.Hourglass, "Đồng hồ cát", "Tăng số giây hồi chiêu được giảm khi nhặt đồng hồ cát", 1f),
         };
+#if UNITY_EDITOR
+        UnityEditor.EditorUtility.SetDirty(this);
+#endif
+    }
+
+    [ContextMenu("Add Missing Shared Upgrades")]
+    private void AddMissingSharedUpgrades()
+    {
+        if (!sharedUpgrades.Exists(e => e.type == SharedUpgradeType.Hourglass))
+            sharedUpgrades.Add(Make(SharedUpgradeType.Hourglass, "Đồng hồ cát",
+                "Tăng số giây hồi chiêu được giảm khi nhặt đồng hồ cát", 1f));
 #if UNITY_EDITOR
         UnityEditor.EditorUtility.SetDirty(this);
 #endif

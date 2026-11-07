@@ -35,3 +35,8 @@ MonoBehaviour:
     shortLabel: PTS
     icon: {fileID: 90270191, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     isDebuff: 0
+  - type: 4
+    displayName: ActiveSkill
+    shortLabel: ACT
+    icon: {fileID: 0}
+    isDebuff: 0
