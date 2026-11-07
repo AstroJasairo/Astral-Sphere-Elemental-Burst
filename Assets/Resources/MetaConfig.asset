@@ -168,3 +168,11 @@ MonoBehaviour:
     - 0.4
     - 0.45000002
     costByLevel: 000000004b0000002c010000a3020000b0040000530700008c0a00005b0e0000c0120000bb170000
+  statIcons:
+  - {fileID: -2278566297644842510, guid: 2d730b8904b444d49a021ed37aeb2e3e, type: 3}
+  - {fileID: -1028222185, guid: 2d730b8904b444d49a021ed37aeb2e3e, type: 3}
+  - {fileID: -1188120436, guid: 2d730b8904b444d49a021ed37aeb2e3e, type: 3}
+  - {fileID: -140272617, guid: 2d730b8904b444d49a021ed37aeb2e3e, type: 3}
+  - {fileID: -562573536, guid: 2d730b8904b444d49a021ed37aeb2e3e, type: 3}
+  - {fileID: 1340326703, guid: 2d730b8904b444d49a021ed37aeb2e3e, type: 3}
+  starIcon: {fileID: 1758636907, guid: 2d730b8904b444d49a021ed37aeb2e3e, type: 3}

@@ -63,7 +63,7 @@ public class CharacterUpgradePanel : MonoBehaviour
 
         // Hàng nâng sao
         starRow.Set("Nâng sao", $"Sao hiện tại: {stars}/{MetaProgress.MaxStars}",
-                    $"{stars}/{MetaProgress.MaxStars}", "", MetaProgress.GetStarUpgradeCost(c), wallet);
+                    $"{stars}/{MetaProgress.MaxStars}", "", MetaProgress.GetStarUpgradeCost(c), wallet, StatIcons.Star);
         starEffectsText.text = BuildStarEffectsText(c, stars);
 
         // 6 hàng chỉ số
@@ -77,7 +77,7 @@ public class CharacterUpgradePanel : MonoBehaviour
                 value += "  >  " + StatDisplay.FormatBonus(stat, MetaProgress.GetNextStatBonus(c, stat));
 
             statRows[i].Set(StatDisplay.Label(stat), StatDisplay.Describe(stat),
-                            $"Lv {MetaProgress.GetStatLevel(c.id, stat)}/{MetaProgress.MaxLevel}", value, cost, wallet);
+                            $"Lv {MetaProgress.GetStatLevel(c.id, stat)}/{MetaProgress.MaxLevel}", value, cost, wallet, StatIcons.Get(stat));
         }
         RebuildLayout();
     }

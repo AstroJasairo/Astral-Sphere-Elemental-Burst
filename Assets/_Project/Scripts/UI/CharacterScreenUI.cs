@@ -1,19 +1,18 @@
-﻿using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-// Màn hình Character: lưới 6 chỉ số + nút mở hai bảng nâng cấp
+// Màn hình Character: lưới 6 chỉ số (mỗi ô có icon + chữ) + nút mở hai bảng nâng cấp
 public class CharacterScreenUI : MonoBehaviour
 {
     [SerializeField] private CharacterCarouselView carousel;
 
-    [Header("Lưới chỉ số (mỗi ô một TMP_Text)")]
-    [SerializeField] private TMP_Text hpText;
-    [SerializeField] private TMP_Text atkText;
-    [SerializeField] private TMP_Text defText;
-    [SerializeField] private TMP_Text spdText;
-    [SerializeField] private TMP_Text magText;
-    [SerializeField] private TMP_Text manaText;
+    [Header("Lưới chỉ số (mỗi ô một StatCellView: icon + chữ)")]
+    [SerializeField] private StatCellView hpCell;
+    [SerializeField] private StatCellView atkCell;
+    [SerializeField] private StatCellView defCell;
+    [SerializeField] private StatCellView spdCell;
+    [SerializeField] private StatCellView magCell;
+    [SerializeField] private StatCellView manaCell;
 
     [Header("Nút và bảng")]
     [SerializeField] private Button upgradeButton;            // Nút xanh lá ở đáy
@@ -48,11 +47,13 @@ public class CharacterScreenUI : MonoBehaviour
         if (c == null) return;
 
         CharacterStatSheet s = CharacterStatSheet.Build(c);
-        hpText.text = $"HP\n<b>{s.maxHp:0.##}</b>";
-        atkText.text = $"ATK\n<b>{s.atk:0.00}</b>";
-        defText.text = $"DEF\n<b>{s.def:0.##}</b>";
-        spdText.text = $"SPD\n<b>{s.moveSpeed:0.##}</b>";
-        magText.text = $"MAG\n<b>{s.magnetRadius:0.##}</b>";
-        manaText.text = $"MAX MANA\n<b>{s.maxMana:0.#}</b>";
+
+        // Mỗi ô: icon lấy từ StatIcons (một nguồn chung), chữ giữ định dạng cũ
+        hpCell.Set(StatIcons.Get(StatType.Hp), $"HP\n<b>{s.maxHp:0.##}</b>");
+        atkCell.Set(StatIcons.Get(StatType.Atk), $"ATK\n<b>{s.atk:0.00}</b>");
+        defCell.Set(StatIcons.Get(StatType.Def), $"DEF\n<b>{s.def:0.##}</b>");
+        spdCell.Set(StatIcons.Get(StatType.Spd), $"SPD\n<b>{s.moveSpeed:0.##}</b>");
+        magCell.Set(StatIcons.Get(StatType.Mag), $"MAG\n<b>{s.magnetRadius:0.##}</b>");
+        manaCell.Set(StatIcons.Get(StatType.Mp), $"MAX MANA\n<b>{s.maxMana:0.#}</b>");
     }
 }

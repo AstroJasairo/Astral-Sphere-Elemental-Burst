@@ -23,6 +23,10 @@ public class MetaConfig : ScriptableObject
     public AllOutAssaultData allOutAssault;
     public List<SharedUpgradeEntry> sharedUpgrades = new List<SharedUpgradeEntry>();
 
+    [Header("Icon chỉ số (thứ tự StatType: Hp, Mp, Atk, Def, Spd, Mag)")]
+    public Sprite[] statIcons = new Sprite[6];
+    public Sprite starIcon;                                  // Icon hàng "Nâng sao" (tùy chọn)
+
     public CharacterData GetCharacter(string id)
     {
         foreach (CharacterData c in characters)
@@ -42,6 +46,20 @@ public class MetaConfig : ScriptableObject
         foreach (SharedUpgradeEntry e in sharedUpgrades)
             if (e.type == type) return e;
         return null;
+    }
+
+    // Trả về null nếu chưa gán: UI sẽ tự ẩn Image
+    public Sprite GetStatIcon(StatType stat)
+    {
+        int i = (int)stat;
+        return (statIcons != null && i >= 0 && i < statIcons.Length) ? statIcons[i] : null;
+    }
+
+    private void OnValidate()
+    {
+        int count = System.Enum.GetValues(typeof(StatType)).Length;
+        if (statIcons == null || statIcons.Length != count)
+            System.Array.Resize(ref statIcons, count);
     }
 
     [ContextMenu("Fill Default Shared Upgrades")]
