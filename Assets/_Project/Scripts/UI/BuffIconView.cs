@@ -10,22 +10,24 @@ public class BuffIconView : MonoBehaviour
     [SerializeField] private Image timerImage;        // Lớp tối quét dần (Image Type = Filled, Radial 360)
     [SerializeField] private TMP_Text labelText;      // Chữ thay thế khi chưa có hình (tùy chọn)
 
-    public void Setup(BuffVisual visual, Color borderColor)
+    public void Setup(BuffVisual visual, Color borderColor, Sprite iconOverride = null)
     {
         borderImage.color = borderColor;
 
-        bool hasIcon = visual.icon != null;
-        iconImage.sprite = visual.icon;
-        iconImage.enabled = hasIcon;                   // Chưa có hình thì ẩn ô hình và hiện nhãn chữ
+        Sprite sprite = iconOverride != null ? iconOverride : visual.icon;   // ưu tiên icon truyền vào
+        bool hasIcon = sprite != null;
+        iconImage.sprite = sprite;
+        iconImage.enabled = hasIcon;                   // Chưa có hình thì ẩn ô hình và hiện nhãn chữ (vd "ACT")
         ShowLabel(!hasIcon, visual.shortLabel);
     }
 
     // Dùng khi loại buff chưa được khai báo trong BuffCatalog
-    public void SetupFallback(string label, Color borderColor)
+    public void SetupFallback(string label, Color borderColor, Sprite iconOverride = null)
     {
         borderImage.color = borderColor;
-        iconImage.enabled = false;
-        ShowLabel(true, label);
+        iconImage.sprite = iconOverride;
+        iconImage.enabled = iconOverride != null;
+        ShowLabel(iconOverride == null, label);
     }
 
     // remaining01 = 1 lúc mới nhận buff, về 0 khi hết. Lớp tối lớn dần theo thời gian đã trôi qua.

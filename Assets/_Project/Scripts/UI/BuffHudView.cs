@@ -46,10 +46,19 @@ public class BuffHudView : MonoBehaviour
         icon.gameObject.SetActive(true);
         icon.transform.SetAsLastSibling();                         // Buff mới nằm cuối hàng
 
+        Sprite overrideIcon = GetIconOverride(type);
         BuffVisual visual = catalog != null ? catalog.Get(type) : null;
         if (visual != null) icon.Setup(visual, catalog.BorderColor(visual.isDebuff));
         else icon.SetupFallback(type.ToString(), catalog != null ? catalog.buffBorderColor : Color.green);
         return icon;
+    }
+
+    // Icon thay thế: buff của skill chủ động dùng icon trong skill data (null = dùng icon/nhãn của BuffCatalog)
+    private Sprite GetIconOverride(BuffType type)
+    {
+        if (type != BuffType.ActiveSkill) return null;
+        SkillSystem skills = stats.Skills;
+        return (skills != null && skills.ActiveData != null) ? skills.ActiveData.icon : null;
     }
 
     private void Release(BuffIconView icon)
