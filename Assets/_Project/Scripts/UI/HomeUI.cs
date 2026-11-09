@@ -106,6 +106,7 @@ public class HomeUI : MonoBehaviour
     // Back: đóng lớp trên cùng trước
     private void HandleBack()
     {
+        if (ConfirmDialog.IsOpen) { ConfirmDialog.Dismiss(); return; }
         if (leaderboard.IsOpen) { leaderboard.Close(); return; }
         if (sharedPanel.IsOpen) { sharedPanel.Close(); return; }
         if (upgradePanel.IsOpen) { upgradePanel.Close(); return; }

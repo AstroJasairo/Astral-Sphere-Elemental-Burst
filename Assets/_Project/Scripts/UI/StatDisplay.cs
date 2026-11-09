@@ -36,4 +36,11 @@ public static class StatDisplay
         if (stat == StatType.Mp) return $"-{value * 100f:0.#}%";
         return $"+{value * 100f:0.#}%";
     }
+
+    // Nâng cấp chung: Đồng hồ cát tính bằng GIÂY, các loại còn lại là phần trăm
+    public static string FormatSharedBonus(SharedUpgradeType type, float value)
+    {
+        if (type == SharedUpgradeType.Hourglass) return $"+{value:0.#}s";
+        return $"+{value * 100f:0.#}%";
+    }
 }

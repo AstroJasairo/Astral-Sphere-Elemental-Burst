@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 1664725721913535156}
   - component: {fileID: 8119888983681091678}
   - component: {fileID: 3633707916300047338}
-  - component: {fileID: 942633644278741002}
+  - component: {fileID: 2135607976956089166}
   - component: {fileID: 9084867997137140452}
   m_Layer: 8
-  m_Name: Projectile_Knife
+  m_Name: Projectile_MetalFragment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.15, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.3, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -84,8 +84,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
-  m_Color: {r: 0.4943396, g: 0.4943396, b: 0.4943396, a: 1}
+  m_Sprite: {fileID: 2208703988740019828, guid: c0f93ab427f3f2045b907d9e93271fcb, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -121,8 +121,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!58 &942633644278741002
-CircleCollider2D:
+--- !u!70 &2135607976956089166
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -156,7 +156,8 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.18
+  m_Size: {x: 0.5, y: 1}
+  m_Direction: 0
 --- !u!114 &9084867997137140452
 MonoBehaviour:
   m_ObjectHideFlags: 0

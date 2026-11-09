@@ -23,7 +23,7 @@ MonoBehaviour:
   allOutAssault: {fileID: 11400000, guid: 16c3ef2d274cf384eb538438421a14f2, type: 2}
   sharedUpgrades:
   - type: 0
-    displayName: Bling bling
+    displayName: Golden Age
     description: Increase the amount of gold collected
     icon: {fileID: 399831762, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     bonusByLevel:
@@ -37,9 +37,9 @@ MonoBehaviour:
     - 0.35
     - 0.4
     - 0.45000002
-    costByLevel: 000000004b0000002c010000a3020000b0040000530700008c0a00005b0e0000c0120000bb170000
+    costByLevel: 00000000f4010000b00400008c0a000088130000401f0000c832000008520000b888000050c30000
   - type: 1
-    displayName: "Pha l\xEA"
+    displayName: Crystallization
     description: Increase the amount of crystal collected
     icon: {fileID: -167562612, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     bonusByLevel:
@@ -53,9 +53,9 @@ MonoBehaviour:
     - 0.35
     - 0.4
     - 0.45000002
-    costByLevel: 000000004b0000002c010000a3020000b0040000530700008c0a00005b0e0000c0120000bb170000
+    costByLevel: 00000000f4010000b00400008c0a000088130000401f0000c832000008520000b888000050c30000
   - type: 2
-    displayName: Vampire's snack
+    displayName: Vampire's Snack
     description: Increase the amount of health restored from a health potion
     icon: {fileID: -869786658, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     bonusByLevel:
@@ -172,7 +172,7 @@ MonoBehaviour:
     displayName: "\u0110\u1ED3ng h\u1ED3 c\xE1t"
     description: "T\u0103ng s\u1ED1 gi\xE2y h\u1ED3i chi\xEAu \u0111\u01B0\u1EE3c
       gi\u1EA3m khi nh\u1EB7t \u0111\u1ED3ng h\u1ED3 c\xE1t"
-    icon: {fileID: 0}
+    icon: {fileID: 1625795909, guid: 8ba5b10fb9b980e4d81f5abb4a24ba5b, type: 3}
     bonusByLevel:
     - 0
     - 1

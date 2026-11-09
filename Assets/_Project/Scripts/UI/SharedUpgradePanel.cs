@@ -17,9 +17,17 @@ public class SharedUpgradePanel : MonoBehaviour
 
         foreach (SharedUpgradeEntry entry in cfg.sharedUpgrades)
         {
+            SharedUpgradeEntry captured = entry;
             SharedUpgradeType type = entry.type;                   // Sao chép để hàm bên dưới nhớ đúng loại
             UpgradeRowView row = Instantiate(rowPrefab, rowsParent);
-            row.Init(() => MetaProgress.TryUpgradeShared(type));
+            //row.Init(() => MetaProgress.TryUpgradeShared(type));
+
+            row.Init(() => ConfirmDialog.Ask(
+                $"Nâng cấp {captured.displayName}",
+                $"Nâng lên Lv {MetaProgress.GetSharedLevel(type) + 1}?",    // đọc lúc bấm nên luôn đúng cấp hiện tại
+                MetaProgress.GetSharedUpgradeCost(type),
+                () => MetaProgress.TryUpgradeShared(type)));
+
             rows.Add(row);
             entries.Add(entry);
         }
@@ -45,9 +53,9 @@ public class SharedUpgradePanel : MonoBehaviour
             SharedUpgradeEntry e = entries[i];
             int cost = MetaProgress.GetSharedUpgradeCost(e.type);
 
-            string value = $"+{MetaProgress.GetSharedBonus(e.type) * 100f:0.#}%";
+            string value = StatDisplay.FormatSharedBonus(e.type, MetaProgress.GetSharedBonus(e.type));
             if (cost >= 0)
-                value += $"  >  +{MetaProgress.GetNextSharedBonus(e.type) * 100f:0.#}%";
+                value += "  >  " + StatDisplay.FormatSharedBonus(e.type, MetaProgress.GetNextSharedBonus(e.type));
 
             rows[i].Set(e.displayName, e.description,
                         $"Lv {MetaProgress.GetSharedLevel(e.type)}/{MetaProgress.MaxLevel}", value, cost, wallet, e.icon);

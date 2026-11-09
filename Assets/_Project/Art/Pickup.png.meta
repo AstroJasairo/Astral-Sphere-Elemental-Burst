@@ -310,6 +310,28 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Hourglass
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8c264bf8df84e4e4bb7095307a6aa814
+      internalID: 1625795909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -330,6 +352,7 @@ TextureImporter:
       Gold: 399831762
       Haste_Potion: -1017320246
       Health_Potion: -869786658
+      Hourglass: 1625795909
       Magnet: -1887280746
       Mana_Potion: -282156456
       Rage_Potion: 1310689690

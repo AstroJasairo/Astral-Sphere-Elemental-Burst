@@ -190,7 +190,7 @@ public static class MetaProgress
         return kind == SkillKind.Passive ? p.passiveLevel : p.activeLevel;
     }
 
-    private static SkillDataBase GetSkillData(CharacterData c, SkillKind kind)
+    public static SkillDataBase GetSkillData(CharacterData c, SkillKind kind)
     {
         if (kind == SkillKind.Passive) return c.passiveSkill;
         return c.activeSkill;                                   // (không dùng toán tử ?: vì hai kiểu không chung kiểu cha rõ ràng)

@@ -28,6 +28,8 @@ public class CharacterProgress
     // Sửa dữ liệu thiếu hoặc sai (file cũ, file bị sửa tay, thêm chỉ số mới...)
     public void Normalize()
     {
+        passiveLevel = Mathf.Clamp(passiveLevel, 0, MetaProgress.MaxSkillLevel);
+        activeLevel = Mathf.Clamp(activeLevel, 0, MetaProgress.MaxSkillLevel);
         int count = SaveData.StatCount;
         if (statLevels == null || statLevels.Length != count)
         {

@@ -15,6 +15,13 @@ public class CharacterUpgradePanel : MonoBehaviour
     [SerializeField] private Transform statRowsParent;             // Nơi chứa 6 hàng
     [SerializeField] private RectTransform contentRoot;
 
+    [Header("Tab (theo CharacterInfoCarousel)")]
+    [SerializeField] private CharacterInfoCarousel tabs;
+    [SerializeField] private GameObject statsGroup;            // Chứa Promotion, StarRow, StarEffectsText, Text, StatRows
+    [SerializeField] private GameObject passiveGroup;
+    [SerializeField] private GameObject activeGroup;
+    [SerializeField] private ScrollRect scroll;                // Cuộn về đầu khi đổi tab
+
     private static readonly StatType[] Stats = (StatType[])Enum.GetValues(typeof(StatType));
 
     private readonly List<UpgradeRowView> statRows = new List<UpgradeRowView>();
@@ -25,18 +32,23 @@ public class CharacterUpgradePanel : MonoBehaviour
         starRow.Init(() =>
         {
             CharacterData c = carousel.Current;
-            if (c != null) MetaProgress.TryUpgradeStar(c);
+            if (c == null) return;
+            ConfirmDialog.Ask("Nâng sao", $"Nâng {c.characterName} lên {MetaProgress.GetStars(c.id) + 1} sao?",
+                              MetaProgress.GetStarUpgradeCost(c), () => MetaProgress.TryUpgradeStar(c));
         });
 
-        // Tạo 6 hàng chỉ số một lần
         foreach (StatType stat in Stats)
         {
-            StatType captured = stat;                              // Sao chép để hàm bên dưới nhớ đúng chỉ số của hàng này
+            StatType captured = stat;
             UpgradeRowView row = Instantiate(statRowPrefab, statRowsParent);
             row.Init(() =>
             {
                 CharacterData c = carousel.Current;
-                if (c != null) MetaProgress.TryUpgradeStat(c, captured);
+                if (c == null) return;
+                ConfirmDialog.Ask($"Nâng {StatDisplay.Label(captured)}",
+                                  $"Nâng lên Lv {MetaProgress.GetStatLevel(c.id, captured) + 1}?",
+                                  MetaProgress.GetStatUpgradeCost(c, captured),
+                                  () => MetaProgress.TryUpgradeStat(c, captured));
             });
             statRows.Add(row);
         }
@@ -45,12 +57,15 @@ public class CharacterUpgradePanel : MonoBehaviour
     private void OnEnable()
     {
         MetaProgress.OnChanged += Refresh;                         // Mua gì, đổi nhân vật... đều làm mới
+        if (tabs != null) tabs.OnTabChanged += ApplyTab;
+        ApplyTab(tabs != null ? tabs.Current : InfoTab.Stats);
         Refresh();
     }
 
     private void OnDisable()
     {
         MetaProgress.OnChanged -= Refresh;
+        if (tabs != null) tabs.OnTabChanged -= ApplyTab;         // kiểm tra null: object có thể đã bị hủy khi đóng scene
     }
 
     private void Refresh()
@@ -104,6 +119,16 @@ public class CharacterUpgradePanel : MonoBehaviour
             }
         }
         return builder.ToString();
+    }
+
+    // Bật đúng nhóm theo tab đang chọn
+    private void ApplyTab(InfoTab tab)
+    {
+        statsGroup.SetActive(tab == InfoTab.Stats);
+        passiveGroup.SetActive(tab == InfoTab.Passive);
+        activeGroup.SetActive(tab == InfoTab.Active);
+        RebuildLayout();                                         // Ép tính lại chiều cao trước khi đưa cuộn về đầu
+        if (scroll != null) scroll.verticalNormalizedPosition = 1f;
     }
 
     private void RebuildLayout()
