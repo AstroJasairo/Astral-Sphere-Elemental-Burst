@@ -79,32 +79,36 @@ public class CharacterData : ScriptableObject
     }
 
     [Header("Kỹ năng (để trống nếu nhân vật chưa có)")]
-    public PassiveSkillData passiveSkill;
+    [SerializeField, HideInInspector] private PassiveSkillData passiveSkill;   // CŨ (GĐ10): tự chuyển vào danh sách bên dưới
+    public List<PassiveSkillData> passiveSkills = new List<PassiveSkillData>();
     public ActiveSkillData activeSkill;
 
-    // Chuột phải vào tiêu đề asset > chọn mục này để điền sẵn số mặc định, khỏi nhập tay 6 x 20 con số
-    [ContextMenu("Fill Default Meta Progression")]
-    private void FillDefaultMetaProgression()
+    public int PassiveCount => passiveSkills != null ? passiveSkills.Count : 0;
+
+    public PassiveSkillData GetPassive(int index)
+        => (passiveSkills != null && index >= 0 && index < passiveSkills.Count) ? passiveSkills[index] : null;
+
+    // Chạy trong Editor khi asset được nạp hoặc sửa
+    private void OnValidate()
     {
-        starCosts = new[] { 1000, 3000, 8000, 20000, 50000 };
+        if (passiveSkills == null) passiveSkills = new List<PassiveSkillData>();
 
-        // Mức tăng mỗi cấp, theo thứ tự StatType: Hp, Mp, Atk, Def, Spd, Mag
-        // Hp và Def cộng thẳng; còn lại là phần trăm (0.04 = 4%)
-        float[] perLevel = { 10f, 0.02f, 0.04f, 2f, 0.02f, 0.06f };
-
-        statProgressions = new List<StatProgression>();
-        for (int s = 0; s < perLevel.Length; s++)
+        if (passiveSkill != null)                                    // Chuyển dữ liệu cũ: passive đơn lẻ thành phần tử đầu danh sách
         {
-            var p = new StatProgression { stat = (StatType)s, bonusByLevel = new float[10], costByLevel = new int[10] };
-            for (int i = 0; i < 10; i++)
-            {
-                p.bonusByLevel[i] = perLevel[s] * i;           // Cấp 1 (i = 0) không có bonus
-                p.costByLevel[i] = i == 0 ? 0 : 50 * i * i;    // Lên cấp 2 tốn 50, cấp 10 tốn 4050
-            }
-            statProgressions.Add(p);
-        }
+            if (!passiveSkills.Contains(passiveSkill)) passiveSkills.Insert(0, passiveSkill);
+            passiveSkill = null;
 #if UNITY_EDITOR
-        UnityEditor.EditorUtility.SetDirty(this);
+            UnityEditor.EditorUtility.SetDirty(this);
 #endif
+        }
+
+        // Nhắc nhở id thiếu hoặc trùng (id là khóa lưu tiến trình nên không được trống/trùng trong cùng nhân vật)
+        var seen = new HashSet<string>();
+        foreach (PassiveSkillData p in passiveSkills)
+        {
+            if (p == null) continue;
+            if (string.IsNullOrEmpty(p.id)) Debug.LogWarning($"{name}: passive '{p.name}' chưa có id.", this);
+            else if (!seen.Add(p.id)) Debug.LogWarning($"{name}: id passive '{p.id}' bị trùng.", this);
+        }
     }
 }

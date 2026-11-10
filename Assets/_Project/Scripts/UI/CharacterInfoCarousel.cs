@@ -4,14 +4,26 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public enum InfoTab { Stats, Passive, Active }
+public enum InfoTabKind { Stats, Passive, Active }
 
-// Carousel 3 tab thay cho StatGrid: Stats -> Passive -> Active -> Stats ... (vòng lặp vô hạn)
-// Cách điều khiển giống CharacterCarouselView: mũi tên, vuốt ngang, chấm trang.
+// Một tab: loại + số thứ tự (index chỉ có nghĩa với Passive: passive thứ mấy của nhân vật)
+public readonly struct InfoTab
+{
+    public static readonly InfoTab Stats = new InfoTab(InfoTabKind.Stats, 0);
+
+    public readonly InfoTabKind kind;
+    public readonly int index;
+
+    public InfoTab(InfoTabKind kind, int index) { this.kind = kind; this.index = index; }
+    public bool SameAs(InfoTab other) => kind == other.kind && index == other.index;
+}
+
+// Carousel tab thay cho StatGrid, vòng lặp vô hạn: Stats -> Passive 1..n -> Active -> Stats ...
+// Mỗi passive một tab. Nhân vật không có passive/active thì giữ MỘT tab "Chưa có kỹ năng" cho loại đó.
 public class CharacterInfoCarousel : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    [SerializeField] private CharacterCarouselView characterCarousel;   // để biết khi nào đổi nhân vật
-    [SerializeField] private GameObject[] pages = new GameObject[3];    // THỨ TỰ = InfoTab: Stats, Passive, Active
+    [SerializeField] private CharacterCarouselView characterCarousel;   // để biết nhân vật và khi nào đổi nhân vật
+    [SerializeField] private GameObject[] pages = new GameObject[3];    // THỨ TỰ = InfoTabKind: StatGrid, PassivePage, ActivePage
     [SerializeField] private Button previousButton;
     [SerializeField] private Button nextButton;
     [SerializeField] private Transform dotsParent;
@@ -22,12 +34,15 @@ public class CharacterInfoCarousel : MonoBehaviour, IBeginDragHandler, IDragHand
 
     [Header("Tùy chọn")]
     [SerializeField] private bool resetOnOpen = true;                    // Mở màn Character luôn về tab Stats
-    [SerializeField] private bool rememberOnCharacterChange = true;      // Đổi nhân vật: giữ tab hiện tại (tắt = về Stats)
+    [SerializeField] private bool rememberOnCharacterChange = true;      // Đổi nhân vật: giữ loại/số thứ tự tab (tắt = về Stats)
 
-    public InfoTab Current { get; private set; } = InfoTab.Stats;
-    public event Action<InfoTab> OnTabChanged;                           // Panel nâng cấp lắng nghe
+    public InfoTab Current => (position >= 0 && position < tabs.Count) ? tabs[position] : InfoTab.Stats;
+    public int Count => tabs.Count;
+    public event Action<InfoTab> OnTabChanged;                           // Trang skill và panel nâng cấp lắng nghe
 
+    private readonly List<InfoTab> tabs = new List<InfoTab>();
     private readonly List<Image> dots = new List<Image>();
+    private int position;
     private string lastCharacterId = "";
     private Vector2 dragStart;
 
@@ -35,20 +50,15 @@ public class CharacterInfoCarousel : MonoBehaviour, IBeginDragHandler, IDragHand
     {
         previousButton.onClick.AddListener(Previous);
         nextButton.onClick.AddListener(Next);
-
-        if (dotPrefab != null)
-            for (int i = 0; i < pages.Length; i++)
-                dots.Add(Instantiate(dotPrefab, dotsParent));
-
-        ApplyVisuals();
     }
 
     private void OnEnable()
     {
         MetaProgress.OnChanged += HandleMetaChanged;
         lastCharacterId = CurrentCharacterId();
-        if (resetOnOpen) SetTab(InfoTab.Stats);
-        else ApplyVisuals();
+        RebuildTabs(!resetOnOpen);
+        ApplyVisuals();
+        Notify();
     }
 
     private void OnDisable()
@@ -61,25 +71,38 @@ public class CharacterInfoCarousel : MonoBehaviour, IBeginDragHandler, IDragHand
 
     private void Step(int delta)
     {
-        int count = pages.Length;
-        // Vòng lặp A-B-C-A-B (phép chia dư), giống carousel nhân vật
-        SetTab((InfoTab)(((int)Current + delta + count) % count));
-    }
-
-    public void SetTab(InfoTab tab)
-    {
-        bool changed = tab != Current;
-        Current = tab;
+        if (tabs.Count == 0) return;
+        position = (position + delta + tabs.Count) % tabs.Count;         // Vòng lặp A-B-C-A-B (phép chia dư)
         ApplyVisuals();
-        if (changed) OnTabChanged?.Invoke(tab);
+        Notify();
     }
 
-    private void ApplyVisuals()
+    // Dựng lại danh sách tab theo nhân vật hiện tại. keepCurrent: cố giữ đúng loại/số thứ tự tab đang xem.
+    private void RebuildTabs(bool keepCurrent)
     {
-        for (int i = 0; i < pages.Length; i++)
-            if (pages[i] != null) pages[i].SetActive(i == (int)Current);
-        for (int i = 0; i < dots.Count; i++)
-            dots[i].color = i == (int)Current ? dotOn : dotOff;
+        InfoTab previous = Current;                                       // Đọc TRƯỚC khi xóa danh sách
+        CharacterData c = characterCarousel != null ? characterCarousel.Current : null;
+
+        tabs.Clear();
+        tabs.Add(InfoTab.Stats);
+        int passiveTabs = Mathf.Max(1, c != null ? c.PassiveCount : 0);   // Không có passive: vẫn một tab trống
+        for (int i = 0; i < passiveTabs; i++) tabs.Add(new InfoTab(InfoTabKind.Passive, i));
+        tabs.Add(new InfoTab(InfoTabKind.Active, 0));
+
+        position = keepCurrent ? FindPosition(previous) : 0;
+    }
+
+    // Tìm đúng tab (loại, số thứ tự). Passive vượt quá số passive mới thì lấy passive cuối cùng
+    private int FindPosition(InfoTab wanted)
+    {
+        int best = 0;
+        for (int i = 0; i < tabs.Count; i++)
+        {
+            if (tabs[i].kind != wanted.kind) continue;
+            best = i;
+            if (tabs[i].index == wanted.index) return i;
+        }
+        return best;
     }
 
     // MetaProgress.OnChanged phát cả khi tiêu vàng, nên so id nhân vật để biết có đổi nhân vật thật không
@@ -88,7 +111,10 @@ public class CharacterInfoCarousel : MonoBehaviour, IBeginDragHandler, IDragHand
         string id = CurrentCharacterId();
         if (id == lastCharacterId) return;
         lastCharacterId = id;
-        if (!rememberOnCharacterChange) SetTab(InfoTab.Stats);
+
+        RebuildTabs(rememberOnCharacterChange);
+        ApplyVisuals();
+        Notify();                                                         // Số tab đổi nên luôn báo cho các panel
     }
 
     private string CurrentCharacterId()
@@ -96,6 +122,24 @@ public class CharacterInfoCarousel : MonoBehaviour, IBeginDragHandler, IDragHand
         CharacterData c = characterCarousel != null ? characterCarousel.Current : null;
         return c != null ? c.id : "";
     }
+
+    private void ApplyVisuals()
+    {
+        InfoTabKind kind = Current.kind;
+        for (int i = 0; i < pages.Length; i++)
+            if (pages[i] != null) pages[i].SetActive(i == (int)kind);     // Mọi tab Passive dùng CHUNG một trang
+
+        if (dotPrefab != null)                                            // Chấm trang theo số tab hiện có
+            while (dots.Count < tabs.Count) dots.Add(Instantiate(dotPrefab, dotsParent));
+        for (int i = 0; i < dots.Count; i++)
+        {
+            bool used = i < tabs.Count;
+            dots[i].gameObject.SetActive(used);
+            if (used) dots[i].color = i == position ? dotOn : dotOff;
+        }
+    }
+
+    private void Notify() { OnTabChanged?.Invoke(Current); }
 
     // ----- Vuốt ngang: cần đủ cả 3 interface kéo thì Unity mới gửi sự kiện -----
     public void OnBeginDrag(PointerEventData e) { dragStart = e.position; }

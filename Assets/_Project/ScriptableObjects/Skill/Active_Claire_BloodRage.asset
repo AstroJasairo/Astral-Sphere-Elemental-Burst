@@ -10,8 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cacbfc2d5cfabd64d81455366c0afc3f, type: 3}
-  m_Name: Active_BloodRage
+  m_Name: Active_Claire_BloodRage
   m_EditorClassIdentifier: Assembly-CSharp::BloodRageSkillData
+  id: claire_blood_rage
   skillName: "Huy\u1EBFt n\u1ED9"
   icon: {fileID: 0}
   description: Descriptions

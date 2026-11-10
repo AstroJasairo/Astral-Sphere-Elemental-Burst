@@ -5,6 +5,8 @@ public abstract class SkillDataBase : ScriptableObject
 {
     public const int MaxLevel = 5;
 
+    [Tooltip("Khóa lưu tiến trình, DUY NHẤT trong một nhân vật, KHÔNG đổi sau khi phát hành. Quy ước: <nhân vật>_<kỹ năng>, vd claire_fire_resistance")]
+    public string id;
     public string skillName;
     public Sprite icon;
     [TextArea] public string description;                       // Mô tả chung (tab dùng)

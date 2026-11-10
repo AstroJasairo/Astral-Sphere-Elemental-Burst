@@ -27,6 +27,7 @@ public class BloodRageSkillData : ActiveSkillData
     [ContextMenu("Fill Claire Defaults")]
     private void FillDefaults()
     {
+        id = "claire_blood_rage";
         skillName = "Huyết nộ";
         cooldownStart = CooldownStart.AfterEffectEnds;
         hpDrainPerSecond = new[] { 0.05f, 0.05f, 0.04f, 0.04f, 0.03f };

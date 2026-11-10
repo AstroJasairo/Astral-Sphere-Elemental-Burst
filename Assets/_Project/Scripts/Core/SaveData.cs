@@ -15,6 +15,14 @@ public class ScoreEntry
     public string date;
 }
 
+// Cấp của một passive, khóa theo id của skill
+[Serializable]
+public class SkillLevelEntry
+{
+    public string id;
+    public int level;
+}
+
 // Tiến trình vĩnh viễn của một nhân vật
 [Serializable]
 public class CharacterProgress
@@ -22,8 +30,23 @@ public class CharacterProgress
     public string id;
     public int stars;            // 0 đến 5
     public int[] statLevels;     // Cấp của 6 chỉ số theo thứ tự enum StatType, bắt đầu từ 1
-    public int passiveLevel;     // 0 = chưa mở khóa
+    public int passiveLevel;                                                    // CŨ (GĐ10): chỉ còn để chuyển sang passiveLevels
+    public List<SkillLevelEntry> passiveLevels = new List<SkillLevelEntry>();   // Cấp từng passive theo id
     public int activeLevel;
+
+    public int GetPassiveLevel(string skillId)
+    {
+        for (int i = 0; i < passiveLevels.Count; i++)
+            if (passiveLevels[i].id == skillId) return passiveLevels[i].level;
+        return 0;
+    }
+
+    public void SetPassiveLevel(string skillId, int level)
+    {
+        for (int i = 0; i < passiveLevels.Count; i++)
+            if (passiveLevels[i].id == skillId) { passiveLevels[i].level = level; return; }
+        passiveLevels.Add(new SkillLevelEntry { id = skillId, level = level });
+    }
 
     // Sửa dữ liệu thiếu hoặc sai (file cũ, file bị sửa tay, thêm chỉ số mới...)
     public void Normalize()
@@ -40,6 +63,12 @@ public class CharacterProgress
         }
         for (int i = 0; i < count; i++)
             statLevels[i] = Mathf.Clamp(statLevels[i], 1, MetaProgress.MaxLevel);
+        if (passiveLevels == null) passiveLevels = new List<SkillLevelEntry>();
+        for (int i = passiveLevels.Count - 1; i >= 0; i--)
+        {
+            if (passiveLevels[i] == null || string.IsNullOrEmpty(passiveLevels[i].id)) { passiveLevels.RemoveAt(i); continue; }
+            passiveLevels[i].level = Mathf.Clamp(passiveLevels[i].level, 0, MetaProgress.MaxSkillLevel);
+        }
 
         stars = Mathf.Clamp(stars, 0, MetaProgress.MaxStars);
     }

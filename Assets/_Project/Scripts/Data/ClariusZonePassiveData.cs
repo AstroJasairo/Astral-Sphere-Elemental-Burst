@@ -16,6 +16,7 @@ public class ClariusZonePassiveData : PassiveSkillData
     [ContextMenu("Fill Claire Defaults")]
     private void FillDefaults()
     {
+        id = "claire_red_vitality";
         skillName = "Sinh lực đỏ rực";
         damageReduction = new[] { 0.05f, 0.10f, 0.15f, 0.20f, 0.25f };
         upgradeCost = new[] { 1000, 3000, 8000, 20000, 50000 };          // TẠM
@@ -35,6 +36,13 @@ public class ClariusZonePassiveEffect : PassiveSkillEffect
     public ClariusZonePassiveEffect(PlayerStats stats, ClariusZonePassiveData data) : base(stats) { this.data = data; }
 
     public override void SetLevel(int level) { reduction = data.GetReduction(level); }
+
+    // Bị vô hiệu (Silence): gỡ nguồn giảm đang đăng ký. Bật lại thì Tick tự đăng ký lại khi đứng trong vùng.
+    public override void Disable()
+    {
+        applied = false;
+        stats.Reductions.Remove(this);
+    }
 
     public override void Tick(float deltaTime)
     {

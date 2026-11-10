@@ -2,34 +2,44 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-// Một trang tab skill: icon, tên, cấp, mô tả. Gắn lên PassivePage và ActivePage (chọn Kind khác nhau).
+// Một trang tab skill: icon, tên, cấp, mô tả. PassivePage dùng chung cho mọi passive (đọc số thứ tự từ carousel).
 public class SkillInfoView : MonoBehaviour
 {
     [SerializeField] private CharacterCarouselView carousel;
+    [SerializeField] private CharacterInfoCarousel tabs;     // Cần cho trang Passive: biết đang xem passive thứ mấy
     [SerializeField] private SkillKind kind;
     [SerializeField] private Image icon;
+    [SerializeField] private TMP_Text headerText;            // Tùy chọn: "BỊ ĐỘNG 2/3" hoặc "CHỦ ĐỘNG"
     [SerializeField] private TMP_Text nameText;
     [SerializeField] private TMP_Text levelText;
     [SerializeField] private TMP_Text descriptionText;
 
-    // Trang chỉ bật khi tab đang chọn nên OnEnable chạy mỗi lần chuyển tới => luôn có dữ liệu mới
     private void OnEnable()
     {
         MetaProgress.OnChanged += Refresh;
+        if (tabs != null) tabs.OnTabChanged += HandleTabChanged;
         Refresh();
     }
 
     private void OnDisable()
     {
         MetaProgress.OnChanged -= Refresh;
+        if (tabs != null) tabs.OnTabChanged -= HandleTabChanged;      // kiểm tra null: object có thể đã bị hủy khi đóng scene
     }
+
+    private void HandleTabChanged(InfoTab tab) { Refresh(); }
 
     private void Refresh()
     {
         CharacterData c = carousel.Current;
         if (c == null) return;
 
-        SkillDataBase data = MetaProgress.GetSkillData(c, kind);
+        int index = (kind == SkillKind.Passive && tabs != null) ? tabs.Current.index : 0;
+
+        if (headerText != null)
+            headerText.text = kind == SkillKind.Passive ? $"BỊ ĐỘNG {index + 1}/{Mathf.Max(1, c.PassiveCount)}" : "CHỦ ĐỘNG";
+
+        SkillDataBase data = MetaProgress.GetSkillData(c, kind, index);
         if (data == null)                                           // Nhân vật chưa có skill (vd Acronomia)
         {
             nameText.text = "Chưa có kỹ năng";
@@ -39,7 +49,7 @@ public class SkillInfoView : MonoBehaviour
             return;
         }
 
-        int level = MetaProgress.GetSkillLevel(c.id, kind);
+        int level = MetaProgress.GetSkillLevel(c, kind, index);
         nameText.text = data.skillName;
         icon.sprite = data.icon;
         icon.enabled = data.icon != null;

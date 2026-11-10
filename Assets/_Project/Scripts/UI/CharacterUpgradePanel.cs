@@ -121,12 +121,12 @@ public class CharacterUpgradePanel : MonoBehaviour
         return builder.ToString();
     }
 
-    // Bật đúng nhóm theo tab đang chọn
+    // Bật đúng nhóm theo LOẠI tab đang chọn (mọi tab Passive dùng chung PassiveGroup)
     private void ApplyTab(InfoTab tab)
     {
-        statsGroup.SetActive(tab == InfoTab.Stats);
-        passiveGroup.SetActive(tab == InfoTab.Passive);
-        activeGroup.SetActive(tab == InfoTab.Active);
+        statsGroup.SetActive(tab.kind == InfoTabKind.Stats);
+        passiveGroup.SetActive(tab.kind == InfoTabKind.Passive);
+        activeGroup.SetActive(tab.kind == InfoTabKind.Active);
         RebuildLayout();                                         // Ép tính lại chiều cao trước khi đưa cuộn về đầu
         if (scroll != null) scroll.verticalNormalizedPosition = 1f;
     }

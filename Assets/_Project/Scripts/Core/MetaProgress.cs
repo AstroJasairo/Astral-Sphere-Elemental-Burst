@@ -183,46 +183,74 @@ public static class MetaProgress
 
     public const int MaxSkillLevel = SkillDataBase.MaxLevel;
 
-    public static int GetSkillLevel(string id, SkillKind kind)
+    // Passive: index = thứ tự trong CharacterData.passiveSkills. Active: index luôn là 0.
+    public static SkillDataBase GetSkillData(CharacterData c, SkillKind kind, int index = 0)
     {
-        if (string.IsNullOrEmpty(id)) return 0;
-        CharacterProgress p = SaveSystem.Data.GetOrCreateCharacter(id);
-        return kind == SkillKind.Passive ? p.passiveLevel : p.activeLevel;
+        if (c == null) return null;
+        if (kind == SkillKind.Passive) return c.GetPassive(index);
+        return c.activeSkill;
     }
 
-    public static SkillDataBase GetSkillData(CharacterData c, SkillKind kind)
+    public static int GetSkillLevel(CharacterData c, SkillKind kind, int index = 0)
     {
-        if (kind == SkillKind.Passive) return c.passiveSkill;
-        return c.activeSkill;                                   // (không dùng toán tử ?: vì hai kiểu không chung kiểu cha rõ ràng)
+        if (c == null) return 0;
+        CharacterProgress p = SaveSystem.Data.GetOrCreateCharacter(c.id);
+        if (kind == SkillKind.Active) return p.activeLevel;
+
+        PassiveSkillData data = c.GetPassive(index);
+        if (data == null || string.IsNullOrEmpty(data.id)) return 0;
+        MigrateLegacyPassive(c, p);
+        return p.GetPassiveLevel(data.id);
     }
 
-    // Cấp skill KHÔNG được vượt số sao hiện có (2 sao: tối đa Lv2)
-    public static SkillUpgradeStatus GetSkillUpgradeStatus(CharacterData c, SkillKind kind)
+    // Dữ liệu GĐ10 chỉ có MỘT passiveLevel: chuyển nó sang passive đầu tiên (một lần, rồi xóa số cũ)
+    private static void MigrateLegacyPassive(CharacterData c, CharacterProgress p)
     {
-        SkillDataBase data = GetSkillData(c, kind);
+        if (p.passiveLevel <= 0) return;
+        PassiveSkillData first = c.GetPassive(0);
+        if (first == null || string.IsNullOrEmpty(first.id)) return;
+        if (p.GetPassiveLevel(first.id) < p.passiveLevel) p.SetPassiveLevel(first.id, p.passiveLevel);
+        p.passiveLevel = 0;
+    }
+
+    // Cấp skill KHÔNG được vượt số sao hiện có (2 sao: tối đa Lv2), tính riêng cho từng skill
+    public static SkillUpgradeStatus GetSkillUpgradeStatus(CharacterData c, SkillKind kind, int index = 0)
+    {
+        SkillDataBase data = GetSkillData(c, kind, index);
         if (data == null) return SkillUpgradeStatus.NoSkill;
-        int level = GetSkillLevel(c.id, kind);
+        if (kind == SkillKind.Passive && string.IsNullOrEmpty(data.id))
+        {
+            Debug.LogWarning($"MetaProgress: passive '{data.name}' chưa có id nên không lưu được cấp.", data);
+            return SkillUpgradeStatus.NoSkill;
+        }
+
+        int level = GetSkillLevel(c, kind, index);
         if (level >= MaxSkillLevel || data.GetUpgradeCost(level) < 0) return SkillUpgradeStatus.MaxLevel;
         if (level >= GetStars(c.id)) return SkillUpgradeStatus.NeedMoreStars;
         return SkillUpgradeStatus.Available;
     }
 
     // Vàng để lên cấp kế. -1 nếu không có skill hoặc đã tối đa. (Chưa đủ sao vẫn trả giá để UI hiển thị.)
-    public static int GetSkillUpgradeCost(CharacterData c, SkillKind kind)
+    public static int GetSkillUpgradeCost(CharacterData c, SkillKind kind, int index = 0)
     {
-        SkillDataBase data = GetSkillData(c, kind);
+        SkillDataBase data = GetSkillData(c, kind, index);
         if (data == null) return -1;
-        int level = GetSkillLevel(c.id, kind);
+        int level = GetSkillLevel(c, kind, index);
         return level >= MaxSkillLevel ? -1 : data.GetUpgradeCost(level);
     }
 
-    public static bool TryUpgradeSkill(CharacterData c, SkillKind kind)
+    public static bool TryUpgradeSkill(CharacterData c, SkillKind kind, int index = 0)
     {
-        if (GetSkillUpgradeStatus(c, kind) != SkillUpgradeStatus.Available) return false;
-        if (!TrySpend(GetSkillUpgradeCost(c, kind))) return false;
+        if (GetSkillUpgradeStatus(c, kind, index) != SkillUpgradeStatus.Available) return false;
+        if (!TrySpend(GetSkillUpgradeCost(c, kind, index))) return false;
 
         CharacterProgress p = SaveSystem.Data.GetOrCreateCharacter(c.id);
-        if (kind == SkillKind.Passive) p.passiveLevel++; else p.activeLevel++;
+        if (kind == SkillKind.Active) p.activeLevel++;
+        else
+        {
+            string skillId = c.GetPassive(index).id;
+            p.SetPassiveLevel(skillId, p.GetPassiveLevel(skillId) + 1);
+        }
         Commit();
         return true;
     }

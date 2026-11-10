@@ -3,7 +3,10 @@ public abstract class PassiveSkillEffect
 {
     protected readonly PlayerStats stats;
     protected PassiveSkillEffect(PlayerStats stats) { this.stats = stats; }
+
     public abstract void SetLevel(int level);
+    public virtual void Enable() { }       // Bắt đầu có hiệu lực: đăng ký nguồn giảm sát thương, hồi phục...
+    public virtual void Disable() { }      // Tạm vô hiệu (Silence): PHẢI gỡ mọi thứ đã đăng ký
     public virtual void Tick(float deltaTime) { }
 }
 

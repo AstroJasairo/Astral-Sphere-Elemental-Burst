@@ -267,6 +267,7 @@ public class PlayerStats : MonoBehaviour
         foreach (ElementType e in System.Enum.GetValues(typeof(ElementType)))
             sb.Append(e).Append(": giảm ").Append((Reductions.GetTotalReduction(e) * 100f).ToString("0.#"))
               .Append("%, nhận ").Append(CalculateIncomingDamage(100f, e).ToString("0.##")).Append('\n');
+            sb.Append("Hồi phục: x").Append(HealingBonuses.Multiplier.ToString("0.###")).Append('\n');
         Debug.Log(sb.ToString());
     }
 

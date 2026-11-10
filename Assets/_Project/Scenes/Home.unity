@@ -3777,6 +3777,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeSection
   carousel: {fileID: 1758867114}
+  tabs: {fileID: 0}
   kind: 1
   row: {fileID: 1453549253}
   effectsText: {fileID: 691440928}
@@ -4346,8 +4347,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillInfoView
   carousel: {fileID: 1758867114}
+  tabs: {fileID: 1120816874}
   kind: 1
   icon: {fileID: 675543769}
+  headerText: {fileID: 806773426}
   nameText: {fileID: 982352629}
   levelText: {fileID: 1998198933}
   descriptionText: {fileID: 2030843953}
@@ -11491,8 +11494,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillInfoView
   carousel: {fileID: 1758867114}
+  tabs: {fileID: 1120816874}
   kind: 0
   icon: {fileID: 466947751}
+  headerText: {fileID: 1206909948}
   nameText: {fileID: 1971423368}
   levelText: {fileID: 1979807510}
   descriptionText: {fileID: 1092855975}
@@ -22282,7 +22287,7 @@ GameObject:
   - component: {fileID: 2069726444}
   - component: {fileID: 2069726443}
   m_Layer: 5
-  m_Name: PassGroup
+  m_Name: PassiveGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22323,6 +22328,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillUpgradeSection
   carousel: {fileID: 1758867114}
+  tabs: {fileID: 1120816874}
   kind: 0
   row: {fileID: 2096907397}
   effectsText: {fileID: 2128890160}
