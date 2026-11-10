@@ -15,6 +15,7 @@ MonoBehaviour:
   enemyName: Tank
   type: 2
   prefab: {fileID: 8366031795934451168, guid: c8a1b34288732ca4086091d2c8f036af, type: 3}
+  damageElement: 6
   baseHp: 60
   baseDamage: 3
   moveSpeed: 1.2
@@ -36,3 +37,11 @@ MonoBehaviour:
     weight: 0
   sharedDrops: {fileID: 11400000, guid: 9ca022523918b004cb2af03cda563da3, type: 2}
   statusImmune: 0
+  isBoss: 0
+  bossMusic:
+    label: 
+    clips: []
+    volume: 1
+    pitchRange: {x: 0.95, y: 1.05}
+    minInterval: 0.05
+    category: 1

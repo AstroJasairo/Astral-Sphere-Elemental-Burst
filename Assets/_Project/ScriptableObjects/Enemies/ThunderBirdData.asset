@@ -15,6 +15,7 @@ MonoBehaviour:
   enemyName: "Chim s\u1EA5m s\xE9t"
   type: 1
   prefab: {fileID: 8366031795934451168, guid: 218cddc53a0673043b7c249023ee0ed7, type: 3}
+  damageElement: 2
   baseHp: 3000
   baseDamage: 25
   moveSpeed: 2.5
@@ -37,6 +38,13 @@ MonoBehaviour:
   sharedDrops: {fileID: 0}
   statusImmune: 1
   isBoss: 1
+  bossMusic:
+    label: 
+    clips: []
+    volume: 1
+    pitchRange: {x: 0.95, y: 1.05}
+    minInterval: 0.05
+    category: 1
   firstStrikeDelay: 2
   strikeInterval: 2.5
   strikesPerWave: 3

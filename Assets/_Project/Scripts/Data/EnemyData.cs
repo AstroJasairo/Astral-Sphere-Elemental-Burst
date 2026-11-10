@@ -9,6 +9,10 @@ public class EnemyData : ScriptableObject
     public EnemyType type;
     public GameObject prefab;      // Prefab của quái (đi kèm dữ liệu)
 
+    [Header("Sát thương")]
+    [Tooltip("Nguyên tố của MỌI đòn của kẻ địch này (chạm, đạn, vùng cảnh báo). Pure = bỏ qua DEF và giảm sát thương")]
+    public ElementType damageElement = ElementType.Metal;
+
     [Header("Chỉ số gốc (trước khi nhân hệ số theo thời gian)")]
     public float baseHp = 20f;
     public float baseDamage = 5f;
@@ -43,4 +47,21 @@ public class EnemyData : ScriptableObject
 
     [Header("Âm thanh (chỉ BOSS)")]
     public AudioCue bossMusic = new AudioCue();       // Có file thì chuyển sang khi BOSS xuất hiện
+
+    // Chuột phải tiêu đề asset: điền nguyên tố theo loại quái thường. BOSS đặt tay trong Inspector.
+    [ContextMenu("Fill Element By Enemy Type")]
+    private void FillElementByType()
+    {
+        switch (type)
+        {
+            case EnemyType.Melee: damageElement = ElementType.Metal; break;
+            case EnemyType.Ranged: damageElement = ElementType.Plant; break;
+            case EnemyType.Tank: damageElement = ElementType.Earth; break;
+            case EnemyType.Mage: damageElement = ElementType.Fire; break;
+            case EnemyType.Assassin: damageElement = ElementType.Dark; break;
+        }
+#if UNITY_EDITOR
+        UnityEditor.EditorUtility.SetDirty(this);
+#endif
+    }
 }

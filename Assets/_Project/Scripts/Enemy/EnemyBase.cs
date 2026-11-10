@@ -88,7 +88,7 @@ public class EnemyBase : MonoBehaviour
         if (Time.time < nextAttackTime) return;
         if (!other.TryGetComponent(out PlayerStats player)) return;
 
-        player.TakeDamage(damage);
+        player.TakeDamage(damage, Data.damageElement);
         nextAttackTime = Time.time + AttackCooldown;
     }
 

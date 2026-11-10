@@ -92,7 +92,7 @@ public class ThunderBirdBoss : BossBase
 
             // shrink = false: vòng cam lớn dần từ tâm, chạm viền thì sét đánh (dạng 1 trong bản vẽ)
             TelegraphSpawner.Instance.SpawnCircle(center, skills.strikeRadius, skills.strikeWarning,
-                                                  false, skills.strikeDamage, strikeCallback);
+                                                  false, skills.strikeDamage, strikeCallback, Enemy.Data.damageElement);
         }
     }
 
@@ -124,7 +124,7 @@ public class ThunderBirdBoss : BossBase
         // Dạng 4: vùng cam mở rộng từ giữa ra hai bên. damage = 0 vì sát thương do BOSS đâm vào người chơi
         // (cơ chế "chạm" có sẵn của EnemyBase).
         TelegraphSpawner.Instance.SpawnBox(origin, facing, skills.dashLength, skills.dashWidth,
-                                           skills.dashWarning, RectFill.ExpandSideways, 0f, dashCallback);
+                                           skills.dashWarning, RectFill.ExpandSideways, 0f, dashCallback, element: Enemy.Data.damageElement);
     }
 
     // Telegraph gọi khi vùng cam chạm hai cạnh bên: bắt đầu lao

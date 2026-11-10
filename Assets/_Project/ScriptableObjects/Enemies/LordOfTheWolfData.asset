@@ -15,6 +15,7 @@ MonoBehaviour:
   enemyName: Lord of the Wolf
   type: 0
   prefab: {fileID: 8366031795934451168, guid: ee4d22e578d2a3a4a9866ef6a7d48de4, type: 3}
+  damageElement: 6
   baseHp: 4000
   baseDamage: 20
   moveSpeed: 3
@@ -37,6 +38,13 @@ MonoBehaviour:
   sharedDrops: {fileID: 0}
   statusImmune: 1
   isBoss: 1
+  bossMusic:
+    label: 
+    clips: []
+    volume: 1
+    pitchRange: {x: 0.95, y: 1.05}
+    minInterval: 0.05
+    category: 1
   immuneDistance: 8
   immuneMargin: 0.8
   firstClawDelay: 4

@@ -5,6 +5,7 @@ public class EnemyProjectile : MonoBehaviour
 {
     private Rigidbody2D rb;
     private float damage;
+    private ElementType element;
     private float lifeLeft;
 
     private void Awake()
@@ -13,9 +14,10 @@ public class EnemyProjectile : MonoBehaviour
     }
 
     // Gọi mỗi lần lấy từ pool: đặt lại toàn bộ trạng thái
-    public void Init(float damage, Vector2 direction, float speed, float lifetime)
+    public void Init(float damage, ElementType element, Vector2 direction, float speed, float lifetime)
     {
         this.damage = damage;
+        this.element = element;
         lifeLeft = lifetime;
         rb.linearVelocity = direction * speed;
     }
@@ -29,7 +31,7 @@ public class EnemyProjectile : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.TryGetComponent(out PlayerStats player)) return;   // Chỉ quan tâm người chơi
-        player.TakeDamage(damage);
+        player.TakeDamage(damage, element);
         PoolManager.Instance.Release(gameObject);                     // Pool tự bỏ qua nếu đã trả về rồi
     }
 }

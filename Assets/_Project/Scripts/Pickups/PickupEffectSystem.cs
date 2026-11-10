@@ -18,7 +18,7 @@ public class PickupEffectSystem : MonoBehaviour
             case PickupType.HealthPotion:
                 // Bonus nâng cấp chung CỘNG THÊM vào phần trăm hồi máu
                 float healPct = Mathf.Clamp01(data.healPercent + Meta(SharedUpgradeType.HealthPotion));
-                stats.Health.Heal(stats.Health.MaxHealth * healPct);
+                stats.ReceiveHealing(stats.Health.MaxHealth * healPct);       // CŨ: stats.Health.Heal(...)
                 break;
             case PickupType.SpeedPotion:
                 stats.Buffs.Apply(BuffType.Speed, data.speedBonusPct + Meta(SharedUpgradeType.SpeedPotion), data.speedDuration);

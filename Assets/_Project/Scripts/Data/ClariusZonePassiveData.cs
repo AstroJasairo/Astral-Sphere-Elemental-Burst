@@ -30,6 +30,7 @@ public class ClariusZonePassiveEffect : PassiveSkillEffect
     private const float CheckInterval = 0.1f;                   // Kiểm tra vị trí 10 lần/giây là đủ
     private readonly ClariusZonePassiveData data;
     private float reduction, timer;
+    private bool applied;                                       // Đang đăng ký nguồn giảm hay chưa
 
     public ClariusZonePassiveEffect(PlayerStats stats, ClariusZonePassiveData data) : base(stats) { this.data = data; }
 
@@ -40,8 +41,14 @@ public class ClariusZonePassiveEffect : PassiveSkillEffect
         timer += deltaTime;
         if (timer < CheckInterval) return;
         timer = 0f;
-        // Chỉ một hệ số (không nhân theo số kiếm) nên đứng chồng nhiều vùng vẫn không cộng dồn
-        stats.IncomingDamageMultiplier = IsInsideAnyZone() ? 1f - reduction : 1f;
+
+        bool inside = IsInsideAnyZone();
+        if (inside == applied) return;                          // Không đổi trạng thái thì không làm gì
+        applied = inside;
+
+        // Nguồn "giảm MỌI sát thương". Đứng chồng nhiều vùng vẫn chỉ là MỘT nguồn nên không cộng dồn
+        if (inside) stats.Reductions.Set(this, DamageReductionSet.AllScope, reduction);
+        else stats.Reductions.Remove(this);
     }
 
     private bool IsInsideAnyZone()
@@ -49,7 +56,7 @@ public class ClariusZonePassiveEffect : PassiveSkillEffect
         Vector2 p = stats.transform.position;
         foreach (ClariusSword sword in ClariusSword.Instances)  // HashSet: foreach không sinh rác
         {
-            if (!sword.IsAuraActive) continue;                  // Kiếm đang rơi hoặc đang mờ thì chưa tính
+            if (!sword.IsAuraActive) continue;
             float r = sword.AuraRadius;
             if (((Vector2)sword.transform.position - p).sqrMagnitude <= r * r) return true;
         }

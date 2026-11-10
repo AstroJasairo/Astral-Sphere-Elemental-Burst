@@ -28,6 +28,7 @@ public abstract class Telegraph : MonoBehaviour
     protected float duration;
     protected float elapsed;                                 // Thời gian đã trôi qua (giây)
     protected float damage;
+    public ElementType Element { get; set; } = ElementType.Pure;
     protected Transform playerTransform;
     protected PlayerStats playerStats;
 
@@ -92,7 +93,7 @@ public abstract class Telegraph : MonoBehaviour
         active.Remove(this);
 
         if (DamageOnFinish && damage > 0f && playerStats != null && IsPlayerInside(playerTransform.position))
-            playerStats.TakeDamage(damage);
+            playerStats.TakeDamage(damage, Element);
         AudioManager.Play(triggerCue);
         onTriggered?.Invoke(this);                              // BOSS làm hiệu ứng (sét đánh, lao tới...)
         PoolManager.Instance.Release(gameObject);
@@ -120,7 +121,7 @@ public abstract class Telegraph : MonoBehaviour
 
     protected void DealDamage()
     {
-        if (playerStats != null) playerStats.TakeDamage(damage);
+        if (playerStats != null) playerStats.TakeDamage(damage, Element);
     }
 
     public static void ResetStatics() { active.Clear(); }

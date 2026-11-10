@@ -1833,8 +1833,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -12159,8 +12159,8 @@ MonoBehaviour:
   cooldownText: {fileID: 405955707}
   glowImage: {fileID: 1169064494}
   bandSpeed: 0.7
-  bandWidth: 0.18
-  borderWidth: 0.06
+  bandWidth: 0.2
+  borderWidth: 0.1
   softness: 0.03
 --- !u!1 &2119886171
 GameObject:

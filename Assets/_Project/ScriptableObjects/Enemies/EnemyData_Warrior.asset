@@ -15,6 +15,7 @@ MonoBehaviour:
   enemyName: Warrior
   type: 0
   prefab: {fileID: 8366031795934451168, guid: a9e0ed4dae8790748956e63efa0b2bca, type: 3}
+  damageElement: 0
   baseHp: 20
   baseDamage: 5
   moveSpeed: 2
@@ -36,3 +37,11 @@ MonoBehaviour:
     weight: 1
   sharedDrops: {fileID: 11400000, guid: 9ca022523918b004cb2af03cda563da3, type: 2}
   statusImmune: 0
+  isBoss: 0
+  bossMusic:
+    label: 
+    clips: []
+    volume: 1
+    pitchRange: {x: 0.95, y: 1.05}
+    minInterval: 0.05
+    category: 1

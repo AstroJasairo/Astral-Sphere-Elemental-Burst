@@ -74,7 +74,7 @@ public class BloodRageEffect : ActiveSkillEffect
 
     public override void OnEnemyKilled(EnemyBase enemy)
     {
-        stats.Health.Heal(enemy.MaxHealth * healPct);           // Theo máu tối đa của quái bị hạ
+        stats.ReceiveHealing(enemy.MaxHealth * healPct);            // Theo máu tối đa của quái bị hạ
     }
 
     public override void End() { }                              // Buff ATK tự hết hạn theo thời gian, không cần gỡ

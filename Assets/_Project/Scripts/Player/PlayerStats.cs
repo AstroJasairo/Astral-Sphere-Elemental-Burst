@@ -51,7 +51,11 @@ public class PlayerStats : MonoBehaviour
     public float OrbitHitIntervalMultiplier => orbitHitIntervalMultiplier;
 
     public float Shield { get; private set; }
-    public float IncomingDamageMultiplier { get; set; } = 1f;
+
+    // Các nguồn giảm sát thương và hiệu quả hồi phục (passive, buff... tự đăng ký vào đây)
+    public DamageReductionSet Reductions { get; } = new DamageReductionSet();
+    public HealingBonusSet HealingBonuses { get; } = new HealingBonusSet();
+    //public float IncomingDamageMultiplier { get; set; } = 1f;
     public event Action<float, float> OnShieldChanged;   // (lá chắn hiện tại, tối đa) -> HUD lắng nghe
 
     public IReadOnlyList<StarPerk> ActivePerks => activePerks;
@@ -161,14 +165,22 @@ public class PlayerStats : MonoBehaviour
         return bonus;
     }
 
-    public void TakeDamage(float amount)
+    // Sát thương thực nhận = số gốc x (1 - giảm sát thương) x 100/(100+DEF). Pure bỏ qua cả hai.
+    public float CalculateIncomingDamage(float amount, ElementType element)
+    {
+        if (element == ElementType.Pure) return amount;
+        float reduction = Reductions.GetTotalReduction(element);
+        return amount * (1f - reduction) * 100f / (100f + Def);
+    }
+
+    public void TakeDamage(float amount, ElementType element)
     {
         if (debugInvincible && Debug.isDebugBuild) return;
-        float damage = amount * 100f / (100f + Def) * IncomingDamageMultiplier;       // DEF giảm sát thương trước
+        float damage = CalculateIncomingDamage(amount, element);
 
-        if (Shield > 0f)
+        if (Shield > 0f)                                   // Khiên hấp thụ trước, kể cả Pure
         {
-            float absorbed = Mathf.Min(Shield, damage);    // Khiên chịu được bao nhiêu thì chịu bấy nhiêu
+            float absorbed = Mathf.Min(Shield, damage);
             Shield -= absorbed;
             damage -= absorbed;
             OnShieldChanged?.Invoke(Shield, MaxHp);
@@ -197,6 +209,13 @@ public class PlayerStats : MonoBehaviour
         OnShieldChanged?.Invoke(Shield, MaxHp);
     }
 
+    // MỌI nguồn hồi máu phải đi qua hàm này để được nhân "hiệu quả hồi phục"
+    public void ReceiveHealing(float amount)
+    {
+        if (amount <= 0f) return;
+        Health.Heal(amount * HealingBonuses.Multiplier);
+    }
+
     public void SetOrbitModifiers(float speedMultiplier, float hitIntervalMultiplier)
     {
         orbitSpeedMultiplier = speedMultiplier;
@@ -215,4 +234,42 @@ public class PlayerStats : MonoBehaviour
         }
         return 1f + bonus;
     }
+
+    // ----- Debug: kiểm tra công thức mà không cần chờ quái đánh -----
+    [ContextMenu("Debug: Add Test Reductions")]
+    private void DebugAddReductions()
+    {
+        Reductions.Set("test_all", DamageReductionSet.AllScope, 0.15f);      // chung 15%
+        Reductions.Set("test_fire_a", (int)ElementType.Fire, 0.20f);         // hỏa 20%
+        Reductions.Set("test_fire_b", (int)ElementType.Fire, 0.10f);         // hỏa 10% (cùng nhóm với dòng trên)
+        DebugLogDamageTable();
+    }
+
+    [ContextMenu("Debug: Add Test Healing")]
+    private void DebugAddHealing()
+    {
+        HealingBonuses.Set("test_heal_a", 0.15f);
+        HealingBonuses.Set("test_heal_b", 0.10f);
+        Debug.Log($"[Combat] Hệ số hồi phục = x{HealingBonuses.Multiplier:0.###}");
+    }
+
+    [ContextMenu("Debug: Clear Test Modifiers")]
+    private void DebugClearModifiers()
+    {
+        Reductions.Remove("test_all"); Reductions.Remove("test_fire_a"); Reductions.Remove("test_fire_b");
+        HealingBonuses.Remove("test_heal_a"); HealingBonuses.Remove("test_heal_b");
+    }
+
+    [ContextMenu("Debug: Log Damage Table")]
+    private void DebugLogDamageTable()
+    {
+        var sb = new System.Text.StringBuilder("[Combat] Đánh 100 sát thương, DEF = " + Def + "\n");
+        foreach (ElementType e in System.Enum.GetValues(typeof(ElementType)))
+            sb.Append(e).Append(": giảm ").Append((Reductions.GetTotalReduction(e) * 100f).ToString("0.#"))
+              .Append("%, nhận ").Append(CalculateIncomingDamage(100f, e).ToString("0.##")).Append('\n');
+        Debug.Log(sb.ToString());
+    }
+
+    [ContextMenu("Debug: Take 20 Fire")] private void DebugTakeFire() { TakeDamage(20f, ElementType.Fire); }
+    [ContextMenu("Debug: Take 20 Pure")] private void DebugTakePure() { TakeDamage(20f, ElementType.Pure); }
 }
