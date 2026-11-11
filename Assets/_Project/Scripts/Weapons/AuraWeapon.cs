@@ -16,6 +16,10 @@ public class AuraWeapon : WeaponBase
         base.Update();
         if (data == null) return;
 
+        // Choáng: Aura biến mất khỏi màn hình (Fire() cũng không chạy vì WeaponBase đã dừng)
+        bool stunned = owner != null && owner.IsStunned;
+        if (visual != null && visual.gameObject.activeSelf == stunned) visual.gameObject.SetActive(!stunned);
+
         // Cập nhật hình minh họa khi bán kính đổi (lên cấp hoặc bật/tắt bonus All Out Assault)
         float r = Radius;
         if (Mathf.Approximately(r, shownRadius)) return;

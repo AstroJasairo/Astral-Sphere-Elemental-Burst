@@ -12,6 +12,7 @@ public class SkillButtonView : MonoBehaviour
     [SerializeField] private Image cooldownOverlay;            // Image Filled, Radial 360, màu đen mờ
     [SerializeField] private TMP_Text cooldownText;            // Tùy chọn: thêm sau cũng được
     [SerializeField] private Image glowImage;                  // GlowRing: dùng Mat_SkillBorderGlow
+    [SerializeField] private Image silenceOverlay;               // Square đỏ mờ, chỉ hiện khi bị Câm lặng
 
     [Header("Hiệu ứng viền")]
     [SerializeField] private float bandSpeed = 0.7f;           // Số vòng quanh viền mỗi giây
@@ -37,6 +38,7 @@ public class SkillButtonView : MonoBehaviour
         glowImage.enabled = false;
         cooldownOverlay.enabled = false;
         if (cooldownText != null) cooldownText.enabled = false;
+        if (silenceOverlay != null) silenceOverlay.enabled = false;
     }
 
     private void OnDestroy()
@@ -97,6 +99,9 @@ public class SkillButtonView : MonoBehaviour
             glowMaterial.SetFloat(PhaseId, Mathf.Repeat(Time.time * bandSpeed, 1f));
 
         // ---- Hồi chiêu: vòng tối + số giây ----
+        bool silenced = skills.IsSilenced;
+        if (silenceOverlay != null && silenceOverlay.enabled != silenced) silenceOverlay.enabled = silenced;
+
         bool cooling = skills.IsCooldownRunning;
         cooldownOverlay.enabled = cooling;
         if (cooling)

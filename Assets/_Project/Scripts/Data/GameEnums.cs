@@ -30,7 +30,11 @@ public enum PerkType
 }
 
 // Các buff tạm thời có thời hạn (All Out Assault có kênh riêng nên không nằm ở đây)
-public enum BuffType { Speed, Rage, Magnet, ScoreBoost, ActiveSkill }
+public enum BuffType
+{
+    Speed, Rage, Magnet, ScoreBoost, ActiveSkill,
+    Slow, Root, Stun, Frostbite, Silence, Vulnerable, Exhaust, Blind, Weakness, ManaDrain
+}
 
 // 9 loại nâng cấp chung (theo tài liệu hệ thống)
 public enum SharedUpgradeType

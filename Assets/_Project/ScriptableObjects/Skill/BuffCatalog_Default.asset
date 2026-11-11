@@ -40,3 +40,53 @@ MonoBehaviour:
     shortLabel: ACT
     icon: {fileID: 0}
     isDebuff: 0
+  - type: 5
+    displayName: Slow
+    shortLabel: SLW
+    icon: {fileID: 0}
+    isDebuff: 1
+  - type: 6
+    displayName: Root
+    shortLabel: RT
+    icon: {fileID: 0}
+    isDebuff: 1
+  - type: 7
+    displayName: Stun
+    shortLabel: STN
+    icon: {fileID: 0}
+    isDebuff: 1
+  - type: 8
+    displayName: Frostbite
+    shortLabel: FRZ
+    icon: {fileID: 0}
+    isDebuff: 1
+  - type: 9
+    displayName: Silence
+    shortLabel: SIL
+    icon: {fileID: 0}
+    isDebuff: 1
+  - type: 10
+    displayName: Vulnerable
+    shortLabel: VUL
+    icon: {fileID: 0}
+    isDebuff: 1
+  - type: 11
+    displayName: Exhaust
+    shortLabel: EXH
+    icon: {fileID: 0}
+    isDebuff: 1
+  - type: 12
+    displayName: Blind
+    shortLabel: BLD
+    icon: {fileID: 0}
+    isDebuff: 1
+  - type: 13
+    displayName: Weakness
+    shortLabel: WKN
+    icon: {fileID: 0}
+    isDebuff: 1
+  - type: 14
+    displayName: ManaDrain
+    shortLabel: DRN
+    icon: {fileID: 0}
+    isDebuff: 1

@@ -14,6 +14,7 @@ public class OrbitWeapon : WeaponBase
     private readonly List<int> staleKeys = new List<int>();
     private float angle;
     private float scanTimer;
+    private bool orbsHidden;
 
     // Khi lên cấp: bổ sung thêm quả cầu cho đủ số lượng của cấp mới
     protected override void OnLevelChanged()
@@ -26,13 +27,23 @@ public class OrbitWeapon : WeaponBase
             orbs.Add(go.transform);
         }
         for (int i = 0; i < orbs.Count; i++)
-            orbs[i].gameObject.SetActive(i < count);
+            orbs[i].gameObject.SetActive(!orbsHidden && i < count);       // đang bị ẩn thì không bật lại
     }
 
     // Vũ khí này không dùng hồi chiêu của WeaponBase (nên KHÔNG gọi base.Update): tự xoay và tự quét
     protected override void Update()
     {
         if (data == null) return;
+
+        bool stunned = owner != null && owner.IsStunned;
+        if (stunned != orbsHidden)                                         // chỉ đổi khi trạng thái ĐỔI
+        {
+            orbsHidden = stunned;
+            int count = CurrentLevel.projectileCount;
+            for (int i = 0; i < orbs.Count; i++)
+                orbs[i].gameObject.SetActive(!stunned && i < count);
+        }
+        if (stunned) return;                                               // Choáng: không xoay, không gây sát thương
 
         Rotate();
 
@@ -47,8 +58,9 @@ public class OrbitWeapon : WeaponBase
     {
         int count = CurrentLevel.projectileCount;
         float speedMultiplier = owner != null ? owner.OrbitSpeedMultiplier : 1f;
-
-        angle = Mathf.Repeat(angle + data.orbitSpeed * speedMultiplier * Time.deltaTime, 360f);
+        float attackSpeed = owner != null ? owner.AttackSpeedMultiplier : 1f;     // Tê cóng
+        angle = Mathf.Repeat(angle + data.orbitSpeed * speedMultiplier * attackSpeed * Time.deltaTime, 360f);
+        //angle = Mathf.Repeat(angle + data.orbitSpeed * speedMultiplier * Time.deltaTime, 360f);
         float step = 360f / count;
 
         for (int i = 0; i < count; i++)

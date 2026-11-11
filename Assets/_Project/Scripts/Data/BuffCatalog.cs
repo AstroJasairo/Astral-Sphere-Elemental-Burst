@@ -58,7 +58,13 @@ public class BuffCatalog : ScriptableObject
         foreach (BuffType t in Enum.GetValues(typeof(BuffType)))
         {
             if (entries.Exists(e => e.type == t)) continue;
-            entries.Add(new BuffVisual { type = t, displayName = t.ToString(), shortLabel = DefaultLabel(t) });
+            entries.Add(new BuffVisual
+            {
+                type = t,
+                displayName = t.ToString(),
+                shortLabel = DefaultLabel(t),
+                isDebuff = BuffController.IsDebuff(t)              // debuff: viền đỏ
+            });
         }
         byType = null;
 #if UNITY_EDITOR
@@ -74,6 +80,17 @@ public class BuffCatalog : ScriptableObject
             case BuffType.Rage: return "ATK";
             case BuffType.Magnet: return "MAG";
             case BuffType.ScoreBoost: return "PTS";
+            case BuffType.ActiveSkill: return "ACT";
+            case BuffType.Slow: return "SLW";
+            case BuffType.Root: return "RT";
+            case BuffType.Stun: return "STN";
+            case BuffType.Frostbite: return "FRZ";
+            case BuffType.Silence: return "SIL";
+            case BuffType.Vulnerable: return "VUL";
+            case BuffType.Exhaust: return "EXH";
+            case BuffType.Blind: return "BLD";
+            case BuffType.Weakness: return "WKN";
+            case BuffType.ManaDrain: return "DRN";
             default:
                 string name = t.ToString().ToUpper();
                 return name.Length > 3 ? name.Substring(0, 3) : name;

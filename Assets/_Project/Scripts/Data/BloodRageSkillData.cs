@@ -69,7 +69,8 @@ public class BloodRageEffect : ActiveSkillEffect
         HealthSystem health = stats.Health;
         float allowed = health.CurrentHealth - 1f;              // Luôn chừa 1 HP, skill không tự giết người chơi
         if (allowed <= 0f) return;
-        float drain = stats.MaxHp * drainPct * elapsed;         // Đi thẳng vào máu, không qua DEF/khiên
+        //float drain = stats.MaxHp * drainPct * elapsed;         // Đi thẳng vào máu, không qua DEF/khiên
+        float drain = stats.Health.MaxHealth * drainPct * elapsed;      // Mất máu theo máu tối đa hiệu lực
         health.TakeDamage(Mathf.Min(drain, allowed));
     }
 

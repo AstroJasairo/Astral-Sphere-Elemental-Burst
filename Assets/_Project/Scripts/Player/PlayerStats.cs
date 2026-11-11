@@ -36,19 +36,36 @@ public class PlayerStats : MonoBehaviour
     private float aoaAtkPct, aoaSpeedPct;        // Buff All Out Assault (tạm thời, kênh riêng)
     private float aoaCooldownMultiplier = 1f;    // 1 = bình thường, 0.25 = hồi chiêu còn 25%
 
+    private float Debuff(BuffType type) { return Mathf.Clamp01(Buffs.GetValue(type)); }
     private readonly List<StarPerk> activePerks = new List<StarPerk>();
 
     public CharacterData Character => character;
     public float MaxHp => baseMaxHp + hpBonus;
-    public float Atk => baseAtk * (1f + atkBonusPct + aoaAtkPct + Buffs.GetValue(BuffType.Rage) + Buffs.GetValue(BuffType.ActiveSkill));
-    public float Def => baseDef + defBonus;
-    public float MoveSpeed => baseMoveSpeed * (1f + speedBonusPct + aoaSpeedPct + Buffs.GetValue(BuffType.Speed));
-    public float MagnetRadius => baseMagnetRadius * (1f + magnetBonusPct + Buffs.GetValue(BuffType.Magnet));
+    public float Atk => baseAtk * (1f + atkBonusPct + aoaAtkPct + Buffs.GetValue(BuffType.Rage) + Buffs.GetValue(BuffType.ActiveSkill))
+                    * (1f - Debuff(BuffType.Exhaust));
+    public float Def => (baseDef + defBonus) * (1f - Debuff(BuffType.Vulnerable));
+    public float MoveSpeed
+    {
+        get
+        {
+            if (IsRooted || IsStunned) return 0f;                              // Trói và Choáng: không di chuyển
+            return baseMoveSpeed * (1f + speedBonusPct + aoaSpeedPct + Buffs.GetValue(BuffType.Speed))
+                   * (1f - Debuff(BuffType.Slow));
+        }
+    }
+    public float MagnetRadius => baseMagnetRadius * (1f + magnetBonusPct + Buffs.GetValue(BuffType.Magnet))
+                                 * (1f - Debuff(BuffType.Blind));
     public float ManaCostMultiplier => Mathf.Max(MinManaCostMultiplier, 1f - manaCostReductionPct);
     public float CooldownMultiplier => aoaCooldownMultiplier;
     public float ScoreMultiplier => 1f + Buffs.GetValue(BuffType.ScoreBoost);
     public float OrbitSpeedMultiplier => orbitSpeedMultiplier;
     public float OrbitHitIntervalMultiplier => orbitHitIntervalMultiplier;
+
+    public bool IsStunned => Buffs.GetValue(BuffType.Stun) > 0f;
+    public bool IsRooted => Buffs.GetValue(BuffType.Root) > 0f;
+    public bool IsSilenced => Buffs.GetValue(BuffType.Silence) > 0f;
+    public float AttackSpeedMultiplier => Mathf.Max(0.1f, 1f - Debuff(BuffType.Frostbite));   // Tê cóng: 0.5 = tốc đánh còn một nửa
+    public float ManaGainMultiplier => 1f - Debuff(BuffType.ManaDrain);
 
     public float Shield { get; private set; }
 
@@ -92,6 +109,17 @@ public class PlayerStats : MonoBehaviour
             if (buffs == null && !TryGetComponent(out buffs))
                 buffs = gameObject.AddComponent<BuffController>();
             return buffs;
+        }
+    }
+
+    private PlayerDebuffSystem debuffs;
+    public PlayerDebuffSystem Debuffs
+    {
+        get
+        {
+            if (debuffs == null && !TryGetComponent(out debuffs))
+                debuffs = gameObject.AddComponent<PlayerDebuffSystem>();
+            return debuffs;
         }
     }
 
@@ -162,13 +190,14 @@ public class PlayerStats : MonoBehaviour
             else if (perk.type == PerkType.AllOutAssaultDamageBonus && AllOutAssaultActive)
                 bonus += perk.bonus;   // Chỉ tính khi đang trong All Out Assault
         }
-        return bonus;
+        return bonus * (1f - Debuff(BuffType.Exhaust));
     }
 
     // Sát thương thực nhận = số gốc x (1 - giảm sát thương) x 100/(100+DEF). Pure bỏ qua cả hai.
     public float CalculateIncomingDamage(float amount, ElementType element)
     {
         if (element == ElementType.Pure) return amount;
+        Reductions.EffectScale = 1f - Debuff(BuffType.Vulnerable);
         float reduction = Reductions.GetTotalReduction(element);
         return amount * (1f - reduction) * 100f / (100f + Def);
     }
@@ -205,7 +234,8 @@ public class PlayerStats : MonoBehaviour
 
     public void AddShield(float amount)
     {
-        Shield = Mathf.Min(Shield + amount, MaxHp);       // Lá chắn tối đa bằng máu tối đa
+        //Shield = Mathf.Min(Shield + amount, MaxHp);       // Lá chắn tối đa bằng máu tối đa
+        Shield = Mathf.Min(Shield + amount, Health.MaxHealth);      // AddShield: giới hạn theo máu tối đa hiệu lực
         OnShieldChanged?.Invoke(Shield, MaxHp);
     }
 

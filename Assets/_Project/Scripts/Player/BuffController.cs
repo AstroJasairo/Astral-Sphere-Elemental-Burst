@@ -43,4 +43,56 @@ public class BuffController : MonoBehaviour
         float remaining = b.endTime - Time.time;
         return (remaining > 0f && b.duration > 0f) ? remaining / b.duration : 0f;
     }
+
+    // Loại nào là debuff (dùng cho kiểm tra, HUD viền đỏ, "tẩy hiệu ứng")
+    public static bool IsDebuff(BuffType type)
+    {
+        switch (type)
+        {
+            case BuffType.Slow:
+            case BuffType.Root:
+            case BuffType.Stun:
+            case BuffType.Frostbite:
+            case BuffType.Silence:
+            case BuffType.Vulnerable:
+            case BuffType.Exhaust:
+            case BuffType.Blind:
+            case BuffType.Weakness:
+            case BuffType.ManaDrain:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    // Khống chế cùng loại KHÔNG cộng dồn: mạnh hơn thì thay, bằng nhau thì reset thời gian, yếu hơn thì bỏ qua.
+    // Root/Stun/Silence: "mạnh" = còn hiệu lực lâu hơn. Các loại còn lại: "mạnh" = giá trị % lớn hơn.
+    public bool ApplyDebuff(BuffType type, float value, float duration)
+    {
+        if (duration <= 0f) return false;
+
+        Buff b = buffs[(int)type];
+        float now = Time.time;
+        float newEnd = now + duration;
+
+        if (now < b.endTime)                                       // đang dính cùng loại
+        {
+            bool byDuration = type == BuffType.Root || type == BuffType.Stun || type == BuffType.Silence;
+            float current = byDuration ? b.endTime : b.value;
+            float incoming = byDuration ? newEnd : value;
+            if (incoming < current && !Mathf.Approximately(incoming, current)) return false;   // yếu hơn: bỏ qua
+        }
+
+        b.value = value;                                           // mạnh hơn: thay thế. Bằng nhau: làm mới thời gian
+        b.duration = duration;
+        b.endTime = newEnd;
+        buffs[(int)type] = b;
+        return true;
+    }
+
+    // Gỡ ngay một buff/debuff (Silence kết thúc buff của skill chủ động, tẩy hiệu ứng...)
+    public void Clear(BuffType type)
+    {
+        buffs[(int)type] = default(Buff);
+    }
 }

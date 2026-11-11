@@ -18,7 +18,8 @@ public class ProjectileWeapon : WeaponBase
         get
         {
             float multiplier = owner != null ? owner.CooldownMultiplier : 1f;
-            return Mathf.Max(0.03f, data.burstInterval * multiplier);
+            float speed = owner != null ? owner.AttackSpeedMultiplier : 1f;           // Tê cóng làm loạt bắn chậm lại
+            return Mathf.Max(0.03f, data.burstInterval * multiplier / speed);
         }
     }
 
@@ -61,7 +62,7 @@ public class ProjectileWeapon : WeaponBase
     private void TickBurst()
     {
         if (burstRemaining <= 0 || data == null) return;
-
+        if (owner != null && owner.IsStunned) { burstRemaining = 0; return; }        // Choáng: hủy các viên chưa bắn
         burstTimer -= Time.deltaTime;                      // Dừng khi game tạm dừng
         if (burstTimer > 0f) return;
 

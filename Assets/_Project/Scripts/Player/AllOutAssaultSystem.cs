@@ -35,7 +35,7 @@ public class AllOutAssaultSystem : MonoBehaviour
 
     private void HandleKilled(EnemyBase enemy)
     {
-        AddMana(enemy.Data.manaValue);
+        AddMana(enemy.Data.manaValue * stats.ManaGainMultiplier);   // Suy giảm mana chỉ ảnh hưởng mana từ hạ gục (bình mana nạp đầy không bị)
     }
 
     private void HandleCollected(PickupType type, int amount)

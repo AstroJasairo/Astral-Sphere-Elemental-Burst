@@ -12,6 +12,10 @@ public class HudView : MonoBehaviour
     [SerializeField] private Slider hpBar;
     [SerializeField] private Slider shieldBar;
 
+    [Header("Yếu đuối")]
+    [SerializeField] private RectTransform weakenFill;          // Image xám neo bên phải thanh máu
+    [SerializeField] private float weakenFillMargin = 2f;       // Lề trong của thanh máu (bằng margin của Background/Fill)
+
     [SerializeField] private CrystalLevelSystem levelSystem;
     [SerializeField] private RunStats runStats;
     [SerializeField] private PlayerStats playerStats;
@@ -74,7 +78,27 @@ public class HudView : MonoBehaviour
 
     private void RefreshHp(float current, float max)
     {
-        hpBar.value = current / max;
+        float baseMax = playerHealth.BaseMaxHealth;             // Fill chính tính theo máu tối đa GỐC
+        hpBar.value = baseMax > 0f ? current / baseMax : 0f;
+        UpdateWeakenFill(baseMax, max);
+    }
+
+    // Phần xám = phần máu tối đa bị giảm tạm thời, neo từ mép phải vào
+    private void UpdateWeakenFill(float baseMax, float effectiveMax)
+    {
+        if (weakenFill == null) return;
+
+        float lost = baseMax > 0f ? 1f - effectiveMax / baseMax : 0f;
+        bool show = lost > 0.0001f;
+        if (weakenFill.gameObject.activeSelf != show) weakenFill.gameObject.SetActive(show);
+        if (!show) return;
+
+        float inner = ((RectTransform)hpBar.transform).rect.width - 2f * weakenFillMargin;
+        weakenFill.anchorMin = new Vector2(1f, 0f);
+        weakenFill.anchorMax = new Vector2(1f, 1f);
+        weakenFill.pivot = new Vector2(1f, 0.5f);
+        weakenFill.offsetMin = new Vector2(-weakenFillMargin - inner * lost, weakenFillMargin);
+        weakenFill.offsetMax = new Vector2(-weakenFillMargin, -weakenFillMargin);
     }
 
     private void RefreshShield(float current, float max)

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b814486185866254d9174a763f4f841a, type: 3}
+  m_Name: Dot_Bleeding
+  m_EditorClassIdentifier: Assembly-CSharp::DotData
+  id: dot_bleeding
+  displayName: "Ch\u1EA3y m\xE1u"
+  shortLabel: BLD
+  icon: {fileID: 0}
+  element: 0
+  damagePerTick: 1
+  tickInterval: 1
+  duration: 5
+  maxStacks: 10

@@ -18,6 +18,8 @@ public class SkillSystem : MonoBehaviour
 
     public bool HasActive => ActiveData != null && ActiveLevel > 0 && active != null;
     public bool IsEffectActive { get; private set; }
+    public bool IsSilenced { get; private set; }
+    public event Action<bool> OnSilenceChanged;                  // Nút skill đọc để hiện overlay
     public event Action OnActivated;                             // UI/âm thanh nghe
     public event Action OnEffectEnded;
 
@@ -28,7 +30,8 @@ public class SkillSystem : MonoBehaviour
     private float cooldownStartTime, cooldownEndTime, cooldownTotal;
 
     // ---- Dữ liệu cho UI (nút skill đọc mỗi frame) ----
-    public bool IsReady => HasActive && Time.time >= cooldownEndTime
+    // IsReady: không kích hoạt được khi bị Câm lặng. Hồi chiêu vẫn chạy bình thường.
+    public bool IsReady => HasActive && !IsSilenced && Time.time >= cooldownEndTime
                            && GameManager.Instance != null && !GameManager.Instance.IsEnded;
     public bool IsCooldownRunning => HasActive && Time.time >= cooldownStartTime && Time.time < cooldownEndTime;
     public float CooldownRemaining => HasActive ? Mathf.Max(0f, cooldownEndTime - Time.time) : 0f;
@@ -104,6 +107,32 @@ public class SkillSystem : MonoBehaviour
             if (suppressed) passives[i].Disable();
             else passives[i].Enable();
         }
+    }
+
+    // PlayerDebuffSystem gọi khi Silence bắt đầu/kết thúc
+    public void SetSilenced(bool silenced)
+    {
+        if (IsSilenced == silenced) return;
+        IsSilenced = silenced;
+
+        SetPassivesSuppressed(silenced);                         // Tắt/bật lại MỌI passive
+        if (silenced && IsEffectActive) ForceEndEffect();        // Skill chủ động đang chạy: kết thúc ngay
+        OnSilenceChanged?.Invoke(silenced);
+    }
+
+    // Kết thúc sớm hiệu lực: gỡ buff, kiểu AfterEffectEnds thì hồi chiêu bắt đầu tính ngay
+    private void ForceEndEffect()
+    {
+        IsEffectActive = false;
+        active.End();
+        stats.Buffs.Clear(BuffType.ActiveSkill);                 // Gỡ buff ATK và icon trên thanh buff
+
+        if (ActiveData.cooldownStart == CooldownStart.AfterEffectEnds)
+        {
+            cooldownStartTime = Time.time;
+            cooldownEndTime = cooldownStartTime + cooldownTotal;
+        }
+        OnEffectEnded?.Invoke();
     }
 
     public bool TryActivate()
