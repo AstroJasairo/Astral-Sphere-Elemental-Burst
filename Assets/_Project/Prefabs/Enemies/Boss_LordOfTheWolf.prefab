@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 8167421897174393828}
   - component: {fileID: 7738119015124957909}
   - component: {fileID: -3181807115423161019}
+  - component: {fileID: 9117022940107853566}
   m_Layer: 7
   m_Name: Boss_LordOfTheWolf
   m_TagString: Untagged
@@ -211,3 +212,15 @@ MonoBehaviour:
   bodyRenderer: {fileID: 2690515725399655507}
   immuneColor: {r: 0.55, g: 0.65, b: 0.9, a: 1}
   clawEffectPrefab: {fileID: 8854848550667421270, guid: 55050ba76dc142f439eaf184d45768d8, type: 3}
+--- !u!114 &9117022940107853566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8366031795934451168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04e27b9bde370e7428136db161697198, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossDamageReduction

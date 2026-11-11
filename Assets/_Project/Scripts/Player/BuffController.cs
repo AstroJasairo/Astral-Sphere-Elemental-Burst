@@ -36,6 +36,12 @@ public class BuffController : MonoBehaviour
         return Time.time < b.endTime ? b.value : 0f;
     }
 
+    // Buff/debuff này còn hiệu lực không (không phụ thuộc giá trị). Dùng cho các loại "bật/tắt".
+    public bool IsActive(BuffType type)
+    {
+        return Time.time < buffs[(int)type].endTime;
+    }
+
     // Tỉ lệ thời gian còn lại, 0..1 (dùng cho icon trên HUD)
     public float GetRemaining01(BuffType type)
     {
@@ -71,13 +77,15 @@ public class BuffController : MonoBehaviour
     {
         if (duration <= 0f) return false;
 
+        bool byDuration = type == BuffType.Root || type == BuffType.Stun || type == BuffType.Silence;
+        if (byDuration) value = 1f;                                // Loại bật/tắt: giá trị luôn là 1, dù asset nhập 0
+
         Buff b = buffs[(int)type];
         float now = Time.time;
         float newEnd = now + duration;
 
         if (now < b.endTime)                                       // đang dính cùng loại
         {
-            bool byDuration = type == BuffType.Root || type == BuffType.Stun || type == BuffType.Silence;
             float current = byDuration ? b.endTime : b.value;
             float incoming = byDuration ? newEnd : value;
             if (incoming < current && !Mathf.Approximately(incoming, current)) return false;   // yếu hơn: bỏ qua

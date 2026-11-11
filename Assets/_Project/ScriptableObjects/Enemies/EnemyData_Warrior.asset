@@ -36,6 +36,12 @@ MonoBehaviour:
     amount: 1
     weight: 1
   sharedDrops: {fileID: 11400000, guid: 9ca022523918b004cb2af03cda563da3, type: 2}
+  hitEffects:
+  - kind: 1
+    debuff: 0
+    value: 0
+    duration: 0
+    dot: {fileID: 11400000, guid: 5d504e2e483ab404185190d458c1436f, type: 2}
   statusImmune: 0
   isBoss: 0
   bossMusic:

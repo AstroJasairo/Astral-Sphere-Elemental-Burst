@@ -14,4 +14,8 @@ public class CombatRulesConfig : ScriptableObject
 
     [Header("Hiệu quả hồi phục")]
     public StackMode healingStacking = StackMode.Multiplicative;
+
+    [Header("BOSS")]
+    [Tooltip("Các hiệu ứng giảm sát thương theo mốc máu của BOSS chồng thời gian: bật = nhân tích lũy, tắt = làm mới thời gian, không cộng dồn")]
+    public bool overlappingBossReductionsStack = true;
 }

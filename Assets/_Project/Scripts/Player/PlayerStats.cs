@@ -61,9 +61,9 @@ public class PlayerStats : MonoBehaviour
     public float OrbitSpeedMultiplier => orbitSpeedMultiplier;
     public float OrbitHitIntervalMultiplier => orbitHitIntervalMultiplier;
 
-    public bool IsStunned => Buffs.GetValue(BuffType.Stun) > 0f;
-    public bool IsRooted => Buffs.GetValue(BuffType.Root) > 0f;
-    public bool IsSilenced => Buffs.GetValue(BuffType.Silence) > 0f;
+    public bool IsStunned => Buffs.IsActive(BuffType.Stun);
+    public bool IsRooted => Buffs.IsActive(BuffType.Root);
+    public bool IsSilenced => Buffs.IsActive(BuffType.Silence);
     public float AttackSpeedMultiplier => Mathf.Max(0.1f, 1f - Debuff(BuffType.Frostbite));   // Tê cóng: 0.5 = tốc đánh còn một nửa
     public float ManaGainMultiplier => 1f - Debuff(BuffType.ManaDrain);
 

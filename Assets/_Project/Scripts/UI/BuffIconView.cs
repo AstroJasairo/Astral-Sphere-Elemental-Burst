@@ -52,6 +52,12 @@ public class BuffIconView : MonoBehaviour
         if (show && stackText != null) stackText.text = stacks.ToString();
     }
 
+    // Icon không có đồng hồ (vd Miễn nhiễm của BOSS): lớp tối luôn trống
+    public void SetNoTimer()
+    {
+        timerImage.fillAmount = 0f;
+    }
+
     private void ResetStacks()
     {
         shownStacks = -1;

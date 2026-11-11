@@ -15,8 +15,10 @@ public class LordOfTheWolfBoss : BossBase
 
     private LordOfTheWolfData skills;
     private Rigidbody2D rb;
+    private BossDamageReduction reduction;
     private State state;
     private float clawTimer;
+    private int nextThreshold;                                            // Mốc máu kế tiếp chưa kích hoạt
     private Color normalColor = Color.white;
     private Action<Telegraph> clawCallback;                               // Lưu sẵn để không sinh rác mỗi lần cào
 
@@ -26,6 +28,13 @@ public class LordOfTheWolfBoss : BossBase
         rb = GetComponent<Rigidbody2D>();
         clawCallback = OnClawLanded;
         if (bodyRenderer != null) normalColor = bodyRenderer.color;
+        if (!TryGetComponent(out reduction)) reduction = gameObject.AddComponent<BossDamageReduction>();
+    }
+
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        if (Health != null) Health.OnHealthChanged -= HandleHealthChanged;   // Health đã lưu sẵn ở BossBase, an toàn khi hủy
     }
 
     protected override void OnBegin()
@@ -40,6 +49,11 @@ public class LordOfTheWolfBoss : BossBase
         state = State.Chasing;
         clawTimer = skills.firstClawDelay;
         if (bodyRenderer != null) bodyRenderer.color = normalColor;
+
+        nextThreshold = 0;
+        reduction.Clear();
+        Health.OnHealthChanged -= HandleHealthChanged;                    // Chống đăng ký trùng khi BOSS lấy lại từ pool
+        Health.OnHealthChanged += HandleHealthChanged;
     }
 
     private void Update()
@@ -71,6 +85,22 @@ public class LordOfTheWolfBoss : BossBase
             bodyRenderer.color = immune ? immuneColor : normalColor;
     }
 
+    // ---------- Nội tại: giảm sát thương khi máu xuống thấp ----------
+
+    // Chạy mỗi khi máu đổi. Máu tụt qua một mốc thì thêm một lớp giảm sát thương (mỗi mốc đúng một lần)
+    private void HandleHealthChanged(float current, float max)
+    {
+        if (skills == null || max <= 0f || current <= 0f) return;
+
+        float ratio = current / max;
+        float[] thresholds = skills.reductionHpThresholds;
+        while (nextThreshold < thresholds.Length && ratio <= thresholds[nextThreshold])
+        {
+            reduction.Add(skills.thresholdReduction, skills.thresholdDuration);
+            nextThreshold++;
+        }
+    }
+
     // ---------- Kỹ năng: cào AOE ----------
 
     private void BeginClaw()
@@ -81,10 +111,11 @@ public class LordOfTheWolfBoss : BossBase
 
         // Dạng 1 trong bản vẽ: vòng tròn cảnh báo quanh BOSS, người chơi phải đi ra ngoài vòng để né.
         TelegraphSpawner.Instance.SpawnCircle(transform.position, skills.clawRadius, skills.clawWarning,
-                                              skills.clawShrink, skills.clawDamage, clawCallback, Enemy.Data.damageElement);
+                                              skills.clawShrink, skills.clawDamage, clawCallback,
+                                              Enemy.Data.damageElement, skills.clawEffects);
     }
 
-    // Telegraph gọi khi vòng cam chạm đích (đã tự gây sát thương cho người chơi nếu còn trong vòng)
+    // Telegraph gọi khi vòng cam chạm đích (đã tự gây sát thương và hiệu ứng cho người chơi nếu còn trong vòng)
     private void OnClawLanded(Telegraph t)
     {
         if (state != State.ClawWindup) return;
@@ -102,5 +133,15 @@ public class LordOfTheWolfBoss : BossBase
         state = State.Chasing;
         Enemy.OverrideMovement = false;               // Trả quyền di chuyển lại cho EnemyBase
         clawTimer = skills.clawInterval;
+    }
+
+    // ---------- Debug: kiểm tra mốc máu mà không cần đánh thật ----------
+    [ContextMenu("Debug: Hit 10% Max HP")]
+    private void DebugHit() { if (Debug.isDebugBuild) Health.TakeDamage(Health.MaxHealth * 0.1f); }
+
+    [ContextMenu("Debug: Log Reduction")]
+    private void DebugLogReduction()
+    {
+        Debug.Log($"[LotW] hệ số sát thương nhận x{Health.DamageTakenMultiplier:0.###}, số lớp giảm {reduction.Stacks}, máu {Health.CurrentHealth:0}/{Health.MaxHealth:0}");
     }
 }

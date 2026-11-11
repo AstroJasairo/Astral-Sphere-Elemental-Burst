@@ -89,6 +89,7 @@ public class EnemyBase : MonoBehaviour
         if (!other.TryGetComponent(out PlayerStats player)) return;
 
         player.TakeDamage(damage, Data.damageElement);
+        HitEffect.ApplyAll(Data.hitEffects, player);             // Áp dụng cả khi khiên hấp thụ hết sát thương
         nextAttackTime = Time.time + AttackCooldown;
     }
 

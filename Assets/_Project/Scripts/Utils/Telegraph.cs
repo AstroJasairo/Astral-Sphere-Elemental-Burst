@@ -34,6 +34,7 @@ public abstract class Telegraph : MonoBehaviour
 
     private static readonly HashSet<Telegraph> active = new HashSet<Telegraph>();
     private static readonly List<Telegraph> cancelBuffer = new List<Telegraph>();   // Dùng lại, không sinh rác
+    public List<HitEffect> Effects { get; set; }
 
     private Action<Telegraph> onTriggered;
     private Transform followTarget;
@@ -93,7 +94,10 @@ public abstract class Telegraph : MonoBehaviour
         active.Remove(this);
 
         if (DamageOnFinish && damage > 0f && playerStats != null && IsPlayerInside(playerTransform.position))
+        {
             playerStats.TakeDamage(damage, Element);
+            HitEffect.ApplyAll(Effects, playerStats);
+        }
         AudioManager.Play(triggerCue);
         onTriggered?.Invoke(this);                              // BOSS làm hiệu ứng (sét đánh, lao tới...)
         PoolManager.Instance.Release(gameObject);
@@ -121,7 +125,9 @@ public abstract class Telegraph : MonoBehaviour
 
     protected void DealDamage()
     {
-        if (playerStats != null) playerStats.TakeDamage(damage, Element);
+        if (playerStats == null) return;
+        playerStats.TakeDamage(damage, Element);
+        HitEffect.ApplyAll(Effects, playerStats);
     }
 
     public static void ResetStatics() { active.Clear(); }

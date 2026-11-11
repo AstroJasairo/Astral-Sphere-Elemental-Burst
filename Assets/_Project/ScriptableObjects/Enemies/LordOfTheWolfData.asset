@@ -36,6 +36,7 @@ MonoBehaviour:
     amount: 1
     weight: 1
   sharedDrops: {fileID: 0}
+  hitEffects: []
   statusImmune: 1
   isBoss: 1
   bossMusic:
@@ -47,9 +48,21 @@ MonoBehaviour:
     category: 1
   immuneDistance: 8
   immuneMargin: 0.8
+  reductionHpThresholds:
+  - 0.75
+  - 0.5
+  - 0.25
+  thresholdReduction: 0.5
+  thresholdDuration: 20
   firstClawDelay: 4
   clawInterval: 6
   clawRadius: 3.5
   clawWarning: 1.2
   clawDamage: 30
   clawShrink: 0
+  clawEffects:
+  - kind: 0
+    debuff: 9
+    value: 0
+    duration: 5
+    dot: {fileID: 0}

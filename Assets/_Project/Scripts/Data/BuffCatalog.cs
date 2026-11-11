@@ -91,6 +91,8 @@ public class BuffCatalog : ScriptableObject
             case BuffType.Blind: return "BLD";
             case BuffType.Weakness: return "WKN";
             case BuffType.ManaDrain: return "DRN";
+            case BuffType.Immunity: return "IMM";
+            case BuffType.DamageReduction: return "GRD";
             default:
                 string name = t.ToString().ToUpper();
                 return name.Length > 3 ? name.Substring(0, 3) : name;

@@ -36,6 +36,7 @@ MonoBehaviour:
     amount: 1
     weight: 1
   sharedDrops: {fileID: 0}
+  hitEffects: []
   statusImmune: 1
   isBoss: 1
   bossMusic:
@@ -52,6 +53,12 @@ MonoBehaviour:
   strikeWarning: 1.5
   strikeSpread: 5
   strikeDamage: 20
+  strikeEffects:
+  - kind: 0
+    debuff: 7
+    value: 0
+    duration: 3
+    dot: {fileID: 0}
   firstDashDelay: 6
   dashInterval: 8
   dashWarning: 1.5

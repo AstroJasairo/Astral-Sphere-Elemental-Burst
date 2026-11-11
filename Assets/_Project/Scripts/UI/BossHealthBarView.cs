@@ -2,13 +2,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-// Thanh máu BOSS: ẩn cho tới khi có BOSS xuất hiện
+// Thanh máu BOSS: ẩn cho tới khi có BOSS xuất hiện.
+// Trạng thái miễn nhiễm và giảm sát thương giờ hiện bằng icon ở BossBuffHudView (thay cho nhãn chữ cũ).
 public class BossHealthBarView : MonoBehaviour
 {
-    [SerializeField] private GameObject root;        // Toàn bộ khối thanh máu (mặc định tắt)
+    [SerializeField] private GameObject root;        // Toàn bộ khối BossInfo (mặc định tắt)
     [SerializeField] private Slider hpBar;
     [SerializeField] private TMP_Text nameText;
-    [SerializeField] private GameObject immuneLabel; // Nhãn "MIỄN NHIỄM" (tùy chọn)
 
     private BossBase currentBoss;
     private HealthSystem bossHealth;
@@ -27,7 +27,6 @@ public class BossHealthBarView : MonoBehaviour
     private void Start()
     {
         root.SetActive(false);
-        SetImmuneLabel(false);
     }
 
     private void OnBossSpawned(BossBase boss)
@@ -41,20 +40,12 @@ public class BossHealthBarView : MonoBehaviour
 
         bossHealth.OnHealthChanged += Refresh;
         bossHealth.OnDied += Hide;
-        boss.ImmunityChanged += SetImmuneLabel;
-
-        SetImmuneLabel(false);
         root.SetActive(true);
     }
 
     private void Refresh(float current, float max)
     {
         hpBar.value = max > 0f ? current / max : 0f;
-    }
-
-    private void SetImmuneLabel(bool immune)
-    {
-        if (immuneLabel != null) immuneLabel.SetActive(immune);
     }
 
     private void Hide()
@@ -69,8 +60,6 @@ public class BossHealthBarView : MonoBehaviour
             bossHealth.OnHealthChanged -= Refresh;
             bossHealth.OnDied -= Hide;
         }
-        if (currentBoss != null) currentBoss.ImmunityChanged -= SetImmuneLabel;
-
         bossHealth = null;
         currentBoss = null;
     }

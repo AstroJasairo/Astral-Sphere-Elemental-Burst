@@ -92,7 +92,8 @@ public class ThunderBirdBoss : BossBase
 
             // shrink = false: vòng cam lớn dần từ tâm, chạm viền thì sét đánh (dạng 1 trong bản vẽ)
             TelegraphSpawner.Instance.SpawnCircle(center, skills.strikeRadius, skills.strikeWarning,
-                                                  false, skills.strikeDamage, strikeCallback, Enemy.Data.damageElement);
+                                      false, skills.strikeDamage, strikeCallback,
+                                      Enemy.Data.damageElement, skills.strikeEffects);
         }
     }
 

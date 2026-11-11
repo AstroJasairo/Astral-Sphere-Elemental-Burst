@@ -90,3 +90,13 @@ MonoBehaviour:
     shortLabel: DRN
     icon: {fileID: 0}
     isDebuff: 1
+  - type: 15
+    displayName: Immunity
+    shortLabel: IMM
+    icon: {fileID: 0}
+    isDebuff: 0
+  - type: 16
+    displayName: DamageReduction
+    shortLabel: GRD
+    icon: {fileID: 0}
+    isDebuff: 0

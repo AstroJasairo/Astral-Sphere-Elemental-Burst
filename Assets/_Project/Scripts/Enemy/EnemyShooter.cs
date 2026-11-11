@@ -33,6 +33,6 @@ public class EnemyShooter : MonoBehaviour
         timer = 0f;
         GameObject go = PoolManager.Instance.Get(data.projectilePrefab, transform.position, Quaternion.identity);
         go.GetComponent<EnemyProjectile>().Init(
-    enemy.Damage, data.damageElement, toTarget.normalized, data.projectileSpeed, data.projectileLifetime);
+    enemy.Damage, data.damageElement, data.hitEffects, toTarget.normalized, data.projectileSpeed, data.projectileLifetime);
     }
 }

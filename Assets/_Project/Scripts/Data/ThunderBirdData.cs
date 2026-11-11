@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 // Dữ liệu BOSS Chim sấm sét. Tạo bằng: Assets > Create > Astral Sphere > Boss > Thunder Bird Data
 [CreateAssetMenu(menuName = "Astral Sphere/Boss/Thunder Bird Data")]
@@ -12,6 +13,7 @@ public class ThunderBirdData : EnemyData
     public float strikeWarning = 1.5f;       // Thời gian vòng cam lớn dần (thời gian để né)
     public float strikeSpread = 5f;          // Các vòng còn lại rải ngẫu nhiên trong bán kính này quanh người chơi
     public float strikeDamage = 20f;
+    public List<HitEffect> strikeEffects = new List<HitEffect>();     // Chim sấm sét: Choáng 3s (đặt trong asset)
 
     [Header("Kỹ năng: lao tới")]
     public float firstDashDelay = 6f;

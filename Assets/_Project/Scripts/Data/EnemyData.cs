@@ -39,6 +39,9 @@ public class EnemyData : ScriptableObject
     [Tooltip("Bảng rơi dùng chung (vật phẩm hiếm). Được gộp với Random Drops riêng của quái")]
     public DropTableData sharedDrops;
 
+    [Header("Hiệu ứng khi trúng đòn (đòn chạm và đạn)")]
+    public List<HitEffect> hitEffects = new List<HitEffect>();
+
     [Header("Trạng thái")]
     [Tooltip("Miễn nhiễm đẩy lùi và trói (dành cho BOSS)")]
     public bool statusImmune = false;
@@ -47,6 +50,14 @@ public class EnemyData : ScriptableObject
 
     [Header("Âm thanh (chỉ BOSS)")]
     public AudioCue bossMusic = new AudioCue();       // Có file thì chuyển sang khi BOSS xuất hiện
+
+    // protected virtual để lớp con (BOSS) mở rộng được. Private thì Unity bỏ qua hàm của lớp cha.
+    protected virtual void OnValidate()
+    {
+        foreach (HitEffect e in hitEffects)
+            if (e.kind == HitEffect.Kind.Dot && e.dot == null)
+                Debug.LogWarning($"{name}: có hiệu ứng DOT chưa gán Dot Data.", this);
+    }
 
     // Chuột phải tiêu đề asset: điền nguyên tố theo loại quái thường. BOSS đặt tay trong Inspector.
     [ContextMenu("Fill Element By Enemy Type")]

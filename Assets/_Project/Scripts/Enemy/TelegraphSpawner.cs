@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TelegraphSpawner : MonoBehaviour
@@ -20,11 +21,11 @@ public class TelegraphSpawner : MonoBehaviour
     // Dạng 1: vòng tròn. shrink = false: vòng trong lớn dần từ tâm. shrink = true: nhỏ dần vào tâm.
     public SectorTelegraph SpawnCircle(Vector2 center, float radius, float duration, bool shrink,
                                        float damage, Action<Telegraph> onTriggered = null,
-                                       ElementType? element = null)
+                                       ElementType? element = null, List<HitEffect> effects = null)
     {
         var t = Spawn<SectorTelegraph>(sectorPrefab, center, 0f);
         t.Begin(radius, 360f, duration, shrink, damage, onTriggered);
-        t.Element = ResolveElement(element, damage);
+        Configure(t, element, effects, damage);
         return t;
     }
 
@@ -32,11 +33,11 @@ public class TelegraphSpawner : MonoBehaviour
     public SectorTelegraph SpawnFan(Vector2 origin, float facingDeg, float radius, float angleDeg,
                                     float duration, bool shrink, float damage,
                                     Action<Telegraph> onTriggered = null, Transform follow = null,
-                                    ElementType? element = null)
+                                    ElementType? element = null, List<HitEffect> effects = null)
     {
         var t = Spawn<SectorTelegraph>(sectorPrefab, origin, facingDeg);
         t.Begin(radius, angleDeg, duration, shrink, damage, onTriggered, follow);
-        t.Element = ResolveElement(element, damage);
+        Configure(t, element, effects, damage);
         return t;
     }
 
@@ -44,11 +45,11 @@ public class TelegraphSpawner : MonoBehaviour
     public RectTelegraph SpawnBox(Vector2 origin, float facingDeg, float length, float width,
                                   float duration, RectFill fill, float damage,
                                   Action<Telegraph> onTriggered = null, Transform follow = null,
-                                  ElementType? element = null)
+                                  ElementType? element = null, List<HitEffect> effects = null)
     {
         var t = Spawn<RectTelegraph>(rectPrefab, origin, facingDeg);
         t.Begin(length, width, duration, fill, damage, onTriggered, follow);
-        t.Element = ResolveElement(element, damage);
+        Configure(t, element, effects, damage);
         return t;
     }
 
@@ -56,11 +57,11 @@ public class TelegraphSpawner : MonoBehaviour
     public RayTelegraph SpawnRay(Vector2 origin, float length, float width, float duration,
                                  float lockFraction, float damage,
                                  Action<Telegraph> onTriggered = null, Transform follow = null,
-                                 ElementType? element = null)
+                                 ElementType? element = null, List<HitEffect> effects = null)
     {
         var t = Spawn<RayTelegraph>(rayPrefab, origin, 0f);
         t.Begin(length, width, duration, lockFraction, damage, onTriggered, follow);
-        t.Element = ResolveElement(element, damage);
+        Configure(t, element, effects, damage);
         return t;
     }
 
@@ -68,12 +69,19 @@ public class TelegraphSpawner : MonoBehaviour
     public SweepTelegraph SpawnSweep(Vector2 origin, float safeFacingDeg, float radius, float safeAngleDeg,
                                      SweepDirection direction, float duration, float damage,
                                      Action<Telegraph> onTriggered = null, Transform follow = null,
-                                     ElementType? element = null)
+                                     ElementType? element = null, List<HitEffect> effects = null)
     {
         var t = Spawn<SweepTelegraph>(sweepPrefab, origin, safeFacingDeg);
         t.Begin(radius, safeAngleDeg, direction, duration, damage, onTriggered, follow);
-        t.Element = ResolveElement(element, damage);
+        Configure(t, element, effects, damage);
         return t;
+    }
+
+    // Telegraph lấy từ pool nên LUÔN đặt lại cả nguyên tố và hiệu ứng (kể cả null), tránh dính giá trị của lần dùng trước
+    private static void Configure(Telegraph t, ElementType? element, List<HitEffect> effects, float damage)
+    {
+        t.Element = ResolveElement(element, damage);
+        t.Effects = effects;
     }
 
     // Không truyền nguyên tố: chỉ chấp nhận khi đòn không gây sát thương (vd telegraph của vũ khí người chơi, damage = 0)
