@@ -57,7 +57,7 @@ MonoBehaviour:
   - kind: 0
     debuff: 7
     value: 0
-    duration: 3
+    duration: 1
     dot: {fileID: 0}
   firstDashDelay: 6
   dashInterval: 8

@@ -7375,10 +7375,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5827751eca103f4983a9de5f37bfa41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TelegraphSpawner
-  sectorPrefab: {fileID: 6502030861599738045, guid: b8938ed3ec387e64e8f03f81365349b1, type: 3}
-  rectPrefab: {fileID: 5244121317503967677, guid: 635afb93725c1b140bd566f5a8b973fa, type: 3}
-  rayPrefab: {fileID: 444609607632351004, guid: caf6a96a204928a439399cfd53b6286e, type: 3}
-  sweepPrefab: {fileID: 6715670259319012365, guid: c6dfe6b805c26a644adfa910fec1b496, type: 3}
+  sectorPrefab: {fileID: 7417790051908966078, guid: 4897c6aa383ff3246a722026d9428fff, type: 3}
+  rectPrefab: {fileID: 9149074977859893556, guid: aac7a9bbaf29a9a4aa5f3c67ac8ae148, type: 3}
+  rayPrefab: {fileID: 2594892584239107313, guid: 30ac214da8f15d2439d8e1a7c4d5ae12, type: 3}
+  sweepPrefab: {fileID: 2517744633751062510, guid: 55f689ed4ef862b438da4f4c6962a10b, type: 3}
 --- !u!114 &1397015320
 MonoBehaviour:
   m_ObjectHideFlags: 0
