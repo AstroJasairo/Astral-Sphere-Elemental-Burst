@@ -26,6 +26,16 @@ public abstract class WeaponBase : MonoBehaviour
         }
     }
 
+    // Hồi chiêu gốc của cấp hiện tại (0 thì dùng giá trị chung của vũ khí)
+    protected float CurrentBaseCooldown
+    {
+        get
+        {
+            float c = CurrentLevel.cooldown;
+            return c > 0f ? c : data.cooldown;
+        }
+    }
+
     // Hồi chiêu thực tế = hồi chiêu gốc x hệ số hiện tại (bình thường = 1, trong All Out Assault < 1)
     // CurrentCooldown: chia cho tốc đánh (Tê cóng 50% => hồi chiêu gấp đôi)
     private float CurrentCooldown
@@ -34,7 +44,7 @@ public abstract class WeaponBase : MonoBehaviour
         {
             float m = owner != null ? owner.CooldownMultiplier : 1f;
             float speed = owner != null ? owner.AttackSpeedMultiplier : 1f;
-            return Mathf.Max(MinCooldown, data.cooldown * m / speed);
+            return Mathf.Max(MinCooldown, CurrentBaseCooldown * m / speed);
         }
     }
 

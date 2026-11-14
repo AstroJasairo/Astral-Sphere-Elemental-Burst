@@ -109,4 +109,20 @@ public static class TelegraphGeometry
         // Ở trong miếng an toàn nếu góc lệch so với hướng +X nhỏ hơn nửa góc an toàn
         return Mathf.Abs(Vector2.SignedAngle(Vector2.right, local)) > safeAngleDeg * 0.5f;
     }
+
+    // Điểm (tọa độ CỤC BỘ) có nằm trong nhẫn/nón nhẫn không?
+    // Nhẫn: cách tâm từ inner đến outer. Nón nhẫn: thêm điều kiện nằm trong góc mở quanh hướng +X.
+    public static bool InRingSector(Vector2 local, float inner, float outer, float angleDeg, float margin)
+    {
+        float sqr = local.sqrMagnitude;
+        float maxR = outer + margin;
+        if (sqr > maxR * maxR) return false;                    // Ngoài vòng ngoài
+
+        float minR = inner - margin;
+        if (minR > 0f && sqr < minR * minR) return false;       // Nằm trong lỗ giữa
+
+        if (angleDeg >= 359.9f) return true;                    // Nhẫn đầy đủ: chỉ cần đúng khoảng cách
+
+        return Mathf.Abs(Vector2.SignedAngle(Vector2.right, local)) <= angleDeg * 0.5f;
+    }
 }

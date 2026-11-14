@@ -3,8 +3,12 @@ using UnityEngine;
 
 public enum AreaShape
 {
-    Circle,    // Đất: gây sát thương mọi kẻ địch quanh người chơi
-    Cone       // Phong: hình nón hướng về kẻ địch gần nhất, kèm đẩy lùi
+    Circle,     // Đất: gây sát thương mọi kẻ địch quanh người chơi (đánh ngay, chớp)
+    Cone,       // Phong: hình nón hướng về kẻ địch gần nhất, kèm đẩy lùi
+    Ring,       // MỚI: nhẫn quanh người chơi (không ngắm), lan từ vòng trong ra hoặc ngược lại
+    ConeRing,   // MỚI: nón nhẫn hướng về kẻ địch gần nhất
+    Sweep,      // MỚI: quạt quét từ một cạnh bên sang cạnh còn lại, hướng về kẻ địch gần nhất
+    SweepRing   // MỚI: sweep có lỗ giữa (quạt khuyết tâm)
 }
 
 // Vũ khí đánh vùng quanh người chơi: một lần gây sát thương mỗi hồi chiêu
@@ -12,18 +16,22 @@ public class AreaWeapon : WeaponBase
 {
     [SerializeField] private AreaShape shape = AreaShape.Circle;
     [SerializeField] private LayerMask enemyMask;
-    [SerializeField] private GameObject flashPrefab;            // Hiệu ứng chớp (Đất). Tùy chọn
+    [SerializeField] private GameObject flashPrefab;            // Hiệu ứng chớp (Đất, hoặc khi chưa có telegraph). Tùy chọn
 
-    [Header("Phong: telegraph quét hình nón từ tâm ra (thay cho hiệu ứng chớp)")]
-    [SerializeField] private SectorTelegraph coneTelegraphPrefab;
-    [SerializeField] private float telegraphDuration = 0.35f;   // Thời gian vùng trong quét từ tâm ra viền
+    [Header("Telegraph (tùy chọn: thiếu prefab thì đánh ngay và chớp)")]
+    [Tooltip("Tròn/Nón/Nhẫn: InToOut hoặc OutToIn. Sweep: Clockwise (LeftToRight) hoặc CounterClockwise (RightToLeft)")]
+    [SerializeField] private TelegraphDirection direction = TelegraphDirection.InToOut;
+    [SerializeField] private float telegraphDuration = 0.35f;   // Thời gian vùng cam chạy hết
+    [SerializeField] private SectorTelegraph coneTelegraphPrefab;       // Cone
+    [SerializeField] private RingTelegraph ringTelegraphPrefab;         // Ring, ConeRing
+    [SerializeField] private SweepRingTelegraph sweepTelegraphPrefab;   // Sweep, SweepRing
 
-    private Action<Telegraph> coneCallback;                     // Lưu sẵn để không tạo delegate mới mỗi lần bắn
+    private Action<Telegraph> triggeredCallback;                // Lưu sẵn để không tạo delegate mới mỗi lần bắn
 
     protected override void Awake()
     {
         base.Awake();
-        coneCallback = OnConeTriggered;
+        triggeredCallback = OnTelegraphTriggered;
     }
 
     protected override bool Fire()
@@ -32,67 +40,134 @@ public class AreaWeapon : WeaponBase
         WeaponLevel level = CurrentLevel;
         float radius = level.radius * AreaScale;
 
-        if (shape == AreaShape.Cone) return FireCone(origin, radius, level);
+        if (shape == AreaShape.Circle) return FireCircle(origin, radius, level);
+        return FireShaped(origin, radius, level);
+    }
 
-        // Hình tròn (Đất)
+    // Hình tròn (Đất): đánh ngay những kẻ địch trong bán kính
+    private bool FireCircle(Vector2 origin, float radius, WeaponLevel level)
+    {
         int count = TargetFinder.FindAll(origin, radius, enemyMask);
         if (count == 0) return false;                           // Không có ai trong vùng thì không đánh
 
-        ApplyDamage(count, origin, Vector2.right, 360f, level.knockbackDistance);
-        PlayFlash(origin, 0f, radius, 360f);
+        ApplyDamage(count, origin, Vector2.right, 360f, level.knockbackDistance, 0f);
+        PlayFlash(origin, 0f, 0f, radius, 360f);
         return true;
     }
 
-    private bool FireCone(Vector2 origin, float radius, WeaponLevel level)
+    // Các dạng còn lại: nón, nhẫn, nón nhẫn, sweep, sweep nhẫn
+    private bool FireShaped(Vector2 origin, float radius, WeaponLevel level)
     {
-        // Hình nón hướng về kẻ địch gần nhất
-        Transform target = TargetFinder.FindNearest(origin, data.targetRange, enemyMask);
-        if (target == null) return false;
+        // Nhẫn đầy đủ không cần hướng ngắm. Các dạng khác hướng về kẻ địch gần nhất
+        Vector2 aim = Vector2.right;
+        float facing = 0f;
 
-        Vector2 aim = ((Vector2)target.position - origin).normalized;
-        float facing = Mathf.Atan2(aim.y, aim.x) * Mathf.Rad2Deg;
-
-        // Có telegraph: hiện vùng quét, sát thương gây ra khi quét xong (trong OnConeTriggered)
-        if (coneTelegraphPrefab != null)
+        if (shape == AreaShape.Ring)
         {
-            GameObject go = PoolManager.Instance.Get(coneTelegraphPrefab.gameObject, origin, Quaternion.Euler(0f, 0f, facing));
-            // shrink = false: vùng trong lớn dần từ tâm ra. damage = 0: không đụng tới người chơi.
-            // follow = transform: vùng nón đi theo người chơi trong lúc quét, hướng thì đã khóa.
-            go.GetComponent<SectorTelegraph>().Begin(radius, level.coneAngle, telegraphDuration, false, 0f, coneCallback, transform);
-            return true;
+            if (TargetFinder.FindAll(origin, radius, enemyMask) == 0) return false;
+        }
+        else
+        {
+            Transform target = TargetFinder.FindNearest(origin, data.targetRange, enemyMask);
+            if (target == null) return false;
+
+            aim = ((Vector2)target.position - origin).normalized;
+            facing = Mathf.Atan2(aim.y, aim.x) * Mathf.Rad2Deg;
         }
 
-        // Không có telegraph: đánh ngay và chớp
+        // Cone và Sweep không có lỗ giữa; các dạng nhẫn lấy innerRadius của cấp (co giãn theo bán kính như outer)
+        bool hasHole = shape == AreaShape.Ring || shape == AreaShape.ConeRing || shape == AreaShape.SweepRing;
+        float inner = hasHole ? level.innerRadius * AreaScale : 0f;
+        float angle = shape == AreaShape.Ring ? 360f : level.coneAngle;   // Với Sweep: coneAngle là GÓC VÙNG NGUY HIỂM
+
+        Quaternion rotation = Quaternion.Euler(0f, 0f, facing);
+        bool inward = TelegraphDirectionUtil.IsInward(direction);
+
+        // Có prefab telegraph: hiện vùng chạy, sát thương gây ra khi chạy xong (OnTelegraphTriggered)
+        // damage = 0: không đụng tới người chơi. follow = transform: vùng đi theo người chơi, hướng thì đã khóa lúc bắn.
+        switch (shape)
+        {
+            case AreaShape.Cone:
+                if (coneTelegraphPrefab != null)
+                {
+                    GameObject go = PoolManager.Instance.Get(coneTelegraphPrefab.gameObject, origin, rotation);
+                    go.GetComponent<SectorTelegraph>().Begin(radius, angle, telegraphDuration, inward, 0f, triggeredCallback, transform);
+                    return true;
+                }
+                break;
+
+            case AreaShape.Ring:
+            case AreaShape.ConeRing:
+                if (ringTelegraphPrefab != null)
+                {
+                    GameObject go = PoolManager.Instance.Get(ringTelegraphPrefab.gameObject, origin, rotation);
+                    go.GetComponent<RingTelegraph>().Begin(inner, radius, angle, telegraphDuration, inward, 0f, triggeredCallback, transform);
+                    return true;
+                }
+                break;
+
+            case AreaShape.Sweep:
+            case AreaShape.SweepRing:
+                if (sweepTelegraphPrefab != null)
+                {
+                    GameObject go = PoolManager.Instance.Get(sweepTelegraphPrefab.gameObject, origin, rotation);
+                    go.GetComponent<SweepRingTelegraph>().Begin(inner, radius, angle,
+                        TelegraphDirectionUtil.IsClockwise(direction), telegraphDuration, 0f, triggeredCallback, transform);
+                    return true;
+                }
+                break;
+        }
+
+        // Không có prefab telegraph: đánh ngay và chớp
         int count = TargetFinder.FindAll(origin, radius, enemyMask);
-        ApplyDamage(count, origin, aim, level.coneAngle, level.knockbackDistance);
-        PlayFlash(origin, facing, radius, level.coneAngle);
+        ApplyDamage(count, origin, aim, angle, level.knockbackDistance, inner);
+        PlayFlash(origin, facing, inner, radius, angle);
         return true;
     }
 
-    // Telegraph gọi khi vùng trong chạm viền: lúc này mới tính trúng đòn
-    private void OnConeTriggered(Telegraph t)
+    // Telegraph gọi khi vùng cam chạy xong: lúc này mới tính trúng đòn
+    private void OnTelegraphTriggered(Telegraph t)
     {
-        var sector = (SectorTelegraph)t;
+        float inner = 0f, outer, angle;
+
+        // Mỗi loại telegraph đều quy về ba số: bán kính trong, bán kính ngoài, góc mở
+        switch (t)
+        {
+            case RingTelegraph ring:
+                inner = ring.InnerRadius; outer = ring.OuterRadius; angle = ring.Angle;
+                break;
+            case SweepRingTelegraph sweep:
+                inner = sweep.InnerRadius; outer = sweep.OuterRadius; angle = sweep.Span;
+                break;
+            case SectorTelegraph sector:
+                outer = sector.Radius; angle = sector.Angle;
+                break;
+            default:
+                return;
+        }
+
         Vector2 origin = t.transform.position;
         Vector2 aim = t.transform.right;                        // Hướng đã khóa lúc bắn
 
-        int count = TargetFinder.FindAll(origin, sector.Radius, enemyMask);
-        ApplyDamage(count, origin, aim, sector.Angle, CurrentLevel.knockbackDistance);
+        int count = TargetFinder.FindAll(origin, outer, enemyMask);
+        ApplyDamage(count, origin, aim, angle, CurrentLevel.knockbackDistance, inner);
     }
 
-    // Gây sát thương (và đẩy lùi) cho các collider đã tìm được, chỉ giữ những con nằm trong góc mở
-    private void ApplyDamage(int count, Vector2 origin, Vector2 aim, float angle, float knockback)
+    // Gây sát thương (và đẩy lùi) cho các collider đã tìm được, chỉ giữ những con nằm trong góc mở và ngoài lỗ giữa
+    private void ApplyDamage(int count, Vector2 origin, Vector2 aim, float angle, float knockback, float innerRadius)
     {
         float damage = CalculateDamage();
         bool useAngle = angle < 359.9f;
         float halfAngle = angle * 0.5f;
+        float innerSqr = innerRadius * innerRadius;
 
         for (int i = 0; i < count; i++)
         {
             Collider2D col = TargetFinder.Results[i];
             Vector2 toEnemy = (Vector2)col.transform.position - origin;
 
-            if (useAngle && Vector2.Angle(aim, toEnemy) > halfAngle) continue;
+            if (innerRadius > 0f && toEnemy.sqrMagnitude < innerSqr) continue;      // Nằm trong lỗ giữa
+            if (useAngle && Vector2.Angle(aim, toEnemy) > halfAngle) continue;      // Ngoài góc mở
 
             // Đẩy lùi ra xa người chơi (BOSS miễn nhiễm do StatusEffectHandler tự bỏ qua)
             if (knockback > 0f && col.TryGetComponent(out StatusEffectHandler status))
@@ -103,11 +178,14 @@ public class AreaWeapon : WeaponBase
         }
     }
 
-    private void PlayFlash(Vector2 origin, float facing, float radius, float angle)
+    private void PlayFlash(Vector2 origin, float facing, float innerRadius, float radius, float angle)
     {
         if (flashPrefab == null) return;
 
         GameObject fx = PoolManager.Instance.Get(flashPrefab, origin, Quaternion.Euler(0f, 0f, facing));
-        fx.GetComponent<ShapeFlashEffect>().PlaySector(radius, angle);
+        ShapeFlashEffect flash = fx.GetComponent<ShapeFlashEffect>();
+
+        if (innerRadius > 0f) flash.PlayRing(innerRadius, radius, angle);
+        else flash.PlaySector(radius, angle);
     }
 }

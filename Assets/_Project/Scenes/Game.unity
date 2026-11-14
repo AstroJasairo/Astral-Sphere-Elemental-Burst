@@ -7379,6 +7379,8 @@ MonoBehaviour:
   rectPrefab: {fileID: 9149074977859893556, guid: aac7a9bbaf29a9a4aa5f3c67ac8ae148, type: 3}
   rayPrefab: {fileID: 2594892584239107313, guid: 30ac214da8f15d2439d8e1a7c4d5ae12, type: 3}
   sweepPrefab: {fileID: 2517744633751062510, guid: 55f689ed4ef862b438da4f4c6962a10b, type: 3}
+  ringPrefab: {fileID: 8464476900023786558, guid: 2e9df6220cc7dc143a7727ef8b15a98d, type: 3}
+  sweepRingPrefab: {fileID: 1054999275911565364, guid: 3566ce958504cad4bb3985541bc32417, type: 3}
 --- !u!114 &1397015320
 MonoBehaviour:
   m_ObjectHideFlags: 0

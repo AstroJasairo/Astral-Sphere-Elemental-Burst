@@ -10,6 +10,8 @@ public class TelegraphSpawner : MonoBehaviour
     [SerializeField] private GameObject rectPrefab;
     [SerializeField] private GameObject rayPrefab;
     [SerializeField] private GameObject sweepPrefab;
+    [SerializeField] private GameObject ringPrefab;        // Prefab có RingTelegraph (nhẫn, nón nhẫn)
+    [SerializeField] private GameObject sweepRingPrefab;   // Prefab có SweepRingTelegraph
 
     private static bool warnedMissingElement;
 
@@ -73,6 +75,43 @@ public class TelegraphSpawner : MonoBehaviour
     {
         var t = Spawn<SweepTelegraph>(sweepPrefab, origin, safeFacingDeg);
         t.Begin(radius, safeAngleDeg, direction, duration, damage, onTriggered, follow);
+        Configure(t, element, effects, damage);
+        return t;
+    }
+
+    // Nhẫn: vùng nguy hiểm giữa hai bán kính. inward = false: lan từ vòng trong ra; true: co từ vòng ngoài vào
+    public RingTelegraph SpawnRing(Vector2 center, float innerRadius, float outerRadius, float duration, bool inward,
+                                   float damage, Action<Telegraph> onTriggered = null,
+                                   ElementType? element = null, List<HitEffect> effects = null)
+    {
+        return SpawnConeRing(center, 0f, innerRadius, outerRadius, 360f, duration, inward, damage,
+                             onTriggered, null, element, effects);
+    }
+
+    // Nón nhẫn: hướng facingDeg (0 = sang phải, 90 = lên trên), góc mở angleDeg
+    public RingTelegraph SpawnConeRing(Vector2 origin, float facingDeg, float innerRadius, float outerRadius,
+                                       float angleDeg, float duration, bool inward, float damage,
+                                       Action<Telegraph> onTriggered = null, Transform follow = null,
+                                       ElementType? element = null, List<HitEffect> effects = null)
+    {
+        if (ringPrefab == null) { Debug.LogWarning("TelegraphSpawner: chưa gán Ring Prefab.", this); return null; }
+
+        var t = Spawn<RingTelegraph>(ringPrefab, origin, facingDeg);
+        t.Begin(innerRadius, outerRadius, angleDeg, duration, inward, damage, onTriggered, follow);
+        Configure(t, element, effects, damage);
+        return t;
+    }
+
+    // Sweep nhẫn: quạt khuyết tâm (innerRadius = 0 là quạt đầy), quét từ một cạnh bên sang cạnh kia
+    public SweepRingTelegraph SpawnSweepRing(Vector2 origin, float facingDeg, float innerRadius, float outerRadius,
+                                             float spanDeg, bool clockwise, float duration, float damage,
+                                             Action<Telegraph> onTriggered = null, Transform follow = null,
+                                             ElementType? element = null, List<HitEffect> effects = null)
+    {
+        if (sweepRingPrefab == null) { Debug.LogWarning("TelegraphSpawner: chưa gán Sweep Ring Prefab.", this); return null; }
+
+        var t = Spawn<SweepRingTelegraph>(sweepRingPrefab, origin, facingDeg);
+        t.Begin(innerRadius, outerRadius, spanDeg, clockwise, duration, damage, onTriggered, follow);
         Configure(t, element, effects, damage);
         return t;
     }

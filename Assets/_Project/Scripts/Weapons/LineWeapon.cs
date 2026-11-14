@@ -10,6 +10,8 @@ public class LineWeapon : WeaponBase
     [Header("Plant: telegraph chữ nhật ngắn quét từ cạnh gần nhân vật (thay cho hiệu ứng chớp)")]
     [SerializeField] private RectTelegraph telegraphPrefab;
     [SerializeField] private float telegraphDuration = 0.35f;
+    [Tooltip("Forward (mặc định), Backward, Sideways, LeftToRight, RightToLeft")]
+    [SerializeField] private TelegraphDirection direction = TelegraphDirection.Forward;
 
     private Action<Telegraph> telegraphCallback;
 
@@ -35,8 +37,9 @@ public class LineWeapon : WeaponBase
         {
             // Chữ nhật hiện ra và vùng trong quét từ cạnh gần nhân vật tới cạnh xa; xong mới gây sát thương và trói
             GameObject go = PoolManager.Instance.Get(telegraphPrefab.gameObject, origin, Quaternion.Euler(0f, 0f, angle));
-            go.GetComponent<RectTelegraph>().Begin(length, width, telegraphDuration, RectFill.SweepForward,
-                                                   0f, telegraphCallback, transform);
+            go.GetComponent<RectTelegraph>().Begin(length, width, telegraphDuration,
+                                       TelegraphDirectionUtil.ToRectFill(direction),   // CŨ: RectFill.SweepForward
+                                       0f, telegraphCallback, transform);
             return true;
         }
 

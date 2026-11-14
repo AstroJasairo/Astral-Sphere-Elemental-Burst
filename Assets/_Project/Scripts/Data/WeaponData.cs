@@ -14,6 +14,8 @@ public class WeaponLevel
     public float beamWidth = 0.6f;       // Ánh sáng, Plant: độ rộng tia
     public float rootDuration = 0f;      // Plant: thời gian trói (giây)
     public float duration = 0f;          // MỚI. Clarius: thời gian tồn tại của thanh kiếm (giây)
+    public float innerRadius = 0f;       // MỚI. Nhẫn, Nón nhẫn, Sweep nhẫn: bán kính lỗ giữa (0 = không có lỗ)
+    public float cooldown = 0f;          // MỚI. Hồi chiêu ở cấp này (giây). 0 = dùng WeaponData.cooldown
 }
 
 // Dữ liệu một vũ khí. Tạo bằng: Assets > Create > Astral Sphere > Weapon Data
@@ -63,6 +65,16 @@ public class WeaponData : ScriptableObject
     {
         for (int i = 0; i < levels.Length; i++)
             levels[i].baseDamage = Mathf.Round(baseDamage * (1f + damageGrowthPerLevel * i) * 100f) / 100f;
+#if UNITY_EDITOR
+        UnityEditor.EditorUtility.SetDirty(this);
+#endif
+    }
+
+    // Chuột phải vào tiêu đề asset: chép cooldown chung vào cooldown của cả 5 cấp, rồi bạn chỉnh từng cấp
+    [ContextMenu("Fill Cooldown Per Level")]
+    private void FillCooldownPerLevel()
+    {
+        for (int i = 0; i < levels.Length; i++) levels[i].cooldown = cooldown;
 #if UNITY_EDITOR
         UnityEditor.EditorUtility.SetDirty(this);
 #endif

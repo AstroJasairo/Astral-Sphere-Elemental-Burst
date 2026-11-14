@@ -31,6 +31,13 @@ public class ShapeFlashEffect : MonoBehaviour
         Begin();
     }
 
+    // Nhẫn (angleDeg = 360) hoặc nón nhẫn
+    public void PlayRing(float innerRadius, float outerRadius, float angleDeg)
+    {
+        visual.SetAnnulus(innerRadius, outerRadius, -angleDeg * 0.5f, angleDeg);
+        Begin();
+    }
+
     // Hình chữ nhật từ gốc đi ra phía trước (dùng cho tia)
     public void PlayBox(float length, float width)
     {

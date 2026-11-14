@@ -33,6 +33,12 @@ public class TelegraphTester : MonoBehaviour
             sp.SpawnSweep(p + Vector2.down * 4f, 90f, 12f, 60f, SweepDirection.CounterClockwise, 3f, testDamage, Log);
         if (kb.digit8Key.wasPressedThisFrame)
             sp.SpawnSweep(p + Vector2.down * 4f, 90f, 12f, 60f, SweepDirection.Clockwise, 3f, testDamage, Log);
+        if (kb.digit9Key.wasPressedThisFrame)           // Nhẫn: lan từ vòng trong ra ngoài
+            sp.SpawnRing(p, 2f, 4f, 2f, false, testDamage, Log);
+        if (kb.digit0Key.wasPressedThisFrame)           // Nón nhẫn: hướng lên trên, co từ ngoài vào trong
+            sp.SpawnConeRing(p + Vector2.down * 4f, 90f, 3f, 8f, 90f, 2f, true, testDamage, Log);
+        if (kb.minusKey.wasPressedThisFrame)            // Sweep nhẫn: quét từ trái sang phải
+            sp.SpawnSweepRing(p + Vector2.down * 4f, 90f, 3f, 8f, 100f, true, 3f, testDamage, Log);
 #endif
     }
 
