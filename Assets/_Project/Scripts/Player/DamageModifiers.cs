@@ -68,6 +68,7 @@ public class HealingBonusSet
 {
     private struct Entry { public object source; public float value; }
     private readonly List<Entry> entries = new List<Entry>();
+    protected virtual StackMode Mode => CombatRules.Config.healingStacking;
 
     public void Set(object source, float value)
     {
@@ -92,7 +93,7 @@ public class HealingBonusSet
     {
         get
         {
-            bool multiply = CombatRules.Config.healingStacking == StackMode.Multiplicative;
+            bool multiply = Mode == StackMode.Multiplicative;
             float product = 1f, sum = 0f;
             for (int i = 0; i < entries.Count; i++)
             {
@@ -101,5 +102,64 @@ public class HealingBonusSet
             }
             return multiply ? product : 1f + sum;
         }
+    }
+}
+
+// Hiệu quả hồi MANA. Dùng luật riêng manaGainStacking (mặc định cộng thẳng)
+public class ManaGainBonusSet : HealingBonusSet
+{
+    protected override StackMode Mode => CombatRules.Config.manaGainStacking;
+}
+
+// Các nguồn TĂNG SÁT THƯƠNG GÂY RA. Hai nhóm: "tất cả" (áp dụng cả Pure) và "theo từng nguyên tố".
+// Cùng nhóm gộp theo CombatRules.damageBonusStacking, khác nhóm luôn CỘNG.
+public class DamageBonusSet
+{
+    public const int AllScope = -1;
+
+    private struct Entry { public object source; public int scope; public float value; }
+    private readonly List<Entry> entries = new List<Entry>();
+
+    public void Set(object source, int scope, float value)
+    {
+        value = Mathf.Max(value, -1f);                      // Cho phép âm (giảm sát thương gây ra), không xuống dưới -100%
+        bool remove = Mathf.Approximately(value, 0f);
+
+        for (int i = 0; i < entries.Count; i++)
+        {
+            if (!Equals(entries[i].source, source) || entries[i].scope != scope) continue;
+
+            if (remove) entries.RemoveAt(i);
+            else entries[i] = new Entry { source = source, scope = scope, value = value };
+            return;
+        }
+
+        if (!remove) entries.Add(new Entry { source = source, scope = scope, value = value });
+    }
+
+    public void Remove(object source)
+    {
+        for (int i = entries.Count - 1; i >= 0; i--)
+            if (Equals(entries[i].source, source)) entries.RemoveAt(i);
+    }
+
+    // Tổng bonus cho một nguyên tố (0.15 = +15%). Pure chỉ nhận nhóm "tất cả".
+    public float GetTotalBonus(ElementType element)
+    {
+        bool multiply = CombatRules.Config.damageBonusStacking == StackMode.Multiplicative;
+        int elementScope = (int)element;
+
+        float allProd = 1f, allSum = 0f, elProd = 1f, elSum = 0f;
+
+        for (int i = 0; i < entries.Count; i++)
+        {
+            Entry e = entries[i];
+            if (e.scope == AllScope) { allProd *= 1f + e.value; allSum += e.value; }
+            else if (e.scope == elementScope && element != ElementType.Pure) { elProd *= 1f + e.value; elSum += e.value; }
+        }
+
+        float bonusAll = multiply ? allProd - 1f : allSum;
+        float bonusElement = multiply ? elProd - 1f : elSum;
+        return bonusAll + bonusElement;                      // Khác nhóm: CỘNG
     }
 }

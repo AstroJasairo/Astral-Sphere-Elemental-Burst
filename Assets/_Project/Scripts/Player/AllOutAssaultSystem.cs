@@ -13,6 +13,9 @@ public class AllOutAssaultSystem : MonoBehaviour
 
     // MP càng cao, mana cần càng ít. Mana gốc nằm trong CharacterData (qua PlayerStats)
     public float MaxMana => stats.BaseMaxMana * stats.ManaCostMultiplier;
+    
+    // ----- API để passive/buff sau này can thiệp vào All Out Assault -----
+    public float RemainingTime => IsActive ? activeTimer : 0f;
 
     // Các sự kiện cho UI và hiệu ứng, hệ thống này không cần biết ai đang nghe
     public event Action OnActivated;
@@ -93,7 +96,14 @@ public class AllOutAssaultSystem : MonoBehaviour
             End();
             return;
         }
-        OnProgressChanged?.Invoke(activeTimer / data.duration);   // Thanh mana cạn dần
+        OnProgressChanged?.Invoke(Mathf.Clamp01(activeTimer / data.duration));   // Thanh mana cạn dần
+    }
+
+    // Cộng (số dương) hoặc trừ (số âm) thời gian hiệu lực còn lại. Chỉ có tác dụng khi đang hiệu lực.
+    public void ExtendActiveTime(float seconds)
+    {
+        if (!IsActive) return;
+        activeTimer = Mathf.Max(0.01f, activeTimer + seconds);      // Chừa tối thiểu để vòng Update tự kết thúc đúng cách
     }
 
     private void LogBonus(string state)

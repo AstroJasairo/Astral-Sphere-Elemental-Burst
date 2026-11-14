@@ -14,6 +14,7 @@ public class EnemyDebuffSystem : MonoBehaviour
         public DotData data;
         public int stacks;
         public float endTime;
+        public float damagePerTick;      // Sát thương mỗi nhịp (đã chọn từ DotData hoặc từ cấp vũ khí)
         public float nextTickTime;
         public float scale = 1f;      // Hệ số sát thương (ATK người chơi lúc dính đòn)
     }
@@ -71,12 +72,14 @@ public class EnemyDebuffSystem : MonoBehaviour
     }
 
     // Dính một stack DOT. Đã có thì +1 stack (tối đa maxStacksOverride, 0 = theo DotData) và reset thời gian chung.
-    public void ApplyDot(DotData data, int maxStacksOverride = 0, float scale = 1f)
+    // damageOverride = 0: dùng damagePerTick của DotData. Lớn hơn 0: dùng giá trị của cấp vũ khí.
+    public void ApplyDot(DotData data, int maxStacksOverride = 0, float scale = 1f, float damageOverride = 0f)
     {
         if (data == null) return;
 
         float now = Time.time;
         int cap = maxStacksOverride > 0 ? maxStacksOverride : data.maxStacks;
+        float perTick = damageOverride > 0f ? damageOverride : data.damagePerTick;
 
         DotState dot = FindDot(data);
         if (dot == null)
@@ -87,14 +90,16 @@ public class EnemyDebuffSystem : MonoBehaviour
             dot.endTime = now + data.duration;
             dot.nextTickTime = now + data.tickInterval;
             dot.scale = scale;
+            dot.damagePerTick = perTick;
             dots.Add(dot);
-            enabled = true;                                // Có DOT thì mới bật Update
+            enabled = true;
         }
         else
         {
-            if (dot.stacks < cap) dot.stacks++;            // Đã quá cap (từ vũ khí khác) thì không thêm, cũng không giảm
-            dot.endTime = now + data.duration;             // Reset thời gian chung, giữ nguyên nhịp đang chạy
+            if (dot.stacks < cap) dot.stacks++;
+            dot.endTime = now + data.duration;
             dot.scale = Mathf.Max(dot.scale, scale);
+            dot.damagePerTick = Mathf.Max(dot.damagePerTick, perTick);   // Cùng DOT từ hai cấp khác nhau: lấy giá trị mạnh hơn
         }
     }
 
@@ -107,7 +112,7 @@ public class EnemyDebuffSystem : MonoBehaviour
             if (e.chance < 1f && Random.value > e.chance) continue;
 
             if (e.kind == HitEffect.Kind.Dot)
-                ApplyDot(e.dot, e.maxStacks, e.scaleWithAtk ? atkScale : 1f);
+                ApplyDot(e.dot, e.maxStacks, e.scaleWithAtk ? atkScale : 1f, e.damagePerTick);
             else
                 ApplyDebuff(e.debuff, e.value, e.duration);
         }
@@ -159,7 +164,7 @@ public class EnemyDebuffSystem : MonoBehaviour
 
             while (now >= d.nextTickTime && d.nextTickTime <= d.endTime + 0.001f && guard++ < 8)
             {
-                float damage = d.data.damagePerTick * d.scale;
+                float damage = d.damagePerTick * d.scale;      // CŨ: d.data.damagePerTick * d.scale
 
                 // Mỗi stack là MỘT đòn riêng: chịu DEF, kháng và miễn nhiễm nguyên tố của quái
                 for (int s = 0; s < d.stacks; s++)

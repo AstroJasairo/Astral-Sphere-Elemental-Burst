@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
 // Passive "Dòng chảy sinh lực" (Claire): tăng hiệu quả hồi phục.
-// Tạo bằng: Assets > Create > Astral Sphere > Skills > Passive - Healing Effectiveness
-[CreateAssetMenu(menuName = "Astral Sphere/Skills/Passive - Healing Effectiveness")]
+// Tạo bằng: Assets > Create > Astral Sphere > Skills > Passive > Healing Effectiveness
+[CreateAssetMenu(menuName = "Astral Sphere/Skills/Passive/Healing Effectiveness")]
 public class HealingEffectivenessPassiveData : PassiveSkillData
 {
     [Header("Hiệu quả hồi phục theo cấp 1..5 (0.03 = +3% lượng hồi)")]

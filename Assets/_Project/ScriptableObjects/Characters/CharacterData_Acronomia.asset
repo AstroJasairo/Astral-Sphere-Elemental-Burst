@@ -102,6 +102,19 @@ MonoBehaviour:
   baseDef: 0
   baseMoveSpeed: 3
   baseMagnetRadius: 1.5
+  maxMana: 100
+  elementResist:
+    metal: 0
+    fire: 0
+    lightning: 0
+    wind: 0
+    soul: 0
+    light: 0
+    earth: 0
+    water: 0
+    plant: 0
+    dark: 0
+  elementImmunity: 0
   perks:
   - id: lightning_start
     replacesId: 
@@ -177,3 +190,10 @@ MonoBehaviour:
     bonus: 1
     description: "All Out Assault: +100% s\xE1t th\u01B0\u01A1ng nguy\xEAn t\u1ED1
       B\xF3ng t\u1ED1i"
+  passiveSkill: {fileID: 0}
+  passiveSkills:
+  - {fileID: 11400000, guid: 991d565c5b29e1d429fb8b83bb0ecf93, type: 2}
+  - {fileID: 11400000, guid: 5742e78eb7ed3624089780fb21011392, type: 2}
+  - {fileID: 11400000, guid: 84635120507167043905e3cd65d1619f, type: 2}
+  - {fileID: 11400000, guid: 0d9f53f57a21f8148a758f0d72d18601, type: 2}
+  activeSkill: {fileID: 0}

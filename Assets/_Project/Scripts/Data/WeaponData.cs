@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 // Dữ liệu cho từng cấp của vũ khí (Lv1 đến Lv5)
@@ -57,9 +58,26 @@ public class WeaponData : ScriptableObject
     public bool isUnique = false;
     public float tickInterval = 0.5f;            // Clarius: khoảng cách giữa hai lần gây sát thương (n giây)
 
+    [Header("Passive đính kèm (cấp passive = cấp vũ khí; nhân vật mang vũ khí được hưởng)")]
+    public List<PassiveSkillData> passiveSkills = new List<PassiveSkillData>();
+
     [Header("Hỗ trợ cân bằng")]
     [Tooltip("Dùng cho menu chuột phải 'Fill Damage Per Level': mỗi cấp tăng bao nhiêu so với Base Damage (0.2 = +20%)")]
     public float damageGrowthPerLevel = 0.2f;
+
+    // Dòng mô tả passive ở một cấp, nối vào thẻ chọn nâng cấp
+    public string DescribePassives(int level)
+    {
+        if (passiveSkills == null || passiveSkills.Count == 0) return "";
+
+        var sb = new StringBuilder();
+        foreach (PassiveSkillData p in passiveSkills)
+        {
+            if (p == null) continue;
+            sb.Append("\n+ ").Append(p.skillName).Append(": ").Append(p.DescribeLevel(level));
+        }
+        return sb.ToString();
+    }
 
     // Chuột phải vào tiêu đề asset: điền sẵn sát thương của 5 cấp (Lv1 = Base Damage, mỗi cấp +damageGrowthPerLevel)
     [ContextMenu("Fill Damage Per Level")]

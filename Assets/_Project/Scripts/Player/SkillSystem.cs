@@ -25,14 +25,15 @@ public class SkillSystem : MonoBehaviour
 
     private PlayerStats stats;
     private readonly List<PassiveSkillEffect> passives = new List<PassiveSkillEffect>();
+    private readonly List<PassiveSkillData> passiveData = new List<PassiveSkillData>();   // Song song với passives
     private ActiveSkillEffect active;
     private float effectEndTime, effectTotal;
     private float cooldownStartTime, cooldownEndTime, cooldownTotal;
 
     // ---- Dữ liệu cho UI (nút skill đọc mỗi frame) ----
     // IsReady: không kích hoạt được khi bị Câm lặng. Hồi chiêu vẫn chạy bình thường.
-    public bool IsReady => HasActive && !IsSilenced && Time.time >= cooldownEndTime
-                           && GameManager.Instance != null && !GameManager.Instance.IsEnded;
+    public bool IsReady => HasActive && (!IsSilenced || ActiveData.ignoresSilence) && Time.time >= cooldownEndTime
+                       && GameManager.Instance != null && !GameManager.Instance.IsEnded;
     public bool IsCooldownRunning => HasActive && Time.time >= cooldownStartTime && Time.time < cooldownEndTime;
     public float CooldownRemaining => HasActive ? Mathf.Max(0f, cooldownEndTime - Time.time) : 0f;
     public float CooldownRemaining01 => (HasActive && cooldownTotal > 0f) ? Mathf.Clamp01(CooldownRemaining / cooldownTotal) : 0f;
@@ -60,6 +61,7 @@ public class SkillSystem : MonoBehaviour
             effect.SetLevel(level);
             effect.Enable();
             passives.Add(effect);
+            passiveData.Add(data);
         }
 
         ActiveData = c.activeSkill;
@@ -84,8 +86,8 @@ public class SkillSystem : MonoBehaviour
     private void Update()
     {
         float dt = Time.deltaTime;
-        if (!PassivesSuppressed)
-            for (int i = 0; i < passives.Count; i++) passives[i].Tick(dt);
+        for (int i = 0; i < passives.Count; i++)
+            if (!PassivesSuppressed || passiveData[i].ignoresSilence) passives[i].Tick(dt);
 
         if (IsEffectActive)
         {
@@ -102,8 +104,10 @@ public class SkillSystem : MonoBehaviour
     {
         if (PassivesSuppressed == suppressed) return;
         PassivesSuppressed = suppressed;
+
         for (int i = 0; i < passives.Count; i++)
         {
+            if (passiveData[i].ignoresSilence) continue;      // Passive miễn nhiễm Câm lặng: không đụng tới
             if (suppressed) passives[i].Disable();
             else passives[i].Enable();
         }
@@ -116,7 +120,7 @@ public class SkillSystem : MonoBehaviour
         IsSilenced = silenced;
 
         SetPassivesSuppressed(silenced);                         // Tắt/bật lại MỌI passive
-        if (silenced && IsEffectActive) ForceEndEffect();        // Skill chủ động đang chạy: kết thúc ngay
+        if (silenced && IsEffectActive && !ActiveData.ignoresSilence) ForceEndEffect();        // Skill chủ động đang chạy: kết thúc ngay
         OnSilenceChanged?.Invoke(silenced);
     }
 

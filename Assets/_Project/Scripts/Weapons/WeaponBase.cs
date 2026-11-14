@@ -14,6 +14,9 @@ public abstract class WeaponBase : MonoBehaviour
     public int Level => level;
     public bool IsMaxLevel => data != null && level >= data.levels.Length;
 
+    // WeaponInventory nghe để cập nhật passive của vũ khí này và phát OnWeaponsChanged
+    public event System.Action<WeaponBase> Leveled;
+
     // Thông số của cấp hiện tại (level 1 -> phần tử 0)
     protected WeaponLevel CurrentLevel => data.levels[Mathf.Clamp(level, 1, data.levels.Length) - 1];
 
@@ -87,6 +90,7 @@ public abstract class WeaponBase : MonoBehaviour
         if (IsMaxLevel) return;
         level++;
         OnLevelChanged();
+        Leveled?.Invoke(this);
     }
 
     // Lớp con ghi đè nếu cần cập nhật khi đổi cấp (ví dụ phóng to Aura)

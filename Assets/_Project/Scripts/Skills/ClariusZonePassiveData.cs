@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
-// Sinh lực đỏ rực (Claire). Tạo bằng: Assets > Create > Astral Sphere > Skills > Passive - Clarius Zone
-[CreateAssetMenu(menuName = "Astral Sphere/Skills/Passive - Clarius Zone")]
+// Sinh lực đỏ rực (Claire). Tạo bằng: Assets > Create > Astral Sphere > Skills > Passive > Clarius Zone
+[CreateAssetMenu(menuName = "Astral Sphere/Skills/Passive/Clarius Zone")]
 public class ClariusZonePassiveData : PassiveSkillData
 {
     [Header("Giảm sát thương nhận vào theo cấp 1..5 (0.05 = 5%)")]

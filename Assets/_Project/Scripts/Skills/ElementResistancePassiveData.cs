@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
 // Passive "Kháng nguyên tố": giảm sát thương của MỘT nguyên tố nhận vào. Dùng cho Kháng hỏa của Claire và các skill tương tự sau này.
-// Tạo bằng: Assets > Create > Astral Sphere > Skills > Passive - Element Resistance
-[CreateAssetMenu(menuName = "Astral Sphere/Skills/Passive - Element Resistance")]
+// Tạo bằng: Assets > Create > Astral Sphere > Skills > Passive > Element Resistance
+[CreateAssetMenu(menuName = "Astral Sphere/Skills/Passive/Element Resistance")]
 public class ElementResistancePassiveData : PassiveSkillData
 {
     public ElementType element = ElementType.Fire;

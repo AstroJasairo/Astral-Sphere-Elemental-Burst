@@ -29,6 +29,7 @@ MonoBehaviour:
   beamLength: 10
   isUnique: 0
   tickInterval: 0.5
+  passiveSkills: []
   damageGrowthPerLevel: 0.2
   icon: {fileID: 0}
   description: "T\u1EA1o Aura xung quanh g\xE2y s\xE1t th\u01B0\u01A1ng li\xEAn t\u1EE5c"

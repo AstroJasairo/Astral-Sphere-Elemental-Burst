@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5ada61041a52164e93472f50be17103, type: 3}
+  m_Name: Passive_QueenBlade
+  m_EditorClassIdentifier: Assembly-CSharp::QueensBladePassiveData
+  id: acronomia_queens_blade
+  skillName: "L\u01B0\u1EE1i g\u01B0\u01A1m c\u1EE7a n\u1EEF ho\xE0ng"
+  icon: {fileID: 0}
+  description: 
+  upgradeCost: e8030000b80b0000401f0000204e000050c30000
+  ignoresSilence: 0
+  ignoresStun: 0
+  bonusPerWeaponLevel:
+  - 0.005
+  - 0.01
+  - 0.015
+  - 0.02
+  - 0.025

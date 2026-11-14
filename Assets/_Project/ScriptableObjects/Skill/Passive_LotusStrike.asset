@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54a8c48e28b64e145b44a9bf4f7122ed, type: 3}
+  m_Name: Passive_LotusStrike
+  m_EditorClassIdentifier: Assembly-CSharp::LotusStrikePassiveData
+  id: acronomia_lotus_strike
+  skillName: "Li\xEAn hoa k\xEDch"
+  icon: {fileID: 0}
+  description: 
+  upgradeCost: e8030000b80b0000401f0000204e000050c30000
+  ignoresSilence: 0
+  ignoresStun: 0
+  cooldownReduction:
+  - 5
+  - 10
+  - 15
+  - 20
+  - 25

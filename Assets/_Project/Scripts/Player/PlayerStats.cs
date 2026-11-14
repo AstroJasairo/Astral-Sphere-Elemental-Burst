@@ -69,11 +69,14 @@ public class PlayerStats : MonoBehaviour
     public bool IsRooted => Buffs.IsActive(BuffType.Root);
     public bool IsSilenced => Buffs.IsActive(BuffType.Silence);
     public float AttackSpeedMultiplier => Mathf.Max(0.1f, 1f - Debuff(BuffType.Frostbite));   // Tê cóng: 0.5 = tốc đánh còn một nửa
-    public float ManaGainMultiplier => 1f - Debuff(BuffType.ManaDrain);
+    // Hiệu quả hồi mana = (1 + bonus, hoặc nhân tích lũy theo CombatRules) x (1 - Suy giảm mana)
+    public float ManaGainMultiplier => ManaGainBonuses.Multiplier * (1f - Debuff(BuffType.ManaDrain));
 
     public float Shield { get; private set; }
 
     // Các nguồn giảm sát thương và hiệu quả hồi phục (passive, buff... tự đăng ký vào đây)
+    public DamageBonusSet DamageBonuses { get; } = new DamageBonusSet();
+    public ManaGainBonusSet ManaGainBonuses { get; } = new ManaGainBonusSet();
     public DamageReductionSet Reductions { get; } = new DamageReductionSet();
     public HealingBonusSet HealingBonuses { get; } = new HealingBonusSet();
     //public float IncomingDamageMultiplier { get; set; } = 1f;
@@ -92,6 +95,17 @@ public class PlayerStats : MonoBehaviour
         {
             if (health == null && this != null) health = GetComponent<HealthSystem>();
             return health;
+        }
+    }
+
+    // Kho vũ khí (lấy lười: null nếu chưa gắn)
+    private WeaponInventory weaponInventory;
+    public WeaponInventory Weapons
+    {
+        get
+        {
+            if (weaponInventory == null) TryGetComponent(out weaponInventory);
+            return weaponInventory;
         }
     }
 
@@ -205,7 +219,8 @@ public class PlayerStats : MonoBehaviour
             else if (perk.type == PerkType.AllOutAssaultDamageBonus && AllOutAssaultActive)
                 bonus += perk.bonus;   // Chỉ tính khi đang trong All Out Assault
         }
-        return bonus * (1f - Debuff(BuffType.Exhaust));
+        // Bonus nguyên tố từ perk + bonus từ passive (nhóm "tất cả" và nhóm nguyên tố). Exhaust giảm tất cả
+        return (bonus + DamageBonuses.GetTotalBonus(element)) * (1f - Debuff(BuffType.Exhaust));
     }
 
     // Sát thương thực nhận = số gốc x (1 - giảm sát thương) x 100/(100+DEF). Pure bỏ qua cả hai.

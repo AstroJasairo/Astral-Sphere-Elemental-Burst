@@ -18,4 +18,9 @@ public class CombatRulesConfig : ScriptableObject
     [Header("BOSS")]
     [Tooltip("Các hiệu ứng giảm sát thương theo mốc máu của BOSS chồng thời gian: bật = nhân tích lũy, tắt = làm mới thời gian, không cộng dồn")]
     public bool overlappingBossReductionsStack = true;
+
+    [Header("Tăng sát thương (nguồn từ passive). Cách gộp trong CÙNG nhóm; khác nhóm luôn CỘNG")]
+    public StackMode damageBonusStacking = StackMode.Additive;
+    [Header("Hiệu quả hồi mana")]
+    public StackMode manaGainStacking = StackMode.Additive;      // Cộng thẳng. Đổi sang Multiplicative để nhân tích lũy
 }

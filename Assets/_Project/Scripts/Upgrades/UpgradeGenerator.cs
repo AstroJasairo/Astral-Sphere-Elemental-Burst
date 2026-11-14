@@ -21,7 +21,9 @@ public class UpgradeGenerator : MonoBehaviour
             candidates.Add(new UpgradeOption
             {
                 Title = $"{w.Data.weaponName} Lv{w.Level + 1}",
-                Description = w.Data.upgradeDescription,
+                //Description = w.Data.upgradeDescription,
+                // Nâng cấp vũ khí đang có: hiện luôn passive ở cấp kế tiếp
+                Description = w.Data.upgradeDescription + w.Data.DescribePassives(w.Level + 1),
                 Icon = w.Data.icon,
                 Apply = () => weapon.LevelUp()
             });
@@ -38,7 +40,9 @@ public class UpgradeGenerator : MonoBehaviour
                 candidates.Add(new UpgradeOption
                 {
                     Title = data.weaponName,
-                    Description = data.description,
+                    //Description = data.description,
+                    // Vũ khí mới: passive ở cấp 1
+                    Description = data.description + data.DescribePassives(1),
                     Icon = data.icon,
                     Apply = () => inventory.AddWeapon(data)
                 });

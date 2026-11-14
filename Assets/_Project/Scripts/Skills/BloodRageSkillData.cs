@@ -1,8 +1,8 @@
 ﻿using System.Text;
 using UnityEngine;
 
-// Huyết nộ (Claire). Tạo bằng: Assets > Create > Astral Sphere > Skills > Active - Blood Rage
-[CreateAssetMenu(menuName = "Astral Sphere/Skills/Active - Blood Rage")]
+// Huyết nộ (Claire). Tạo bằng: Assets > Create > Astral Sphere > Skills > Active > Blood Rage
+[CreateAssetMenu(menuName = "Astral Sphere/Skills/Active/Blood Rage")]
 public class BloodRageSkillData : ActiveSkillData
 {
     [Header("Theo cấp 1..5 (phần trăm: 0.05 = 5%)")]

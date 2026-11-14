@@ -11,6 +11,11 @@ public abstract class SkillDataBase : ScriptableObject
     public Sprite icon;
     [TextArea] public string description;                       // Mô tả chung (tab dùng)
     public int[] upgradeCost = new int[MaxLevel];               // [i] = vàng để lên từ cấp i lên cấp i+1 (SỐ TẠM)
+    [Header("Miễn nhiễm khống chế (dành cho skill đặc biệt, mặc định tắt)")]
+    [Tooltip("Bật: skill vẫn hoạt động khi người chơi bị Câm lặng (Silence)")]
+    public bool ignoresSilence = false;
+    [Tooltip("Bật: passive gắn trên VŨ KHÍ vẫn hoạt động khi người chơi bị Choáng (Stun)")]
+    public bool ignoresStun = false;
 
     // Mô tả hiệu ứng cụ thể ở một cấp (1..5), lớp con tự ghép chuỗi từ số liệu
     public abstract string DescribeLevel(int level);

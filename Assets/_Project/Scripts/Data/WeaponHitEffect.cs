@@ -17,6 +17,8 @@ public class WeaponHitEffect
 
     [Header("Kind = Dot")]
     public DotData dot;
+    [Tooltip("Sát thương MỖI NHỊP của mỗi stack ở cấp vũ khí này. 0 = dùng damagePerTick trong DotData")]
+    public float damagePerTick = 0f;
     [Tooltip("Số stack tối đa của DOT này ở cấp vũ khí này. 0 = dùng maxStacks trong DotData")]
     public int maxStacks = 0;
     [Tooltip("Bật: sát thương mỗi nhịp nhân với ATK của người chơi lúc dính đòn")]
