@@ -48,7 +48,15 @@ public class BuffHudView : MonoBehaviour
                     icon = Acquire((BuffType)i);
                     active[i] = icon;
                 }
-                icon.SetRemaining(remaining);
+                if ((BuffType)i == BuffType.Brave)
+                {
+                    icon.SetNoTimer();                                                    // Không đồng hồ
+                    icon.SetStacks(Mathf.RoundToInt(buffs.GetValue(BuffType.Brave)));     // Số kẻ địch đang được tính
+                }
+                else
+                {
+                    icon.SetRemaining(remaining);
+                }
             }
             else if (icon != null)                                 // Buff vừa hết: trả icon về kho
             {

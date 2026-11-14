@@ -5,13 +5,10 @@ using System;
 [RequireComponent(typeof(HealthSystem))]
 public class PlayerStats : MonoBehaviour
 {
-    //[Header("Nhân vật (tạm gán tay để test; sau này lấy từ menu chọn nhân vật)")]
-    //[SerializeField] private CharacterData character;
-    //[SerializeField, Range(0, 5)] private int starLevel = 0;
     [Header("Nhân vật (Chỉ dùng khi chạy thẳng scene Game để test)")]
     [SerializeField] private CharacterData character;      // Dự phòng khi chưa có MetaConfig
     [SerializeField] private bool useDebugStarLevel;       // Bật để dùng "Star Level" bên dưới thay cho sao đã lưu
-    [SerializeField] private bool debugInvincible;       // CHỈ ĐỂ TEST HIỆU NĂNG: người chơi không bao giờ chết
+    [SerializeField] private bool debugInvincible;         // CHỈ ĐỂ TEST HIỆU NĂNG: người chơi không bao giờ chết
     [SerializeField, Range(0, 5)] private int starLevel = 0;
     [SerializeField] private bool logMeta;                 // Bật để in bonus meta ra Console
 
@@ -30,8 +27,11 @@ public class PlayerStats : MonoBehaviour
     public Color SecondaryColor => character != null ? character.secondaryColor : Color.white;
 
     // Bonus nhận được TRONG trận
-    private float hpBonus, defBonus;
+    private float hpBonus;                 // TỔNG HP cộng thêm đã nhận (kể cả khi đang bị chuyển đổi sang hồi mana)
+    private float appliedHpBonus;          // MỚI 12D: phần HP cộng thêm đang THỰC SỰ nằm trong máu tối đa
+    private float defBonus;
     private float atkBonusPct, speedBonusPct, magnetBonusPct;
+    private float atkFlatBonus;            // MỚI 12D: ATK cộng THẲNG (hiện chưa có nguồn nào gọi AddAtkFlat)
     private float manaCostReductionPct;
     private ElementMask elementImmunity;
 
@@ -40,20 +40,46 @@ public class PlayerStats : MonoBehaviour
     private float aoaAtkPct, aoaSpeedPct;        // Buff All Out Assault (tạm thời, kênh riêng)
     private float aoaCooldownMultiplier = 1f;    // 1 = bình thường, 0.25 = hồi chiêu còn 25%
 
+    // ----- MỚI 12D: Brave -----
+    private int braveStacks;
+    private float braveAtkPct, braveDefPct;      // Đã nhân sẵn với số stack
+
+    // ----- MỚI 12D: Liên kết linh hồn -----
+    private bool soulLinkOn;
+    private float soulLinkAtkEff, soulLinkHpRate, soulLinkDefRate, soulLinkSpdRate;
+
     private float Debuff(BuffType type) { return Mathf.Clamp01(Buffs.GetValue(type)); }
     private readonly List<StarPerk> activePerks = new List<StarPerk>();
 
     public CharacterData Character => character;
-    public float MaxHp => baseMaxHp + hpBonus;
-    public float Atk => baseAtk * (1f + atkBonusPct + aoaAtkPct + Buffs.GetValue(BuffType.Rage) + Buffs.GetValue(BuffType.ActiveSkill))
-                    * (1f - Debuff(BuffType.Exhaust));
-    public float Def => (baseDef + defBonus) * (1f - Debuff(BuffType.Vulnerable));
+
+    // ATK/tốc độ "cộng thêm" dạng phần trăm: gồm nâng cấp trong trận, AOA, thuốc, Huyết nộ, Brave
+    public float AddedAtkPct => atkBonusPct + aoaAtkPct + Buffs.GetValue(BuffType.Rage)
+                                + Buffs.GetValue(BuffType.ActiveSkill) + braveAtkPct;
+    public float AddedSpeedPct => speedBonusPct + aoaSpeedPct + Buffs.GetValue(BuffType.Speed);
+
+    public bool SoulLinkActive => soulLinkOn;
+
+    // Máu tối đa vĩnh viễn. Khi Liên kết linh hồn bật, HP cộng thêm KHÔNG nằm trong đây
+    public float MaxHp => baseMaxHp + appliedHpBonus;
+
+    // Liên kết linh hồn bật: nhân vật không nhận ATK cộng thêm (chuyển sang vũ khí, xem WeaponAtkMultiplier)
+    public float Atk => (soulLinkOn ? baseAtk : (baseAtk + atkFlatBonus) * (1f + AddedAtkPct))
+                        * (1f - Debuff(BuffType.Exhaust));
+
+    // Hai hệ số WeaponBase dùng khi tính sát thương cơ bản của vũ khí
+    public float WeaponAtkMultiplier => soulLinkOn ? 1f + AddedAtkPct * soulLinkAtkEff : 1f;
+    public float WeaponFlatDamage => soulLinkOn ? atkFlatBonus * soulLinkAtkEff : 0f;
+
+    // DEF cộng thêm = defBonus (nâng cấp) + % của DEF gốc (Brave). Liên kết linh hồn bật: chuyển sang hồi mana
+    public float Def => (baseDef + (soulLinkOn ? 0f : defBonus + baseDef * braveDefPct)) * (1f - Debuff(BuffType.Vulnerable));
+
     public float MoveSpeed
     {
         get
         {
             if (IsRooted || IsStunned) return 0f;                              // Trói và Choáng: không di chuyển
-            return baseMoveSpeed * (1f + speedBonusPct + aoaSpeedPct + Buffs.GetValue(BuffType.Speed))
+            return baseMoveSpeed * (1f + (soulLinkOn ? 0f : AddedSpeedPct))
                    * (1f - Debuff(BuffType.Slow));
         }
     }
@@ -69,8 +95,32 @@ public class PlayerStats : MonoBehaviour
     public bool IsRooted => Buffs.IsActive(BuffType.Root);
     public bool IsSilenced => Buffs.IsActive(BuffType.Silence);
     public float AttackSpeedMultiplier => Mathf.Max(0.1f, 1f - Debuff(BuffType.Frostbite));   // Tê cóng: 0.5 = tốc đánh còn một nửa
-    // Hiệu quả hồi mana = (1 + bonus, hoặc nhân tích lũy theo CombatRules) x (1 - Suy giảm mana)
-    public float ManaGainMultiplier => ManaGainBonuses.Multiplier * (1f - Debuff(BuffType.ManaDrain));
+
+    // Hiệu quả hồi mana = (nguồn thường + Liên kết linh hồn, gộp theo CombatRules.manaGainStacking) x (1 - Suy giảm mana)
+    public float ManaGainMultiplier => ManaGainBase * (1f - Debuff(BuffType.ManaDrain));
+
+    private float ManaGainBase
+    {
+        get
+        {
+            float m = ManaGainBonuses.Multiplier;
+            float bonus = SoulLinkManaBonus;
+            if (bonus <= 0f) return m;
+            return CombatRules.Config.manaGainStacking == StackMode.Additive ? m + bonus : m * (1f + bonus);
+        }
+    }
+
+    // Hiệu quả hồi mana nhận từ HP/DEF/SPD cộng thêm (0.2 = +20%). Tính lại mỗi lần đọc vì buff tạm thời hết hạn.
+    public float SoulLinkManaBonus
+    {
+        get
+        {
+            if (!soulLinkOn) return 0f;
+            float defPoints = defBonus + baseDef * braveDefPct;           // DEF % tính theo DEF gốc
+            float speedPoints = baseMoveSpeed * AddedSpeedPct;            // SPD % tính theo tốc độ gốc
+            return hpBonus * soulLinkHpRate + defPoints * soulLinkDefRate + speedPoints * soulLinkSpdRate;
+        }
+    }
 
     public float Shield { get; private set; }
 
@@ -79,7 +129,6 @@ public class PlayerStats : MonoBehaviour
     public ManaGainBonusSet ManaGainBonuses { get; } = new ManaGainBonusSet();
     public DamageReductionSet Reductions { get; } = new DamageReductionSet();
     public HealingBonusSet HealingBonuses { get; } = new HealingBonusSet();
-    //public float IncomingDamageMultiplier { get; set; } = 1f;
     public event Action<float, float> OnShieldChanged;   // (lá chắn hiện tại, tối đa) -> HUD lắng nghe
 
     public IReadOnlyList<StarPerk> ActivePerks => activePerks;
@@ -195,8 +244,12 @@ public class PlayerStats : MonoBehaviour
         switch (stat)
         {
             case StatType.Hp:
-                hpBonus += amount;
-                Health.IncreaseMax(amount);
+                hpBonus += amount;                                  // Luôn ghi nhận (để chuyển đổi sang hồi mana nếu cần)
+                if (!soulLinkOn)                                    // Liên kết linh hồn bật: không tăng máu tối đa
+                {
+                    appliedHpBonus += amount;
+                    Health.IncreaseMax(amount);
+                }
                 break;
             case StatType.Mp: manaCostReductionPct += amount; break;
             case StatType.Atk: atkBonusPct += amount; break;
@@ -204,6 +257,39 @@ public class PlayerStats : MonoBehaviour
             case StatType.Spd: speedBonusPct += amount; break;
             case StatType.Mag: magnetBonusPct += amount; break;
         }
+    }
+
+    // MỚI 12D: ATK cộng THẲNG (ví dụ +1 ATK). Liên kết linh hồn bật thì chuyển sang sát thương cơ bản vũ khí x hiệu quả
+    public void AddAtkFlat(float amount) { atkFlatBonus += amount; }
+
+    // MỚI 12D: BravePassiveEffect gọi. stacks = số kẻ địch; atkPct, defPct đã nhân sẵn với số stack
+    public void SetBrave(int stacks, float atkPct, float defPct)
+    {
+        braveStacks = stacks;
+        braveAtkPct = atkPct;
+        braveDefPct = defPct;
+    }
+    public int BraveStacks => braveStacks;
+
+    // MỚI 12D: SoulLinkPassiveEffect gọi (Enable/Disable). Gọi nhiều lần vẫn an toàn.
+    public void SetSoulLink(bool on, float atkEfficiency, float hpRate, float defRate, float spdRate)
+    {
+        soulLinkAtkEff = atkEfficiency;
+        soulLinkHpRate = hpRate;
+        soulLinkDefRate = defRate;
+        soulLinkSpdRate = spdRate;
+
+        bool active = on && CombatRules.Config.soulLinkEnabled;     // Công tắc trong CombatRules
+        if (active == soulLinkOn) return;                           // Trạng thái không đổi: chỉ cập nhật hệ số ở trên
+        soulLinkOn = active;
+
+        // Đồng bộ máu tối đa: bật thì thu HP cộng thêm về 0, tắt thì trả lại toàn bộ
+        float target = active ? 0f : hpBonus;
+        float delta = target - appliedHpBonus;
+        appliedHpBonus = target;
+        if (!Mathf.Approximately(delta, 0f)) Health.ShiftMax(delta);
+
+        OnShieldChanged?.Invoke(Shield, MaxHp);                     // HUD vẽ lại thanh khiên theo máu tối đa mới
     }
 
     // Cộng dồn bonus sát thương của nguyên tố từ các perk đang hoạt động
@@ -227,7 +313,7 @@ public class PlayerStats : MonoBehaviour
     public float CalculateIncomingDamage(float amount, ElementType element)
     {
         if (element == ElementType.Pure) return amount;
-        if (IsImmuneTo(element)) return 0f;                       // MỚI: miễn nhiễm hoàn toàn (khiên cũng không bị tiêu)
+        if (IsImmuneTo(element)) return 0f;                       // Miễn nhiễm hoàn toàn (khiên cũng không bị tiêu)
         Reductions.EffectScale = 1f - Debuff(BuffType.Vulnerable);
         float reduction = Reductions.GetTotalReduction(element);
         return amount * (1f - reduction) * 100f / (100f + Def);
@@ -254,7 +340,7 @@ public class PlayerStats : MonoBehaviour
         GameManager.Instance.TriggerGameOver();
     }
 
-    // Thêm hàm: AllOutAssaultSystem gọi khi bật/tắt
+    // AllOutAssaultSystem gọi khi bật/tắt
     public void SetAllOutAssault(bool active, float atkPct, float speedPct, float cooldownMultiplier)
     {
         AllOutAssaultActive = active;     // Bật perk 5 sao trong GetDamageBonus
@@ -265,8 +351,7 @@ public class PlayerStats : MonoBehaviour
 
     public void AddShield(float amount)
     {
-        //Shield = Mathf.Min(Shield + amount, MaxHp);       // Lá chắn tối đa bằng máu tối đa
-        Shield = Mathf.Min(Shield + amount, Health.MaxHealth);      // AddShield: giới hạn theo máu tối đa hiệu lực
+        Shield = Mathf.Min(Shield + amount, Health.MaxHealth);      // Giới hạn theo máu tối đa hiệu lực
         OnShieldChanged?.Invoke(Shield, MaxHp);
     }
 
@@ -326,10 +411,21 @@ public class PlayerStats : MonoBehaviour
     {
         var sb = new System.Text.StringBuilder("[Combat] Đánh 100 sát thương, DEF = " + Def + "\n");
         foreach (ElementType e in System.Enum.GetValues(typeof(ElementType)))
+        {
             sb.Append(e).Append(": giảm ").Append((Reductions.GetTotalReduction(e) * 100f).ToString("0.#"))
               .Append("%, nhận ").Append(CalculateIncomingDamage(100f, e).ToString("0.##")).Append('\n');
-            sb.Append("Hồi phục: x").Append(HealingBonuses.Multiplier.ToString("0.###")).Append('\n');
+        }
+        sb.Append("Hồi phục: x").Append(HealingBonuses.Multiplier.ToString("0.###")).Append('\n');
         Debug.Log(sb.ToString());
+    }
+
+    // MỚI 12D: xem nhanh Liên kết linh hồn và Brave
+    [ContextMenu("Debug: Log Soul Link")]
+    private void DebugLogSoulLink()
+    {
+        Debug.Log($"[SoulLink] bật={soulLinkOn} | ATK nhân vật {Atk:0.##}, hệ số vũ khí x{WeaponAtkMultiplier:0.###}, " +
+                  $"ATK cộng thêm {AddedAtkPct * 100f:0.#}% | HP tối đa {MaxHp:0.#} (cộng thêm đã nhận {hpBonus:0.#}, đang áp {appliedHpBonus:0.#}) | " +
+                  $"DEF {Def:0.##} | SPD {MoveSpeed:0.##} | hiệu quả hồi mana x{ManaGainMultiplier:0.###} (từ chuyển đổi +{SoulLinkManaBonus * 100f:0.#}%) | Brave {braveStacks} stack");
     }
 
     [ContextMenu("Debug: Take 20 Fire")] private void DebugTakeFire() { TakeDamage(20f, ElementType.Fire); }

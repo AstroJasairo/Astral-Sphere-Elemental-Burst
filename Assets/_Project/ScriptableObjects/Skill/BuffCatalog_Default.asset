@@ -100,3 +100,8 @@ MonoBehaviour:
     shortLabel: GRD
     icon: {fileID: 0}
     isDebuff: 0
+  - type: 17
+    displayName: Brave
+    shortLabel: BRA
+    icon: {fileID: 0}
+    isDebuff: 0

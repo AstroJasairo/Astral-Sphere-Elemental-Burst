@@ -25,6 +25,9 @@ public class EnemyDebuffSystem : MonoBehaviour
 
     [Header("Debug (chỉ khi Debug.isDebugBuild): chuột phải component khi đang Play")]
     [SerializeField] private DotData debugDot;
+    // Aura của Nữ hoàng chinh phạt: kênh RIÊNG, nhân với debuff từ vũ khí (không bị "mạnh nhất thắng")
+    private float auraUntil, auraSlow, auraAttackSlow, auraExhaust, auraVulnerable;
+    private bool AuraOn => Time.time < auraUntil;
 
     // Thuộc tính lấy lười: an toàn bất kể thứ tự Awake
     private EnemyBase enemy;
@@ -40,10 +43,18 @@ public class EnemyDebuffSystem : MonoBehaviour
 
     private float Value(BuffType type) { return Mathf.Clamp01(Buffs.GetValue(type)); }
 
-    public float SpeedMultiplier => Mathf.Clamp(1f - Value(BuffType.Slow), 0.1f, 1f);                  // Slow
-    public float AttackSpeedMultiplier => Mathf.Clamp(1f - Value(BuffType.Frostbite), 0.1f, 1f);        // Tê cóng
-    public float DamageDealtMultiplier => 1f - Value(BuffType.Exhaust);                                // Giảm sát thương gây ra
-    public float DamageTakenMultiplier => 1f + Mathf.Max(0f, Buffs.GetValue(BuffType.Vulnerable));      // Tăng sát thương nhận vào
+    public float SpeedMultiplier =>
+        Mathf.Clamp((1f - Value(BuffType.Slow)) * (AuraOn ? 1f - auraSlow : 1f), 0.1f, 1f);
+
+    public float AttackSpeedMultiplier =>
+        Mathf.Clamp((1f - Value(BuffType.Frostbite)) * (AuraOn ? 1f - auraAttackSlow : 1f), 0.1f, 1f);
+
+    public float DamageDealtMultiplier =>
+        (1f - Value(BuffType.Exhaust)) * (AuraOn ? 1f - auraExhaust : 1f);
+
+    // Vulnerable của vũ khí và của aura NHÂN RIÊNG với nhau
+    public float DamageTakenMultiplier =>
+        (1f + Mathf.Max(0f, Buffs.GetValue(BuffType.Vulnerable))) * (AuraOn ? 1f + auraVulnerable : 1f);
     public bool IsStunned => Buffs.IsActive(BuffType.Stun);
 
     // ---------------- API ----------------
@@ -118,9 +129,20 @@ public class EnemyDebuffSystem : MonoBehaviour
         }
     }
 
+    // Quét liên tục từ skill: mỗi lần gọi làm mới thời hạn. Quái ra khỏi vùng thì tự hết sau duration giây.
+    public void ApplyAura(float slow, float attackSlow, float exhaust, float vulnerable, float duration)
+    {
+        auraSlow = Mathf.Clamp01(slow);
+        auraAttackSlow = Mathf.Clamp01(attackSlow);
+        auraExhaust = Mathf.Clamp01(exhaust);
+        auraVulnerable = Mathf.Max(0f, vulnerable);
+        auraUntil = Time.time + duration;
+    }
+
     // EnemyBase.Init gọi: quái lấy lại từ pool phải sạch hiệu ứng cũ
     public void ResetAll()
     {
+        auraUntil = 0f;
         Buffs.ClearAll();
         ClearDots();
     }

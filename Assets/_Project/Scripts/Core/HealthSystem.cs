@@ -69,6 +69,21 @@ public class HealthSystem : MonoBehaviour
         OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
     }
 
+    // Tăng HOẶC giảm máu tối đa gốc (dùng khi bật/tắt Liên kết linh hồn).
+    // Máu hiện tại đổi cùng lượng nhưng KHÔNG BAO GIỜ làm chết người chơi (tối thiểu 1).
+    public void ShiftMax(float delta)
+    {
+        if (IsDead || Mathf.Approximately(delta, 0f)) return;
+
+        float oldMax = MaxHealth;
+        BaseMaxHealth = Mathf.Max(1f, BaseMaxHealth + delta);
+        RecalculateMax();
+
+        float change = MaxHealth - oldMax;
+        CurrentHealth = Mathf.Clamp(CurrentHealth + change, Mathf.Min(1f, MaxHealth), MaxHealth);
+        OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+    }
+
     private void RecalculateMax()
     {
         MaxHealth = Mathf.Max(1f, BaseMaxHealth * (1f - MaxReduction));   // luôn chừa tối thiểu 1 máu

@@ -23,4 +23,7 @@ public class CombatRulesConfig : ScriptableObject
     public StackMode damageBonusStacking = StackMode.Additive;
     [Header("Hiệu quả hồi mana")]
     public StackMode manaGainStacking = StackMode.Additive;      // Cộng thẳng. Đổi sang Multiplicative để nhân tích lũy
+    [Header("Liên kết linh hồn")]
+    [Tooltip("Tắt: passive Liên kết linh hồn không có tác dụng (ATK/HP/DEF/SPD cộng thêm đều vào nhân vật như bình thường)")]
+    public bool soulLinkEnabled = true;
 }

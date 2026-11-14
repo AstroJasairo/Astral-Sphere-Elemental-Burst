@@ -98,7 +98,10 @@ public abstract class WeaponBase : MonoBehaviour
 
     protected float CalculateDamage()
     {
-        return DamageCalculator.Calculate(CurrentBaseDamage, owner.Atk, owner.GetDamageBonus(data.element));
+        // Liên kết linh hồn: ATK cộng thêm được chuyển vào sát thương cơ bản của vũ khí.
+        // Không có passive này thì WeaponAtkMultiplier = 1 và WeaponFlatDamage = 0 nên công thức giữ nguyên như cũ.
+        float baseDamage = (CurrentBaseDamage + owner.WeaponFlatDamage) * owner.WeaponAtkMultiplier;
+        return DamageCalculator.Calculate(baseDamage, owner.Atk, owner.GetDamageBonus(data.element));
     }
 
     // Mọi vũ khí gây sát thương lên quái qua đây: sát thương có nguyên tố (DEF/kháng của quái) + hiệu ứng theo cấp
@@ -106,7 +109,7 @@ public abstract class WeaponBase : MonoBehaviour
     {
         List<WeaponHitEffect> effects = CurrentLevel.hitEffects;
         bool hasEffects = effects != null && effects.Count > 0;
-        float atk = (hasEffects && owner != null) ? owner.Atk : 1f;      // Chỉ tính ATK khi thật sự cần
+        float atk = (hasEffects && owner != null) ? owner.Atk * owner.WeaponAtkMultiplier : 1f;      // Chỉ tính ATK khi thật sự cần
         CombatHit.HitEnemy(target, damage, data.element, effects, atk);
     }
 }

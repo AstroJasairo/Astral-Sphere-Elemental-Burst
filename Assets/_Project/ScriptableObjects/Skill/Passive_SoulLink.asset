@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 024cfd133bb1efc479db4da5114d39fd, type: 3}
+  m_Name: Passive_SoulLink
+  m_EditorClassIdentifier: Assembly-CSharp::SoulLinkPassiveData
+  id: acronomia_soul_link
+  skillName: "Li\xEAn k\u1EBFt linh h\u1ED3n"
+  icon: {fileID: 0}
+  description: 
+  upgradeCost: e8030000b80b0000401f0000204e000050c30000
+  ignoresSilence: 0
+  ignoresStun: 0
+  atkEfficiency:
+  - 1
+  - 1.2
+  - 1.4
+  - 1.6
+  - 1.8
+  manaPerHp:
+  - 0.01
+  - 0.02
+  - 0.03
+  - 0.04
+  - 0.05
+  manaPerDef:
+  - 0.01
+  - 0.02
+  - 0.03
+  - 0.04
+  - 0.05
+  manaPerSpeed:
+  - 0.002
+  - 0.004
+  - 0.006
+  - 0.008
+  - 0.01
