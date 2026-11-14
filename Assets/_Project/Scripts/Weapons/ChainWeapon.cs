@@ -34,8 +34,9 @@ public class ChainWeapon : WeaponBase
         float damage = CalculateDamage();
         for (int i = 0; i < count; i++)
         {
-            if (chain[i].TryGetComponent(out HealthSystem hp))
-                hp.TakeDamage(damage);
+            //if (chain[i].TryGetComponent(out HealthSystem hp))
+            //    hp.TakeDamage(damage);
+            HitEnemy(chain[i], damage);
         }
         return true;
     }

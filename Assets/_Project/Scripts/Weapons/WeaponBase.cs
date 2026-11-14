@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class WeaponBase : MonoBehaviour
@@ -94,5 +95,14 @@ public abstract class WeaponBase : MonoBehaviour
     protected float CalculateDamage()
     {
         return DamageCalculator.Calculate(CurrentBaseDamage, owner.Atk, owner.GetDamageBonus(data.element));
+    }
+
+    // Mọi vũ khí gây sát thương lên quái qua đây: sát thương có nguyên tố (DEF/kháng của quái) + hiệu ứng theo cấp
+    protected void HitEnemy(Component target, float damage)
+    {
+        List<WeaponHitEffect> effects = CurrentLevel.hitEffects;
+        bool hasEffects = effects != null && effects.Count > 0;
+        float atk = (hasEffects && owner != null) ? owner.Atk : 1f;      // Chỉ tính ATK khi thật sự cần
+        CombatHit.HitEnemy(target, damage, data.element, effects, atk);
     }
 }

@@ -19,6 +19,19 @@ MonoBehaviour:
   baseHp: 20
   baseDamage: 5
   moveSpeed: 2
+  baseDef: 0
+  elementResist:
+    metal: 0
+    fire: 0
+    lightning: 0
+    wind: 0
+    soul: 0
+    light: 0
+    earth: 0
+    water: 0
+    plant: 0
+    dark: 0
+  elementImmunity: 0
   scoreValue: 10
   manaValue: 2
   attackRange: 0

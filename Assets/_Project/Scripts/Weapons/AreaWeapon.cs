@@ -21,6 +21,9 @@ public class AreaWeapon : WeaponBase
     [Header("Telegraph (tùy chọn: thiếu prefab thì đánh ngay và chớp)")]
     [Tooltip("Tròn/Nón/Nhẫn: InToOut hoặc OutToIn. Sweep: Clockwise (LeftToRight) hoặc CounterClockwise (RightToLeft)")]
     [SerializeField] private TelegraphDirection direction = TelegraphDirection.InToOut;
+    [Tooltip("Bật: mỗi lần bắn Sweep/SweepRing đổi phía quét (trái sang phải, rồi phải sang trái, rồi lại trái sang phải...)")]
+    [SerializeField] private bool alternateSweepSide = false;
+    private bool sweepFlipped;     // false: dùng đúng hướng đã chọn; true: đảo ngược
     [SerializeField] private float telegraphDuration = 0.35f;   // Thời gian vùng cam chạy hết
     [SerializeField] private SectorTelegraph coneTelegraphPrefab;       // Cone
     [SerializeField] private RingTelegraph ringTelegraphPrefab;         // Ring, ConeRing
@@ -111,8 +114,15 @@ public class AreaWeapon : WeaponBase
                 if (sweepTelegraphPrefab != null)
                 {
                     GameObject go = PoolManager.Instance.Get(sweepTelegraphPrefab.gameObject, origin, rotation);
-                    go.GetComponent<SweepRingTelegraph>().Begin(inner, radius, angle,
-                        TelegraphDirectionUtil.IsClockwise(direction), telegraphDuration, 0f, triggeredCallback, transform);
+
+                    // XOR (^): sweepFlipped = true thì đảo chiều đã chọn
+                    bool clockwise = TelegraphDirectionUtil.IsClockwise(direction) ^ sweepFlipped;
+
+                    go.GetComponent<SweepRingTelegraph>().Begin(inner, radius, angle, clockwise,
+                        telegraphDuration, 0f, triggeredCallback, transform);
+
+                    // Chỉ đảo khi đã bắn thật (lần thử không có mục tiêu thì Fire() đã return false từ trước)
+                    if (alternateSweepSide) sweepFlipped = !sweepFlipped;
                     return true;
                 }
                 break;
@@ -173,8 +183,9 @@ public class AreaWeapon : WeaponBase
             if (knockback > 0f && col.TryGetComponent(out StatusEffectHandler status))
                 status.ApplyKnockback(toEnemy, knockback);
 
-            if (col.TryGetComponent(out HealthSystem hp))
-                hp.TakeDamage(damage);
+            //if (col.TryGetComponent(out HealthSystem hp))
+            //    hp.TakeDamage(damage);
+            HitEnemy(col, damage);
         }
     }
 

@@ -103,4 +103,10 @@ public class BuffController : MonoBehaviour
     {
         buffs[(int)type] = default(Buff);
     }
+
+    // Gỡ MỌI buff/debuff (quái lấy lại từ pool)
+    public void ClearAll()
+    {
+        System.Array.Clear(buffs, 0, buffs.Length);
+    }
 }

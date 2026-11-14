@@ -42,6 +42,7 @@ public class EnemySpawner : MonoBehaviour
         float minutes = time / 60f;
         float hpMul = stage.hpMultiplier.Evaluate(minutes);
         float dmgMul = stage.damageMultiplier.Evaluate(minutes);
+        float defMul = stage.defMultiplier.Evaluate(minutes);
 
         for (int i = 0; i < enemyByType.Length; i++)
         {
@@ -50,11 +51,11 @@ public class EnemySpawner : MonoBehaviour
 
             int count = phase.GetCount((EnemyType)i);
             for (int n = 0; n < count; n++)
-                SpawnOne(data, hpMul, dmgMul);
+                SpawnOne(data, hpMul, dmgMul, defMul);
         }
     }
 
-    private void SpawnOne(EnemyData data, float hpMul, float dmgMul)
+    private void SpawnOne(EnemyData data, float hpMul, float dmgMul, float defMul)
     {
         // Tính vị trí spawn ngoài mép màn hình (giữ nguyên như trước)
         float halfH = cam.orthographicSize;
@@ -72,7 +73,7 @@ public class EnemySpawner : MonoBehaviour
         }
 
         GameObject go = PoolManager.Instance.Get(data.prefab, pos, Quaternion.identity);
-        go.GetComponent<EnemyBase>().Init(data, hpMul, dmgMul);
+        go.GetComponent<EnemyBase>().Init(data, hpMul, dmgMul, defMul);
     }
 
     // Tìm một con quái cách người chơi xa hơn minDistance và dịch chuyển nó tới newPos

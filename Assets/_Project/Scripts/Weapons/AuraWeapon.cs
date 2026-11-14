@@ -40,8 +40,9 @@ public class AuraWeapon : WeaponBase
         // Gây sát thương cho mọi kẻ địch trong vòng tròn
         for (int i = 0; i < count; i++)
         {
-            if (TargetFinder.Results[i].TryGetComponent(out HealthSystem hp))
-                hp.TakeDamage(damage);
+            //if (TargetFinder.Results[i].TryGetComponent(out HealthSystem hp))
+            //    hp.TakeDamage(damage);
+            HitEnemy(TargetFinder.Results[i], damage);
         }
         return true;    // Aura luôn "bắn" dù không có ai trong vùng
     }

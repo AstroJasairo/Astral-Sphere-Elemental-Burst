@@ -22,17 +22,19 @@ public class EnemyShooter : MonoBehaviour
     {
         EnemyData data = enemy.Data;
         if (data == null || data.projectilePrefab == null || enemy.Target == null) return;
+        if (enemy.IsStunned) return;                                  // MỚI: Choáng thì không bắn
 
-        timer += Time.deltaTime;
+        timer += Time.deltaTime * enemy.AttackSpeedMultiplier;        // MỚI: Tê cóng làm hồi chiêu bắn dài ra
         if (timer < data.attackCooldown) return;
 
         Vector2 toTarget = (Vector2)enemy.Target.position - (Vector2)transform.position;
+
         // Chưa vào tầm thì chờ: timer vẫn đầy nên sẽ bắn ngay khi vào tầm
         if (toTarget.sqrMagnitude > data.attackRange * data.attackRange) return;
 
         timer = 0f;
         GameObject go = PoolManager.Instance.Get(data.projectilePrefab, transform.position, Quaternion.identity);
         go.GetComponent<EnemyProjectile>().Init(
-    enemy.Damage, data.damageElement, data.hitEffects, toTarget.normalized, data.projectileSpeed, data.projectileLifetime);
+            enemy.Damage, data.damageElement, data.hitEffects, toTarget.normalized, data.projectileSpeed, data.projectileLifetime);
     }
 }

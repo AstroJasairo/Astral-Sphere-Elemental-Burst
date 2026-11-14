@@ -90,7 +90,8 @@ public class OrbitWeapon : WeaponBase
                 if (lastHitTime.TryGetValue(id, out float last) && now - last < hitInterval) continue;
                 lastHitTime[id] = now;
 
-                if (col.TryGetComponent(out HealthSystem hp)) hp.TakeDamage(damage);
+                //if (col.TryGetComponent(out HealthSystem hp)) hp.TakeDamage(damage);
+                HitEnemy(col, damage);
             }
         }
 

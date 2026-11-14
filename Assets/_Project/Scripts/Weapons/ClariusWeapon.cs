@@ -81,8 +81,9 @@ public class ClariusWeapon : WeaponBase
         float damage = CalculateDamage();              // Tính tại thời điểm đánh nên buff ATK, nội tại, All Out Assault đều được áp dụng
         for (int i = 0; i < count; i++)
         {
-            if (TargetFinder.Results[i].TryGetComponent(out HealthSystem hp))
-                hp.TakeDamage(damage);
+            //if (TargetFinder.Results[i].TryGetComponent(out HealthSystem hp))
+            //    hp.TakeDamage(damage);
+            HitEnemy(TargetFinder.Results[i], damage);
         }
     }
 

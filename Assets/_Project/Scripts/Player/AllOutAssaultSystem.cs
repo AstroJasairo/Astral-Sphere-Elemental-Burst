@@ -11,8 +11,8 @@ public class AllOutAssaultSystem : MonoBehaviour
     public bool IsActive { get; private set; }
     public float Mana { get; private set; }
 
-    // MP càng cao, mana cần càng ít
-    public float MaxMana => data.maxMana * stats.ManaCostMultiplier;
+    // MP càng cao, mana cần càng ít. Mana gốc nằm trong CharacterData (qua PlayerStats)
+    public float MaxMana => stats.BaseMaxMana * stats.ManaCostMultiplier;
 
     // Các sự kiện cho UI và hiệu ứng, hệ thống này không cần biết ai đang nghe
     public event Action OnActivated;

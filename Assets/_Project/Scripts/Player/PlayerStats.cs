@@ -33,6 +33,10 @@ public class PlayerStats : MonoBehaviour
     private float hpBonus, defBonus;
     private float atkBonusPct, speedBonusPct, magnetBonusPct;
     private float manaCostReductionPct;
+    private ElementMask elementImmunity;
+
+    public float BaseMaxMana { get; private set; } = 100f;     // Mana gốc của nhân vật (CharacterData.maxMana)
+    public bool IsImmuneTo(ElementType element) { return ElementMaskUtil.Contains(elementImmunity, element); }
     private float aoaAtkPct, aoaSpeedPct;        // Buff All Out Assault (tạm thời, kênh riêng)
     private float aoaCooldownMultiplier = 1f;    // 1 = bình thường, 0.25 = hồi chiêu còn 25%
 
@@ -153,6 +157,17 @@ public class PlayerStats : MonoBehaviour
         baseMagnetRadius = sheet.magnetRadius;
         manaCostReductionPct = sheet.manaCostReduction;    // Nâng MP trong trận sẽ cộng dồn thêm vào đây
 
+        BaseMaxMana = character.maxMana;
+
+        // Kháng nguyên tố cơ bản = một nguồn giảm sát thương theo nguyên tố (cùng hệ thống với Kháng hỏa của skill)
+        Reductions.Remove(this);
+        foreach (ElementType e in ElementMaskUtil.Basic)
+        {
+            float resist = character.elementResist.GetClamped(e);
+            if (!Mathf.Approximately(resist, 0f)) Reductions.Set(this, (int)e, resist);
+        }
+        elementImmunity = character.elementImmunity;
+
         activePerks.Clear();
         activePerks.AddRange(character.GetActivePerks(stars));
 
@@ -197,6 +212,7 @@ public class PlayerStats : MonoBehaviour
     public float CalculateIncomingDamage(float amount, ElementType element)
     {
         if (element == ElementType.Pure) return amount;
+        if (IsImmuneTo(element)) return 0f;                       // MỚI: miễn nhiễm hoàn toàn (khiên cũng không bị tiêu)
         Reductions.EffectScale = 1f - Debuff(BuffType.Vulnerable);
         float reduction = Reductions.GetTotalReduction(element);
         return amount * (1f - reduction) * 100f / (100f + Def);

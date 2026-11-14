@@ -18,6 +18,13 @@ public class EnemyData : ScriptableObject
     public float baseDamage = 5f;
     public float moveSpeed = 2f;
 
+    [Header("Phòng thủ")]
+    [Tooltip("DEF của quái: sát thương nhận = x 100/(100+DEF). Sát thương Pure bỏ qua DEF và kháng")]
+    public float baseDef = 0f;
+    public ElementResistances elementResist = new ElementResistances();
+    [Tooltip("Tick nguyên tố nào thì quái miễn nhiễm hoàn toàn sát thương nguyên tố đó (Pure không bao giờ bị miễn nhiễm)")]
+    public ElementMask elementImmunity = ElementMask.None;
+
     [Header("Phần thưởng")]
     public int scoreValue = 10;    // Điểm cộng khi tiêu diệt
     public float manaValue = 2f;   // Lượng mana nạp khi tiêu diệt quái này

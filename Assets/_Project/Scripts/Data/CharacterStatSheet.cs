@@ -24,10 +24,8 @@ public struct CharacterStatSheet
             manaCostReduction = MetaProgress.GetStatBonus(c, StatType.Mp)
         };
 
-        // Mana gốc lấy từ AllOutAssaultData trong MetaConfig (không có thì dùng 100)
-        MetaConfig cfg = MetaProgress.Config;
-        float baseMana = (cfg != null && cfg.allOutAssault != null) ? cfg.allOutAssault.maxMana : 100f;
-        sheet.maxMana = baseMana * Mathf.Max(PlayerStats.MinManaCostMultiplier, 1f - sheet.manaCostReduction);
+        // Mana gốc riêng từng nhân vật (trước đây lấy chung từ AllOutAssaultData)
+        sheet.maxMana = c.maxMana * Mathf.Max(PlayerStats.MinManaCostMultiplier, 1f - sheet.manaCostReduction);
         return sheet;
     }
 }

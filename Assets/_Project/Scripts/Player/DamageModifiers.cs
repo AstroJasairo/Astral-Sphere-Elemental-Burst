@@ -15,15 +15,19 @@ public class DamageReductionSet
     // Đặt giá trị của một nguồn (đã có thì cập nhật; value <= 0 thì gỡ)
     public void Set(object source, int scope, float value)
     {
-        value = Mathf.Clamp01(value);
+        value = Mathf.Clamp(value, -1f, 1f);                       // MỚI: cho phép âm (yếu hệ), ví dụ -0.5 = nhận thêm 50%
+        bool remove = Mathf.Approximately(value, 0f);
+
         for (int i = 0; i < entries.Count; i++)
         {
             if (!Equals(entries[i].source, source) || entries[i].scope != scope) continue;
-            if (value <= 0f) entries.RemoveAt(i);
+
+            if (remove) entries.RemoveAt(i);
             else entries[i] = new Entry { source = source, scope = scope, value = value };
             return;
         }
-        if (value > 0f) entries.Add(new Entry { source = source, scope = scope, value = value });
+
+        if (!remove) entries.Add(new Entry { source = source, scope = scope, value = value });
     }
 
     // Gỡ mọi mục của một nguồn
@@ -53,8 +57,9 @@ public class DamageReductionSet
 
         float rAll = multiply ? 1f - allKeep : allSum;       // cùng nhóm: NHÂN tích lũy (hoặc cộng nếu đổi luật)
         float rElement = multiply ? 1f - elKeep : elSum;
-        float total = (rAll + rElement) * EffectScale;       // khác nhóm: CỘNG
-        return Mathf.Clamp(total, 0f, rules.maxTotalReduction);
+        float total = rAll + rElement;                               // khác nhóm: CỘNG
+        if (total > 0f) total *= EffectScale;                        // Vulnerable chỉ làm yếu phần GIẢM, không làm yếu phần yếu hệ
+        return Mathf.Clamp(total, -1f, rules.maxTotalReduction);     // MỚI: cho phép xuống tới -1 (nhận gấp đôi)
     }
 }
 

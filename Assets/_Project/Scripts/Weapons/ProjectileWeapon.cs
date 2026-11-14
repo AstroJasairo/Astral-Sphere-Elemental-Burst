@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 // Vũ khí dạng "phóng đạn về mục tiêu gần nhất".
@@ -90,8 +91,13 @@ public class ProjectileWeapon : WeaponBase
     private void Spawn(Vector2 dir, float damage)
     {
         GameObject go = PoolManager.Instance.Get(data.projectilePrefab, transform.position, Quaternion.identity);
+
+        List<WeaponHitEffect> effects = CurrentLevel.hitEffects;
+        bool hasEffects = effects != null && effects.Count > 0;
+
         go.GetComponent<Projectile>().Init(
             damage, dir, data.projectileSpeed, data.projectileLifetime, data.pierce,
-            CurrentLevel.explosionRadius, enemyMask);
+            CurrentLevel.explosionRadius, enemyMask,
+            data.element, effects, (hasEffects && owner != null) ? owner.Atk : 1f);   // MỚI
     }
 }

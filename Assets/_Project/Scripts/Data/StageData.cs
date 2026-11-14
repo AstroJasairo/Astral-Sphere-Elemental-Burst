@@ -34,6 +34,8 @@ public class StageData : ScriptableObject
     // Chỉnh trực tiếp đường cong trong Inspector để cân bằng độ khó, không cần sửa code.
     public AnimationCurve hpMultiplier = new AnimationCurve(new Keyframe(0, 1f), new Keyframe(30, 4f));
     public AnimationCurve damageMultiplier = new AnimationCurve(new Keyframe(0, 1f), new Keyframe(30, 3f));
+    // DEF của quái thường theo thời gian (hệ số nhân, trục X = PHÚT). Mặc định luôn 1 nên chưa đổi gì.
+    public AnimationCurve defMultiplier = AnimationCurve.Constant(0f, 30f, 1f);
 
     [Tooltip("PHẢI sắp xếp theo startTime tăng dần")]
     public List<SpawnPhase> phases = new List<SpawnPhase>();

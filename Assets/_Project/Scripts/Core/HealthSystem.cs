@@ -10,6 +10,8 @@ public class HealthSystem : MonoBehaviour
     public bool IsDead => CurrentHealth <= 0f;
     public bool Invulnerable { get; set; }
     public float DamageTakenMultiplier { get; set; } = 1f;       // < 1 khi BOSS đang có buff giảm sát thương
+    // Bộ lọc sát thương đến (quái dùng cho DEF/kháng/miễn nhiễm). Người chơi để null.
+    public Func<float, ElementType, float> IncomingFilter { get; set; }
     public event Action<float, float> OnHealthChanged;             // (máu hiện tại, máu tối đa hiệu lực)
     public event Action OnDied;
 
@@ -19,6 +21,16 @@ public class HealthSystem : MonoBehaviour
         BaseMaxHealth = maxHealth; MaxReduction = 0f;
         MaxHealth = maxHealth; CurrentHealth = maxHealth; Invulnerable = false;
         OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+    }
+
+    // Đòn có nguyên tố: đi qua bộ lọc (DEF, kháng, miễn nhiễm) rồi mới trừ máu.
+    // TakeDamage(amount) vẫn là sát thương THÔ (không DEF): dùng cho máu của người chơi đã tính sẵn.
+    public void TakeHit(float amount, ElementType element)
+    {
+        if (IsDead || Invulnerable) return;
+        if (IncomingFilter != null) amount = IncomingFilter(amount, element);
+        if (amount <= 0f) return;                       // Miễn nhiễm hoặc bị giảm hết
+        TakeDamage(amount);                             // BOSS: DamageTakenMultiplier áp dụng ở đây
     }
 
     public void TakeDamage(float amount)

@@ -55,6 +55,14 @@ public class CharacterData : ScriptableObject
     public float baseMoveSpeed = 5f;
     public float baseMagnetRadius = 1.5f;
 
+    [Header("Mana của All Out Assault (riêng từng nhân vật)")]
+    public float maxMana = 100f;
+
+    [Header("Phòng thủ nguyên tố (0.2 = kháng 20%, âm = yếu hệ)")]
+    public ElementResistances elementResist = new ElementResistances();
+    [Tooltip("Tick nguyên tố nào thì nhân vật miễn nhiễm hoàn toàn sát thương nguyên tố đó")]
+    public ElementMask elementImmunity = ElementMask.None;
+
     [Header("Đặc quyền theo sao (0 đến 5)")]
     public List<StarPerk> perks = new List<StarPerk>();
 

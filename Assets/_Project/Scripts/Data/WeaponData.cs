@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 // Dữ liệu cho từng cấp của vũ khí (Lv1 đến Lv5)
@@ -16,6 +17,7 @@ public class WeaponLevel
     public float duration = 0f;          // MỚI. Clarius: thời gian tồn tại của thanh kiếm (giây)
     public float innerRadius = 0f;       // MỚI. Nhẫn, Nón nhẫn, Sweep nhẫn: bán kính lỗ giữa (0 = không có lỗ)
     public float cooldown = 0f;          // MỚI. Hồi chiêu ở cấp này (giây). 0 = dùng WeaponData.cooldown
+    public List<WeaponHitEffect> hitEffects = new List<WeaponHitEffect>();      // MỚI (12B): hiệu ứng gây lên quái ở cấp này.
 }
 
 // Dữ liệu một vũ khí. Tạo bằng: Assets > Create > Astral Sphere > Weapon Data

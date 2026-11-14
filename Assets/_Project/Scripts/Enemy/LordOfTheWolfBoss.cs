@@ -64,7 +64,7 @@ public class LordOfTheWolfBoss : BossBase
 
         if (state != State.Chasing) return;
 
-        clawTimer -= Time.deltaTime;
+        clawTimer -= Time.deltaTime * Enemy.AttackSpeedMultiplier;     // Tê cóng: hồi chiêu dài ra
         if (clawTimer <= 0f) BeginClaw();
     }
 
@@ -110,9 +110,10 @@ public class LordOfTheWolfBoss : BossBase
         rb.linearVelocity = Vector2.zero;
 
         // Dạng 1 trong bản vẽ: vòng tròn cảnh báo quanh BOSS, người chơi phải đi ra ngoài vòng để né.
-        TelegraphSpawner.Instance.SpawnCircle(transform.position, skills.clawRadius, skills.clawWarning,
-                                              skills.clawShrink, skills.clawDamage, clawCallback,
-                                              Enemy.Data.damageElement, skills.clawEffects);
+        TelegraphSpawner.Instance.SpawnCircle(transform.position, skills.clawRadius,
+                                      skills.clawWarning / Enemy.AttackSpeedMultiplier,      // telegraph chạy chậm hơn
+                                      skills.clawShrink, skills.clawDamage * Enemy.DamageDealtMultiplier, clawCallback,
+                                      Enemy.Data.damageElement, skills.clawEffects);
     }
 
     // Telegraph gọi khi vòng cam chạm đích (đã tự gây sát thương và hiệu ứng cho người chơi nếu còn trong vòng)

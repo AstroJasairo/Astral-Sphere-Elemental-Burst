@@ -50,20 +50,22 @@ public class ThunderBirdBoss : BossBase
     {
         if (skills == null) return;
 
+        float dt = Time.deltaTime * Enemy.AttackSpeedMultiplier;      // Tê cóng: chuẩn bị chiêu chậm hơn
+
         switch (state)
         {
             case State.Chasing:
-                TickStrikes();
-                dashTimer -= Time.deltaTime;
+                TickStrikes(dt);
+                dashTimer -= dt;
                 if (dashTimer <= 0f) BeginDashWarning();
                 break;
 
             case State.DashWarning:
-                TickStrikes();                    // Sét vẫn rơi trong lúc BOSS gồng
+                TickStrikes(dt);                  // Sét vẫn rơi trong lúc BOSS gồng
                 break;
 
             case State.Dashing:
-                dashTimeLeft -= Time.deltaTime;   // Đang lao thì không thi triển sét
+                dashTimeLeft -= Time.deltaTime;   // Đang lao: không bị Tê cóng ảnh hưởng
                 if (dashTimeLeft <= 0f) EndDash();
                 break;
         }
@@ -71,9 +73,9 @@ public class ThunderBirdBoss : BossBase
 
     // ---------- Nội tại: sét đánh ----------
 
-    private void TickStrikes()
+    private void TickStrikes(float dt)
     {
-        strikeTimer -= Time.deltaTime;
+        strikeTimer -= dt;
         if (strikeTimer > 0f) return;
 
         strikeTimer = skills.strikeInterval;
@@ -86,14 +88,16 @@ public class ThunderBirdBoss : BossBase
 
         for (int i = 0; i < skills.strikesPerWave; i++)
         {
+            float warning = skills.strikeWarning / Enemy.AttackSpeedMultiplier;
+            float strikeDamage = skills.strikeDamage * Enemy.DamageDealtMultiplier;
             // Vòng đầu tiên nhắm đúng chỗ người chơi đang đứng (buộc phải di chuyển),
             // các vòng còn lại rải ngẫu nhiên quanh đó
             Vector2 center = i == 0 ? playerPos : playerPos + UnityEngine.Random.insideUnitCircle * skills.strikeSpread;
 
             // shrink = false: vòng cam lớn dần từ tâm, chạm viền thì sét đánh (dạng 1 trong bản vẽ)
-            TelegraphSpawner.Instance.SpawnCircle(center, skills.strikeRadius, skills.strikeWarning,
-                                      false, skills.strikeDamage, strikeCallback,
-                                      Enemy.Data.damageElement, skills.strikeEffects);
+            TelegraphSpawner.Instance.SpawnCircle(center, skills.strikeRadius, warning,
+                          false, strikeDamage, strikeCallback,
+                          Enemy.Data.damageElement, skills.strikeEffects);
         }
     }
 
@@ -125,7 +129,8 @@ public class ThunderBirdBoss : BossBase
         // Dạng 4: vùng cam mở rộng từ giữa ra hai bên. damage = 0 vì sát thương do BOSS đâm vào người chơi
         // (cơ chế "chạm" có sẵn của EnemyBase).
         TelegraphSpawner.Instance.SpawnBox(origin, facing, skills.dashLength, skills.dashWidth,
-                                           skills.dashWarning, RectFill.ExpandSideways, 0f, dashCallback, element: Enemy.Data.damageElement);
+                                   skills.dashWarning / Enemy.AttackSpeedMultiplier,
+                                   RectFill.ExpandSideways, 0f, dashCallback, element: Enemy.Data.damageElement);
     }
 
     // Telegraph gọi khi vùng cam chạm hai cạnh bên: bắt đầu lao
@@ -134,8 +139,12 @@ public class ThunderBirdBoss : BossBase
         if (state != State.DashWarning) return;
 
         state = State.Dashing;
-        dashTimeLeft = skills.dashLength / skills.dashSpeed;   // Lao đúng quãng đường của đường đỏ
-        rb.linearVelocity = dashDirection * skills.dashSpeed;
+
+        float speed = skills.dashSpeed * Enemy.SpeedMultiplier;      // Slow làm cú lao chậm đi (quãng đường không đổi)
+        dashTimeLeft = skills.dashLength / speed;
+        rb.linearVelocity = dashDirection * speed;
+
+        Enemy.ResetContactCooldown();                                // Đòn lao luôn gây sát thương nếu trúng, dù đang trong hồi chiêu chạm
     }
 
     private void EndDash()

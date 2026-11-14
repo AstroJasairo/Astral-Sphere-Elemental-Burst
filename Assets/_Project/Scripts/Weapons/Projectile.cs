@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -11,19 +12,27 @@ public class Projectile : MonoBehaviour
     private int hitsLeft;
     private float explosionRadius;
     private LayerMask enemyMask;
+    private ElementType element;                           // MỚI: nguyên tố của đạn (cho DEF/kháng của quái)
+    private List<WeaponHitEffect> effects;                 // MỚI: hiệu ứng theo cấp vũ khí
+    private float atkScale;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
     }
 
-    // explosionRadius = 0: đạn thường. Lớn hơn 0: đạn nổ vùng.
+    // Tham số cuối đều TÙY CHỌN. Nguyên tố mặc định Pure = bỏ qua DEF, nên luôn truyền nguyên tố của vũ khí.
     public void Init(float damage, Vector2 direction, float speed, float lifetime, int pierce,
-                     float explosionRadius = 0f, LayerMask enemyMask = default)
+                     float explosionRadius = 0f, LayerMask enemyMask = default,
+                     ElementType element = ElementType.Pure, List<WeaponHitEffect> effects = null, float atkScale = 1f)
     {
         this.damage = damage;
         this.explosionRadius = explosionRadius;
         this.enemyMask = enemyMask;
+        this.element = element;
+        this.effects = effects;
+        this.atkScale = atkScale;
+
         lifeLeft = lifetime;
         hitsLeft = pierce + 1;
         rb.linearVelocity = direction * speed;
@@ -52,7 +61,7 @@ public class Projectile : MonoBehaviour
             return;
         }
 
-        hp.TakeDamage(damage);
+        CombatHit.HitEnemy(other, damage, element, effects, atkScale);
         hitsLeft--;
         if (hitsLeft <= 0) Despawn();
     }
@@ -61,10 +70,7 @@ public class Projectile : MonoBehaviour
     {
         int count = TargetFinder.FindAll(transform.position, explosionRadius, enemyMask);
         for (int i = 0; i < count; i++)
-        {
-            if (TargetFinder.Results[i].TryGetComponent(out HealthSystem hp))
-                hp.TakeDamage(damage);
-        }
+            CombatHit.HitEnemy(TargetFinder.Results[i], damage, element, effects, atkScale);
 
         if (explosionEffect != null)
         {

@@ -77,8 +77,9 @@ public class LineWeapon : WeaponBase
             if (rootDuration > 0f && col.TryGetComponent(out StatusEffectHandler status))
                 status.ApplyRoot(rootDuration);
 
-            if (col.TryGetComponent(out HealthSystem hp))
-                hp.TakeDamage(damage);
+            //if (col.TryGetComponent(out HealthSystem hp))
+            //    hp.TakeDamage(damage);
+            HitEnemy(col, damage);
         }
     }
 }

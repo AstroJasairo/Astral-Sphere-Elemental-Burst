@@ -4,9 +4,6 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Astral Sphere/All Out Assault Data")]
 public class AllOutAssaultData : ScriptableObject
 {
-    [Header("Nạp mana")]
-    public float maxMana = 100f;             // Chỉ số MP sẽ nhân giá trị này với ManaCostMultiplier
-
     [Header("Hiệu lực")]
     public float duration = 8f;              // Số giây buff kéo dài
     public float atkBonusPct = 0.5f;         // +50% ATK
