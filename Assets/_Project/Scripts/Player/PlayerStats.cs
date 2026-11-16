@@ -71,8 +71,11 @@ public class PlayerStats : MonoBehaviour
     public float WeaponAtkMultiplier => soulLinkOn ? 1f + AddedAtkPct * soulLinkAtkEff : 1f;
     public float WeaponFlatDamage => soulLinkOn ? atkFlatBonus * soulLinkAtkEff : 0f;
 
-    // DEF cộng thêm = defBonus (nâng cấp) + % của DEF gốc (Brave). Liên kết linh hồn bật: chuyển sang hồi mana
-    public float Def => (baseDef + (soulLinkOn ? 0f : defBonus + baseDef * braveDefPct)) * (1f - Debuff(BuffType.Vulnerable));
+    // MỚI 12E: DEF cộng thêm của Brave = % của (DEF gốc + DEF nâng cấp trong trận)
+    private float BraveDefPoints => (baseDef + defBonus) * braveDefPct;
+
+    // DEF cộng thêm = defBonus (nâng cấp) + Brave. Liên kết linh hồn bật: chuyển sang hồi mana
+    public float Def => (baseDef + (soulLinkOn ? 0f : defBonus + BraveDefPoints)) * (1f - Debuff(BuffType.Vulnerable));
 
     public float MoveSpeed
     {
@@ -116,7 +119,7 @@ public class PlayerStats : MonoBehaviour
         get
         {
             if (!soulLinkOn) return 0f;
-            float defPoints = defBonus + baseDef * braveDefPct;           // DEF % tính theo DEF gốc
+            float defPoints = defBonus + BraveDefPoints;                      // DEF % của Brave tính theo tổng DEF
             float speedPoints = baseMoveSpeed * AddedSpeedPct;            // SPD % tính theo tốc độ gốc
             return hpBonus * soulLinkHpRate + defPoints * soulLinkDefRate + speedPoints * soulLinkSpdRate;
         }
@@ -130,6 +133,7 @@ public class PlayerStats : MonoBehaviour
     public DamageReductionSet Reductions { get; } = new DamageReductionSet();
     public HealingBonusSet HealingBonuses { get; } = new HealingBonusSet();
     public event Action<float, float> OnShieldChanged;   // (lá chắn hiện tại, tối đa) -> HUD lắng nghe
+    public event Action<float> OnDamaged;     // MỚI 12E: phát SAU khi một đòn đã trừ máu/khiên (tham số = sát thương đã tính DEF và giảm)
 
     public IReadOnlyList<StarPerk> ActivePerks => activePerks;
 
@@ -323,6 +327,7 @@ public class PlayerStats : MonoBehaviour
     {
         if (debugInvincible && Debug.isDebugBuild) return;
         float damage = CalculateIncomingDamage(amount, element);
+        float incoming = damage;                           // MỚI: nhớ lại để phát sự kiện
 
         if (Shield > 0f)                                   // Khiên hấp thụ trước, kể cả Pure
         {
@@ -333,6 +338,8 @@ public class PlayerStats : MonoBehaviour
         }
 
         if (damage > 0f) Health.TakeDamage(damage);        // Phần dư mới trừ vào máu
+
+        if (incoming > 0f) OnDamaged?.Invoke(incoming);    // MỚI: miễn nhiễm (0 sát thương) thì không phát
     }
 
     private void HandleDied()

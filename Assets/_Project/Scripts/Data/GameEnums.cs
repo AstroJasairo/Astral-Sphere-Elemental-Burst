@@ -34,8 +34,7 @@ public enum BuffType
 {
     Speed, Rage, Magnet, ScoreBoost, ActiveSkill,
     Slow, Root, Stun, Frostbite, Silence, Vulnerable, Exhaust, Blind, Weakness, ManaDrain,
-    Immunity, DamageReduction,
-    Brave                       // MỚI: icon của Brave (giá trị = số stack, không đồng hồ)
+    Immunity, DamageReduction
 }
 
 // 9 loại nâng cấp chung (theo tài liệu hệ thống)

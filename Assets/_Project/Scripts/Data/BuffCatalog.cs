@@ -13,12 +13,18 @@ public class BuffVisual
     public bool isDebuff;          // false: buff (viền xanh lá). true: debuff (viền đỏ)
 }
 
+// Nhóm dùng để sắp xếp trong Inspector (tính từ BuffType, không lưu)
+public enum BuffCategory { Buff, Debuff, Boss }
+
 // Danh mục giao diện buff/debuff. Tạo bằng: Assets > Create > Astral Sphere > Buff Catalog
+// Giao diện Inspector: Scripts/Editor/BuffCatalogEditor.cs
 [CreateAssetMenu(menuName = "Astral Sphere/Buff Catalog")]
 public class BuffCatalog : ScriptableObject
 {
-    public Color buffBorderColor = new Color(0.25f, 0.85f, 0.3f);      // Xanh lá
-    public Color debuffBorderColor = new Color(0.9f, 0.2f, 0.2f);      // Đỏ
+    public Color buffBorderColor = new Color(0.25f, 0.85f, 0.3f);              // Xanh lá: buff
+    public Color debuffBorderColor = new Color(0.9f, 0.2f, 0.2f);              // Đỏ: debuff
+    public Color skillEffectBorderColor = new Color(0.25f, 0.55f, 1f);         // MỚI: xanh dương, hiệu lực skill
+    public Color skillCooldownBorderColor = new Color(0.65f, 0.35f, 0.95f);    // MỚI: tím, hồi chiêu passive
     public List<BuffVisual> entries = new List<BuffVisual>();
 
     private BuffVisual[] byType;            // Bảng tra nhanh theo enum, dựng lười
@@ -26,6 +32,13 @@ public class BuffCatalog : ScriptableObject
     public Color BorderColor(bool isDebuff)
     {
         return isDebuff ? debuffBorderColor : buffBorderColor;
+    }
+
+    // Nhóm của một loại buff (chỉ dùng để sắp xếp giao diện)
+    public static BuffCategory CategoryOf(BuffType type)
+    {
+        if (type == BuffType.Immunity || type == BuffType.DamageReduction) return BuffCategory.Boss;
+        return BuffController.IsDebuff(type) ? BuffCategory.Debuff : BuffCategory.Buff;
     }
 
     // Trả về null nếu loại này chưa có trong danh mục
@@ -51,9 +64,9 @@ public class BuffCatalog : ScriptableObject
         byType = null;                      // Sửa trong Inspector thì dựng lại bảng tra
     }
 
-    // Chuột phải vào tiêu đề asset: thêm các dòng còn thiếu cho mọi giá trị của BuffType
+    // Thêm các dòng còn thiếu cho mọi giá trị của BuffType (cũng gọi được từ nút trong Inspector)
     [ContextMenu("Fill Missing Entries")]
-    private void FillMissing()
+    public void FillMissing()
     {
         foreach (BuffType t in Enum.GetValues(typeof(BuffType)))
         {
@@ -88,7 +101,7 @@ public class BuffCatalog : ScriptableObject
             case BuffType.Silence: return "SIL";
             case BuffType.Vulnerable: return "VUL";
             case BuffType.Exhaust: return "EXH";
-            case BuffType.Blind: return "BLD";
+            case BuffType.Blind: return "BLN";
             case BuffType.Weakness: return "WKN";
             case BuffType.ManaDrain: return "DRN";
             case BuffType.Immunity: return "IMM";

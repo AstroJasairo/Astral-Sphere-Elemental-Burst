@@ -14,6 +14,9 @@ public class SkillSystem : MonoBehaviour
     public ActiveSkillData ActiveData { get; private set; }
     public int ActiveLevel { get; private set; }
     public int PassiveCount => passives.Count;                   // Số passive ĐANG CÓ HIỆU LỰC (cấp > 0)
+    // HUD đọc để vẽ icon hiệu lực (xanh dương) và hồi chiêu (tím) của passive
+    public PassiveSkillEffect GetPassiveEffect(int index) { return passives[index]; }
+    public PassiveSkillData GetPassiveData(int index) { return passiveData[index]; }
     public bool PassivesSuppressed { get; private set; }
 
     public bool HasActive => ActiveData != null && ActiveLevel > 0 && active != null;

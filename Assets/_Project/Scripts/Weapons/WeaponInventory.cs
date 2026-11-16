@@ -18,6 +18,10 @@ public class WeaponInventory : MonoBehaviour
     private PlayerStats stats;
     private readonly List<WeaponBase> weapons = new List<WeaponBase>();
     private readonly List<PassiveEntry> passives = new List<PassiveEntry>();
+    // HUD đọc để vẽ icon của passive vũ khí
+    public int PassiveCount => passives.Count;
+    public PassiveSkillEffect GetPassiveEffect(int index) { return passives[index].effect; }
+    public PassiveSkillData GetPassiveData(int index) { return passives[index].data; }
 
     public IReadOnlyList<WeaponBase> Weapons => weapons;
     public bool HasFreeSlot => weapons.Count < MaxSlots;

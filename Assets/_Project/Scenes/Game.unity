@@ -6925,6 +6925,8 @@ MonoBehaviour:
   catalog: {fileID: 11400000, guid: 741a4b4f2fdd71949882f16004872df8, type: 2}
   iconPrefab: {fileID: 147330728897607997, guid: 4b451c0de8d93464298b4d31133328bc, type: 3}
   container: {fileID: 1287416958}
+  showWeaponPassiveEffects: 1
+  showWeaponPassiveCooldown: 0
 --- !u!114 &1287416960
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10027,7 +10029,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_Radius: 0.1
 --- !u!50 &1761219956
 Rigidbody2D:
   serializedVersion: 5

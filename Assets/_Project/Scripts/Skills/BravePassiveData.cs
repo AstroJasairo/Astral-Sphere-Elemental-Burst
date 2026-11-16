@@ -41,14 +41,19 @@ public class BravePassiveData : PassiveSkillData
 public class BravePassiveEffect : PassiveSkillEffect
 {
     private const float ScanInterval = 0.1f;              // Quét 10 lần/giây là đủ
-    private const float BuffLinger = 0.35f;               // Icon sống lâu hơn một nhịp quét để không chớp
 
     private readonly BravePassiveData data;
     private float radius, atkPer, defPer;
     private float timer;
     private int shown = -1;                               // Số stack đã báo cho PlayerStats (-1 = chưa báo)
+    private bool running;
 
     public BravePassiveEffect(PlayerStats stats, BravePassiveData data) : base(stats) { this.data = data; }
+
+    // ---- Icon xanh dương: không đồng hồ, chỉ có số stack ----
+    public override bool IsEffectShown => running && shown > 0;
+    public override bool EffectUsesTimer => false;
+    public override int EffectStacks => shown > 0 ? shown : 0;
 
     public override void SetLevel(int level)
     {
@@ -59,13 +64,13 @@ public class BravePassiveEffect : PassiveSkillEffect
         timer = 0f;
     }
 
-    public override void Enable() { timer = 0f; shown = -1; }
+    public override void Enable() { running = true; timer = 0f; shown = -1; }
 
-    // Gỡ SẠCH: trả ATK/DEF về như chưa có Brave và xóa icon
+    // Gỡ SẠCH: trả ATK/DEF về như chưa có Brave
     public override void Disable()
     {
+        running = false;
         stats.SetBrave(0, 0f, 0f);
-        stats.Buffs.Clear(BuffType.Brave);
         shown = 0;
     }
 
@@ -86,15 +91,8 @@ public class BravePassiveEffect : PassiveSkillEffect
             if (++count >= data.maxEnemies) break;
         }
 
-        if (count != shown)
-        {
-            shown = count;
-            stats.SetBrave(count, count * atkPer, count * defPer);
-        }
-
-        // Icon buff: giá trị = số stack, không đồng hồ (BuffHudView xử lý riêng)
-        // Phải Clear trước: Buffs.Apply giữ giá trị CAO HƠN khi buff còn hiệu lực nên số stack sẽ không giảm được
-        stats.Buffs.Clear(BuffType.Brave);
-        if (count > 0) stats.Buffs.Apply(BuffType.Brave, count, BuffLinger);
+        if (count == shown) return;
+        shown = count;
+        stats.SetBrave(count, count * atkPer, count * defPer);
     }
 }
