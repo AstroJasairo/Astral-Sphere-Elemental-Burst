@@ -36,7 +36,7 @@ public class ClariusWeapon : WeaponBase
         Vector2 spot = FindDensestSpot(n, CurrentRadius);
 
         GameObject go = PoolManager.Instance.Get(swordPrefab.gameObject, spot, Quaternion.identity);
-        go.GetComponent<ClariusSword>().Begin(this, CurrentLevel.duration);
+        go.GetComponent<ClariusSword>().Begin(this, CurrentLevel.existDuration);
         return true;
     }
 

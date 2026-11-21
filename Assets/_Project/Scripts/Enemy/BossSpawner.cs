@@ -25,9 +25,19 @@ public class BossSpawner : MonoBehaviour
         float halfH = cam.orthographicSize;
         float halfW = halfH * cam.aspect;
         float radius = Mathf.Sqrt(halfW * halfW + halfH * halfH) + spawnMargin;
-        float angle = Random.value * Mathf.PI * 2f;
-        Vector3 pos = GameManager.Instance.Player.position
-                    + new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0f) * radius;
+
+        Vector3 playerPos = GameManager.Instance.Player.position;
+        Vector3 pos = playerPos;
+
+        // Thử vài góc để rơi vào trong biên. Không được thì kẹp vào trong biên (BOSS bắt buộc phải xuất hiện)
+        for (int attempt = 0; attempt < 10; attempt++)
+        {
+            float angle = Random.value * Mathf.PI * 2f;
+            pos = playerPos + new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0f) * radius;
+            if (MapArea.Contains(pos, 1f)) break;
+
+            if (attempt == 9) pos = (Vector3)MapArea.Clamp(pos, 1f);
+        }
 
         GameObject go = PoolManager.Instance.Get(bossData.prefab, pos, Quaternion.identity);
         go.GetComponent<EnemyBase>().Init(bossData, 1f, 1f);   // Hệ số 1: BOSS không tăng chỉ số theo thời gian

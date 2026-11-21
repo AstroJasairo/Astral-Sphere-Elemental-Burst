@@ -11,6 +11,7 @@ public class DropSystem : MonoBehaviour
     [SerializeField] private float scatterRadius = 8f;
     [SerializeField] private int maxPickups = 120;      // Quá số này thì vàng/pha lê mới được gộp thay vì tạo thêm
 
+    private const float EdgeMargin = 0.5f;       // Vật phẩm không nằm sát mép biên
     private float manaWeightMultiplier = 1f;
 
     private void Awake()
@@ -84,6 +85,7 @@ public class DropSystem : MonoBehaviour
 
     private void SpawnPickup(PickupData data, int amount, Vector2 position)
     {
+        position = MapArea.Clamp(position, EdgeMargin);
         if (data == null || data.prefab == null)
         {
             Debug.LogWarning("DropSystem: một DropEntry thiếu PickupData hoặc Prefab. Kiểm tra lại EnemyData.", this);

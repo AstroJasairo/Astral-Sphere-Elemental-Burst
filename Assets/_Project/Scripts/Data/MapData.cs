@@ -17,6 +17,29 @@ public class MapData : ScriptableObject
     public Sprite gameBackground;              // Hình nền (tùy chọn, dùng khi nền là một SpriteRenderer)
     public Color backgroundColor = Color.white;
 
+    public const float MinBoundsSize = 20f;       // Nhỏ hơn thế thì camera (6.8 x 12) gần như phủ hết bản đồ
+
+    [Header("Biên bản đồ (hình chữ nhật, tâm tại (0,0))")]
+    [Tooltip("Kích thước khung biên theo đơn vị Unity. Đặt 0 để KHÔNG có biên")]
+    public Vector2 boundsSize = new Vector2(40f, 40f);
+    public Color boundsBorderColor = new Color(1f, 1f, 1f, 0.9f);
+    public float boundsBorderWidth = 0.25f;
+    [Tooltip("Prefab bố cục (tường, vật cản...) sinh vào scene khi vào trận. Để trống nếu chưa cần")]
+    public GameObject layoutPrefab;
+
+    [Header("Nền")]
+    [Tooltip("Kích thước MỘT ô nền (đơn vị Unity). 0 = giữ kích thước gốc của sprite (theo Pixels Per Unit)")]
+    public float tileWorldSize = 0f;
+
     [Header("Âm thanh")]
     public AudioCue music = new AudioCue();           // Nhạc nền của map (lặp lại)
+
+    private void OnValidate()
+    {
+        if (boundsSize.x > 0f || boundsSize.y > 0f)       // Có biên thì không nhỏ hơn mức tối thiểu
+            boundsSize = new Vector2(Mathf.Max(boundsSize.x, MinBoundsSize), Mathf.Max(boundsSize.y, MinBoundsSize));
+
+        tileWorldSize = Mathf.Max(0f, tileWorldSize);
+        boundsBorderWidth = Mathf.Max(0f, boundsBorderWidth);
+    }
 }

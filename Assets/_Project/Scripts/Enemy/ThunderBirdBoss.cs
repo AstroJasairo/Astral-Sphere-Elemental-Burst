@@ -66,6 +66,7 @@ public class ThunderBirdBoss : BossBase
 
             case State.Dashing:
                 dashTimeLeft -= Time.deltaTime;   // Đang lao: không bị Tê cóng ảnh hưởng
+                rb.position = MapArea.Clamp(rb.position, 1f);     // MỚI: cú lao dừng ở mép biên, không bay ra ngoài
                 if (dashTimeLeft <= 0f) EndDash();
                 break;
         }

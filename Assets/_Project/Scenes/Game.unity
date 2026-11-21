@@ -6221,6 +6221,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1196821513}
   - component: {fileID: 1196821512}
+  - component: {fileID: 1196821514}
   m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
@@ -6302,6 +6303,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1196821514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1196821511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f645bb68e3eb70341ae420fb5598dc86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TiledBackground
+  tileWorldSize: 0
+  marginTiles: 1
 --- !u!1 &1199844918
 GameObject:
   m_ObjectHideFlags: 0
@@ -11146,6 +11161,10 @@ MonoBehaviour:
   bossSpawner: {fileID: 1397015320}
   backgroundRenderer: {fileID: 1196821512}
   backgroundCamera: {fileID: 922847111}
+  borderMaterial: {fileID: 2100000, guid: b80ee681966739a4f83c0e87bb6aada9, type: 2}
+  borderSortingOrder: -50
+  useDebugBounds: 0
+  debugBoundsSize: {x: 40, y: 40}
 --- !u!4 &1924442480
 Transform:
   m_ObjectHideFlags: 0

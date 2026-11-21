@@ -17,6 +17,9 @@ public class EnemyBase : MonoBehaviour
     public float MaxHealth => health.MaxHealth;     // Máu tối đa thực tế (đã nhân hệ số độ khó). Vẫn đọc được lúc phát EnemyKilled
     public bool OverrideMovement { get; set; }   // true: BOSS đang tự điều khiển (lao tới...), EnemyBase không đuổi theo nữa
 
+    private const float EdgeMargin = 0.3f;
+
+
     // Debuff của quái. Thuộc tính lấy lười: tự thêm component nếu prefab chưa có
     private EnemyDebuffSystem debuffs;
     public EnemyDebuffSystem Debuffs
@@ -103,7 +106,7 @@ public class EnemyBase : MonoBehaviour
         if (OverrideMovement) return;
         if (status.TryGetForcedVelocity(out Vector2 forced))
         {
-            rb.linearVelocity = forced;    // Bị trói hoặc đẩy lùi: bỏ qua việc đuổi theo
+            Move(forced);     // Bị trói hoặc đẩy lùi: bỏ qua việc đuổi theo
             return;
         }
 
@@ -121,7 +124,13 @@ public class EnemyBase : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
             return;
         }
-        rb.linearVelocity = toTarget.normalized * Data.moveSpeed * Debuffs.SpeedMultiplier;   // Slow
+        Move(toTarget.normalized * Data.moveSpeed * Debuffs.SpeedMultiplier);   // Slow
+    }
+
+    // Đặt vận tốc nhưng không cho vượt biên bản đồ (đẩy lùi, đuổi theo đều đi qua đây)
+    private void Move(Vector2 velocity)
+    {
+        rb.linearVelocity = MapArea.ConstrainVelocity(rb.position, velocity, Time.fixedDeltaTime, EdgeMargin);
     }
 
     public void TeleportTo(Vector2 position)

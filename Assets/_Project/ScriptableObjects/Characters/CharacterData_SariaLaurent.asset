@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f59888042de1e9e428962d4303dbd5f6, type: 3}
+  m_Name: CharacterData_SariaLaurent
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterData
+  id: saria_laurent
+  starCosts: 0000000000000000000000000000000000000000
+  statProgressions: []
+  characterName: Saria Laurent
+  icon: {fileID: 0}
+  primaryColor: {r: 1, g: 0.75, b: 0.1, a: 1}
+  secondaryColor: {r: 1, g: 1, b: 1, a: 1}
+  baseMaxHp: 100
+  baseAtk: 1
+  baseDef: 0
+  baseMoveSpeed: 3
+  baseMagnetRadius: 1.5
+  maxMana: 300
+  elementResist:
+    metal: 0
+    fire: 0
+    lightning: 0
+    wind: 0
+    soul: 0
+    light: 0
+    earth: 0
+    water: 0
+    plant: 0
+    dark: 0
+  elementImmunity: 0
+  perks:
+  - id: justia_I
+    replacesId: 
+    requiredStar: 0
+    type: 0
+    element: 0
+    weapon: {fileID: 11400000, guid: 1c685bca45278cb428fc91e8e9cccfa6, type: 2}
+    weaponLevel: 1
+    bonus: 0
+    description: 'Game Start: Gain Justia Lv1'
+  passiveSkill: {fileID: 0}
+  passiveSkills: []
+  activeSkill: {fileID: 0}

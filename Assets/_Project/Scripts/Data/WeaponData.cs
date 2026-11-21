@@ -6,19 +6,28 @@ using UnityEngine;
 [System.Serializable]
 public class WeaponLevel
 {
-    public float baseDamage = 0f;        // MỚI. Sát thương cơ bản ở cấp này. 0 = dùng WeaponData.baseDamage
-    public int projectileCount = 1;      // Kim loại, Nước: số viên. Linh hồn: số quả cầu
-    public float radius = 1.5f;          // Lửa, Đất, Phong, Clarius: bán kính
-    public float explosionRadius = 0f;   // Bóng tối, Nước: bán kính nổ
-    public int chainTargets = 0;         // Lôi: số kẻ địch mỗi lần giật
-    public float coneAngle = 60f;        // Phong: góc mở hình nón (độ)
-    public float knockbackDistance = 0f; // Phong: quãng đường đẩy lùi
-    public float beamWidth = 0.6f;       // Ánh sáng, Plant: độ rộng tia
-    public float rootDuration = 0f;      // Plant: thời gian trói (giây)
-    public float duration = 0f;          // MỚI. Clarius: thời gian tồn tại của thanh kiếm (giây)
-    public float innerRadius = 0f;       // MỚI. Nhẫn, Nón nhẫn, Sweep nhẫn: bán kính lỗ giữa (0 = không có lỗ)
-    public float cooldown = 0f;          // MỚI. Hồi chiêu ở cấp này (giây). 0 = dùng WeaponData.cooldown
-    public List<WeaponHitEffect> hitEffects = new List<WeaponHitEffect>();      // MỚI (12B): hiệu ứng gây lên quái ở cấp này.
+    [Header("General")]
+    public float baseDamage = 0f;            // Sát thương cơ bản ở cấp này. 0 = dùng WeaponData.baseDamage
+    public float cooldown = 0f;              // Hồi chiêu ở cấp này (giây). 0 = dùng WeaponData.cooldown
+
+    [Header("Scope")]
+    public float explosionRadius = 0f;       // Bóng tối, Nước: bán kính nổ
+    public float innerRadius = 0f;           // Nhẫn, Nón nhẫn, Sweep nhẫn: bán kính lỗ giữa (0 = không có lỗ)
+    public float radius = 0f;                // Lửa, Đất, Phong, Clarius: bán kính
+    public float coneAngle = 0f;             // Phong: góc mở hình nón (độ)
+
+    [Header("Specials")]
+    public int projectileCount = 0;          // Kim loại, Nước: số viên. Linh hồn: số quả cầu
+    public int chainTargets = 0;             // Lôi: số kẻ địch mỗi lần giật
+    public float knockbackDistance = 0f;     // Phong: quãng đường đẩy lùi
+    public float beamWidth = 0f;             // Ánh sáng, Plant: độ rộng tia
+    public float rootDuration = 0f;          // Plant: thời gian trói (giây)
+
+    [Header("Unique")]
+    public float existDuration = 0f;         // Clarius: thời gian tồn tại của thanh kiếm (giây)
+
+    [Header("Effects")]
+    public List<WeaponHitEffect> hitEffects = new List<WeaponHitEffect>();      // Hiệu ứng gây lên quái ở cấp này.
 }
 
 // Dữ liệu một vũ khí. Tạo bằng: Assets > Create > Astral Sphere > Weapon Data

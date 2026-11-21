@@ -7,9 +7,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private VirtualJoystick joystick;
     //[SerializeField] private float moveSpeed = 5f; // Sau này sẽ lấy từ chỉ số SPD
     private PlayerStats stats;
-
     private Rigidbody2D rb;
     private Vector2 moveInput;
+
+    private const float EdgeMargin = 0.4f;
 
     private void Awake()
     {
@@ -40,7 +41,11 @@ public class PlayerController : MonoBehaviour
     // Di chuyển vật lý đặt trong FixedUpdate để mượt và ổn định
     private void FixedUpdate()
     {
-        // Unity 6 dùng linearVelocity (tên cũ là velocity)
-        rb.linearVelocity = moveInput * stats.MoveSpeed;
+        Vector2 velocity = moveInput * stats.MoveSpeed;
+
+        // Chạm biên thì chỉ mất thành phần đi ra ngoài: nhân vật trượt dọc tường
+        velocity = MapArea.ConstrainVelocity(rb.position, velocity, Time.fixedDeltaTime, EdgeMargin);
+
+        rb.linearVelocity = velocity;                    // Unity 6 dùng linearVelocity
     }
 }

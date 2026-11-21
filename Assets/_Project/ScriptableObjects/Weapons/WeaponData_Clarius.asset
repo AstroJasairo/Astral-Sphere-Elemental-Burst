@@ -29,6 +29,7 @@ MonoBehaviour:
   beamLength: 10
   isUnique: 1
   tickInterval: 0.5
+  passiveSkills: []
   damageGrowthPerLevel: 0.3
   icon: {fileID: 0}
   description: "\u0110\u1ECBnh k\u1EF3 ph\xF3ng m\u1ED9t thanh ki\u1EBFm xu\u1ED1ng
@@ -37,54 +38,76 @@ MonoBehaviour:
   upgradeDescription: "T\u0103ng th\u1EDDi gian t\u1ED3n t\u1EA1i, b\xE1n k\xEDnh
     v\xE0 s\xE1t th\u01B0\u01A1ng"
   weaponPrefab: {fileID: 8290351449667938078, guid: 5721cdf4bb8804c4c8d99fa3d3aa016f, type: 3}
+  fireCue:
+    label: 
+    clips: []
+    volume: 1
+    pitchRange: {x: 0.95, y: 1.05}
+    minInterval: 0.05
+    category: 1
   levels:
   - baseDamage: 6
+    cooldown: 0
     projectileCount: 1
-    radius: 1.8
     explosionRadius: 0
-    chainTargets: 0
+    innerRadius: 0
+    radius: 1.8
     coneAngle: 60
+    chainTargets: 0
     knockbackDistance: 0
     beamWidth: 0.6
     rootDuration: 0
     duration: 4
+    hitEffects: []
   - baseDamage: 7.8
+    cooldown: 0
     projectileCount: 1
-    radius: 2.1
     explosionRadius: 0
-    chainTargets: 0
+    innerRadius: 0
+    radius: 2.1
     coneAngle: 60
+    chainTargets: 0
     knockbackDistance: 0
     beamWidth: 0.6
     rootDuration: 0
     duration: 5
+    hitEffects: []
   - baseDamage: 9.6
+    cooldown: 0
     projectileCount: 1
-    radius: 2.4
     explosionRadius: 0
-    chainTargets: 0
+    innerRadius: 0
+    radius: 2.4
     coneAngle: 60
+    chainTargets: 0
     knockbackDistance: 0
     beamWidth: 0.6
     rootDuration: 0
     duration: 6
+    hitEffects: []
   - baseDamage: 11.4
+    cooldown: 0
     projectileCount: 1
-    radius: 2.7
     explosionRadius: 0
-    chainTargets: 0
+    innerRadius: 0
+    radius: 2.7
     coneAngle: 60
+    chainTargets: 0
     knockbackDistance: 0
     beamWidth: 0.6
     rootDuration: 0
     duration: 7
+    hitEffects: []
   - baseDamage: 13.2
+    cooldown: 0
     projectileCount: 1
-    radius: 3
     explosionRadius: 0
-    chainTargets: 0
+    innerRadius: 0
+    radius: 3
     coneAngle: 60
+    chainTargets: 0
     knockbackDistance: 0
     beamWidth: 0.6
     rootDuration: 0
     duration: 8
+    hitEffects: []
