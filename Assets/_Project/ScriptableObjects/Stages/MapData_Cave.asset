@@ -20,8 +20,13 @@ MonoBehaviour:
   stage: {fileID: 11400000, guid: a396dd4186b7783469cb65cfd0e9cb68, type: 2}
   boss: {fileID: 11400000, guid: 3aaa8437d3564e14d81ebd40a72c489f, type: 2}
   overrideBackground: 1
-  gameBackground: {fileID: -574288341, guid: 786ace76a57c6cb41b5e3c0e090c0821, type: 3}
+  gameBackground: {fileID: 21300000, guid: 0cd9a5acaa97c0442bc2fefa591f2489, type: 3}
   backgroundColor: {r: 1, g: 1, b: 1, a: 1}
+  boundsSize: {x: 40, y: 40}
+  boundsBorderColor: {r: 1, g: 1, b: 1, a: 0.9}
+  boundsBorderWidth: 0.25
+  layoutPrefab: {fileID: 0}
+  tileWorldSize: 0
   music:
     label: 
     clips: []

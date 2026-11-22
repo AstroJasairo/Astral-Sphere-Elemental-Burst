@@ -20,6 +20,22 @@ public abstract class WeaponBase : MonoBehaviour
     // Thông số của cấp hiện tại (level 1 -> phần tử 0)
     protected WeaponLevel CurrentLevel => data.levels[Mathf.Clamp(level, 1, data.levels.Length) - 1];
 
+    // ---------------- Chỉ số theo cấp (13B) ----------------
+    // Giá trị của cấp (> 0) thay cho giá trị chung trong WeaponData; bằng 0 thì dùng giá trị chung.
+    private static float Inherit(float levelValue, float fallback) { return levelValue > 0f ? levelValue : fallback; }
+
+    protected float TargetRange => Inherit(CurrentLevel.targetRange, data.targetRange);
+    protected int Pierce => Mathf.Max(0, CurrentLevel.overridePierce ? CurrentLevel.pierce : data.pierce);
+    protected float ProjectileSpeed => Inherit(CurrentLevel.projectileSpeed, data.projectileSpeed);
+    protected float ProjectileLifetime => Inherit(CurrentLevel.projectileLifetime, data.projectileLifetime);
+    protected float BaseBurstInterval => Inherit(CurrentLevel.burstInterval, data.burstInterval);
+    protected float ChainRange => Inherit(CurrentLevel.chainRange, data.chainRange);
+    protected float OrbitSpeed => Inherit(CurrentLevel.orbitSpeed, data.orbitSpeed);
+    protected float OrbitRadius => Inherit(CurrentLevel.orbitRadius, data.orbitRadius);
+    protected float HitInterval => Inherit(CurrentLevel.hitInterval, data.hitInterval);
+    protected float BeamLength => Inherit(CurrentLevel.beamLength, data.beamLength);
+    protected float BaseTickInterval => Inherit(CurrentLevel.tickInterval, data.tickInterval);
+
     // Sát thương cơ bản của cấp hiện tại (không có thì dùng giá trị chung của vũ khí)
     protected float CurrentBaseDamage
     {

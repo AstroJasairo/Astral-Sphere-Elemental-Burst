@@ -11,7 +11,7 @@ public class ChainWeapon : WeaponBase
     protected override bool Fire()
     {
         // 1) Mục tiêu đầu tiên: kẻ địch gần người chơi nhất trong tầm
-        Transform first = TargetFinder.FindNearest(transform.position, data.targetRange, enemyMask);
+        Transform first = TargetFinder.FindNearest(transform.position, TargetRange, enemyMask);
         if (first == null) return false;
 
         // 2) Nối chuỗi: từ mục tiêu hiện tại tìm con gần nhất chưa bị giật
@@ -44,7 +44,7 @@ public class ChainWeapon : WeaponBase
     // Tìm kẻ địch gần "from" nhất trong chainRange mà chưa nằm trong chuỗi
     private Transform FindNextInChain(Vector3 from, int chainCount)
     {
-        int found = TargetFinder.FindAll(from, data.chainRange, enemyMask);
+        int found = TargetFinder.FindAll(from, ChainRange, enemyMask);
         Transform best = null;
         float bestSqr = float.MaxValue;
 

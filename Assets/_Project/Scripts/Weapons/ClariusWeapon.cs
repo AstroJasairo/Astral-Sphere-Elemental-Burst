@@ -18,7 +18,7 @@ public class ClariusWeapon : WeaponBase
         get
         {
             float multiplier = owner != null ? owner.CooldownMultiplier : 1f;     // All Out Assault: giảm n
-            return Mathf.Max(0.08f, data.tickInterval * multiplier);
+            return Mathf.Max(0.08f, BaseTickInterval * multiplier);
         }
     }
 
@@ -26,7 +26,7 @@ public class ClariusWeapon : WeaponBase
     {
         Vector2 origin = transform.position;
 
-        int count = TargetFinder.FindAll(origin, data.targetRange, enemyMask);
+        int count = TargetFinder.FindAll(origin, TargetRange, enemyMask);
         if (count == 0) return false;
 
         int n = Mathf.Min(count, positions.Length);

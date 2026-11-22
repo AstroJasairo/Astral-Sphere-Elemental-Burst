@@ -3,12 +3,15 @@ using System.Text;
 using UnityEngine;
 
 // Dữ liệu cho từng cấp của vũ khí (Lv1 đến Lv5)
+// Quy ước các chỉ số "theo cấp": 0 = dùng giá trị chung trong WeaponData (hoặc trong prefab với 3 trường đánh dấu)
 [System.Serializable]
 public class WeaponLevel
 {
     [Header("General")]
     public float baseDamage = 0f;            // Sát thương cơ bản ở cấp này. 0 = dùng WeaponData.baseDamage
     public float cooldown = 0f;              // Hồi chiêu ở cấp này (giây). 0 = dùng WeaponData.cooldown
+    [Tooltip("Tầm tìm mục tiêu. 0 = dùng WeaponData.targetRange")]
+    public float targetRange = 0f;
 
     [Header("Scope")]
     public float explosionRadius = 0f;       // Bóng tối, Nước: bán kính nổ
@@ -23,8 +26,46 @@ public class WeaponLevel
     public float beamWidth = 0f;             // Ánh sáng, Plant: độ rộng tia
     public float rootDuration = 0f;          // Plant: thời gian trói (giây)
 
+    [Header("Projectile (Kim loại, Nước, Bóng tối)")]
+    [Tooltip("Bật: dùng 'Pierce' của cấp này. Tắt: dùng WeaponData.pierce (vì 0 xuyên là giá trị có nghĩa)")]
+    public bool overridePierce = false;
+    [Tooltip("Số kẻ địch xuyên qua thêm (chỉ có tác dụng khi bật Override Pierce)")]
+    public int pierce = 0;
+    [Tooltip("0 = dùng WeaponData.projectileSpeed")]
+    public float projectileSpeed = 0f;
+    [Tooltip("0 = dùng WeaponData.projectileLifetime")]
+    public float projectileLifetime = 0f;
+    [Tooltip("Khoảng cách giữa hai viên trong loạt. 0 = dùng WeaponData.burstInterval. CẨN THẬN: giá trị > 0 làm cấp này bắn LOẠT")]
+    public float burstInterval = 0f;
+    [Tooltip("Chế độ bắn tỏa: góc giữa các viên. 0 = dùng giá trị trong prefab")]
+    public float spreadAngle = 0f;
+
+    [Header("Chain (Lôi)")]
+    [Tooltip("0 = dùng WeaponData.chainRange")]
+    public float chainRange = 0f;
+
+    [Header("Orbit (Linh hồn)")]
+    [Tooltip("Độ mỗi giây. 0 = dùng WeaponData.orbitSpeed")]
+    public float orbitSpeed = 0f;
+    [Tooltip("0 = dùng WeaponData.orbitRadius")]
+    public float orbitRadius = 0f;
+    [Tooltip("Bán kính va chạm của mỗi quả cầu. 0 = dùng giá trị trong prefab")]
+    public float orbHitRadius = 0f;
+    [Tooltip("0 = dùng WeaponData.hitInterval")]
+    public float hitInterval = 0f;
+
+    [Header("Beam (Ánh sáng, Plant)")]
+    [Tooltip("0 = dùng WeaponData.beamLength")]
+    public float beamLength = 0f;
+
+    [Header("Telegraph (Phong, Plant, các dạng Area)")]
+    [Tooltip("Thời gian vùng cam chạy hết. 0 = dùng giá trị trong prefab")]
+    public float telegraphDuration = 0f;
+
     [Header("Unique")]
     public float existDuration = 0f;         // Clarius: thời gian tồn tại của thanh kiếm (giây)
+    [Tooltip("Clarius: khoảng cách giữa hai lần gây sát thương. 0 = dùng WeaponData.tickInterval")]
+    public float tickInterval = 0f;
 
     [Header("Effects")]
     public List<WeaponHitEffect> hitEffects = new List<WeaponHitEffect>();      // Hiệu ứng gây lên quái ở cấp này.
@@ -104,6 +145,48 @@ public class WeaponData : ScriptableObject
     private void FillCooldownPerLevel()
     {
         for (int i = 0; i < levels.Length; i++) levels[i].cooldown = cooldown;
+#if UNITY_EDITOR
+        UnityEditor.EditorUtility.SetDirty(this);
+#endif
+    }
+
+    // Chuột phải vào tiêu đề asset: chép các chỉ số chung vào cả 5 cấp, rồi bạn chỉnh từng cấp
+    [ContextMenu("Fill Level Stats From Weapon")]
+    private void FillLevelStats()
+    {
+        for (int i = 0; i < levels.Length; i++)
+        {
+            WeaponLevel l = levels[i];
+            l.targetRange = targetRange;
+            l.overridePierce = true;
+            l.pierce = pierce;
+            l.projectileSpeed = projectileSpeed;
+            l.projectileLifetime = projectileLifetime;
+            l.burstInterval = burstInterval;
+            l.chainRange = chainRange;
+            l.orbitSpeed = orbitSpeed;
+            l.orbitRadius = orbitRadius;
+            l.hitInterval = hitInterval;
+            l.beamLength = beamLength;
+            l.tickInterval = tickInterval;
+        }
+#if UNITY_EDITOR
+        UnityEditor.EditorUtility.SetDirty(this);
+#endif
+    }
+
+    // Xóa mọi giá trị riêng của cấp: tất cả cấp dùng lại giá trị chung
+    [ContextMenu("Clear Level Stat Overrides")]
+    private void ClearLevelStats()
+    {
+        for (int i = 0; i < levels.Length; i++)
+        {
+            WeaponLevel l = levels[i];
+            l.targetRange = 0f; l.overridePierce = false; l.pierce = 0;
+            l.projectileSpeed = 0f; l.projectileLifetime = 0f; l.burstInterval = 0f; l.spreadAngle = 0f;
+            l.chainRange = 0f; l.orbitSpeed = 0f; l.orbitRadius = 0f; l.orbHitRadius = 0f; l.hitInterval = 0f;
+            l.beamLength = 0f; l.telegraphDuration = 0f; l.tickInterval = 0f;
+        }
 #if UNITY_EDITOR
         UnityEditor.EditorUtility.SetDirty(this);
 #endif

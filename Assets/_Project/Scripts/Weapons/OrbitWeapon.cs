@@ -15,6 +15,7 @@ public class OrbitWeapon : WeaponBase
     private float angle;
     private float scanTimer;
     private bool orbsHidden;
+    private float OrbHitRadius => CurrentLevel.orbHitRadius > 0f ? CurrentLevel.orbHitRadius : orbHitRadius;
 
     // Khi lên cấp: bổ sung thêm quả cầu cho đủ số lượng của cấp mới
     protected override void OnLevelChanged()
@@ -59,14 +60,13 @@ public class OrbitWeapon : WeaponBase
         int count = CurrentLevel.projectileCount;
         float speedMultiplier = owner != null ? owner.OrbitSpeedMultiplier : 1f;
         float attackSpeed = owner != null ? owner.AttackSpeedMultiplier : 1f;     // Tê cóng
-        angle = Mathf.Repeat(angle + data.orbitSpeed * speedMultiplier * attackSpeed * Time.deltaTime, 360f);
-        //angle = Mathf.Repeat(angle + data.orbitSpeed * speedMultiplier * Time.deltaTime, 360f);
+        angle = Mathf.Repeat(angle + OrbitSpeed * speedMultiplier * attackSpeed * Time.deltaTime, 360f);
         float step = 360f / count;
 
         for (int i = 0; i < count; i++)
         {
             float a = (angle + i * step) * Mathf.Deg2Rad;
-            orbs[i].localPosition = new Vector3(Mathf.Cos(a), Mathf.Sin(a), 0f) * data.orbitRadius;
+            orbs[i].localPosition = new Vector3(Mathf.Cos(a), Mathf.Sin(a), 0f) * OrbitRadius;
         }
     }
 
@@ -76,12 +76,12 @@ public class OrbitWeapon : WeaponBase
         int count = CurrentLevel.projectileCount;
         float damage = CalculateDamage();
         float intervalMultiplier = owner != null ? owner.OrbitHitIntervalMultiplier : 1f;
-        float hitInterval = data.hitInterval * intervalMultiplier;      // All Out Assault: đánh dày hơn
+        float hitInterval = HitInterval * intervalMultiplier;      // All Out Assault: đánh dày hơn
         float now = Time.time;
 
         for (int i = 0; i < count; i++)
         {
-            int found = TargetFinder.FindAll(orbs[i].position, orbHitRadius, enemyMask);
+            int found = TargetFinder.FindAll(orbs[i].position, OrbHitRadius, enemyMask);
             for (int j = 0; j < found; j++)
             {
                 Collider2D col = TargetFinder.Results[j];

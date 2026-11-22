@@ -25,6 +25,7 @@ public class AreaWeapon : WeaponBase
     [SerializeField] private bool alternateSweepSide = false;
     private bool sweepFlipped;     // false: dùng đúng hướng đã chọn; true: đảo ngược
     [SerializeField] private float telegraphDuration = 0.35f;   // Thời gian vùng cam chạy hết
+    private float TelegraphDuration => CurrentLevel.telegraphDuration > 0f ? CurrentLevel.telegraphDuration : telegraphDuration;
     [SerializeField] private SectorTelegraph coneTelegraphPrefab;       // Cone
     [SerializeField] private RingTelegraph ringTelegraphPrefab;         // Ring, ConeRing
     [SerializeField] private SweepRingTelegraph sweepTelegraphPrefab;   // Sweep, SweepRing
@@ -71,7 +72,7 @@ public class AreaWeapon : WeaponBase
         }
         else
         {
-            Transform target = TargetFinder.FindNearest(origin, data.targetRange, enemyMask);
+            Transform target = TargetFinder.FindNearest(origin, TargetRange, enemyMask);
             if (target == null) return false;
 
             aim = ((Vector2)target.position - origin).normalized;
@@ -94,7 +95,7 @@ public class AreaWeapon : WeaponBase
                 if (coneTelegraphPrefab != null)
                 {
                     GameObject go = PoolManager.Instance.Get(coneTelegraphPrefab.gameObject, origin, rotation);
-                    go.GetComponent<SectorTelegraph>().Begin(radius, angle, telegraphDuration, inward, 0f, triggeredCallback, transform);
+                    go.GetComponent<SectorTelegraph>().Begin(radius, angle, TelegraphDuration, inward, 0f, triggeredCallback, transform);
                     return true;
                 }
                 break;
@@ -104,7 +105,7 @@ public class AreaWeapon : WeaponBase
                 if (ringTelegraphPrefab != null)
                 {
                     GameObject go = PoolManager.Instance.Get(ringTelegraphPrefab.gameObject, origin, rotation);
-                    go.GetComponent<RingTelegraph>().Begin(inner, radius, angle, telegraphDuration, inward, 0f, triggeredCallback, transform);
+                    go.GetComponent<RingTelegraph>().Begin(inner, radius, angle, TelegraphDuration, inward, 0f, triggeredCallback, transform);
                     return true;
                 }
                 break;
@@ -119,7 +120,7 @@ public class AreaWeapon : WeaponBase
                     bool clockwise = TelegraphDirectionUtil.IsClockwise(direction) ^ sweepFlipped;
 
                     go.GetComponent<SweepRingTelegraph>().Begin(inner, radius, angle, clockwise,
-                        telegraphDuration, 0f, triggeredCallback, transform);
+                        TelegraphDuration, 0f, triggeredCallback, transform);
 
                     // Chỉ đảo khi đã bắn thật (lần thử không có mục tiêu thì Fire() đã return false từ trước)
                     if (alternateSweepSide) sweepFlipped = !sweepFlipped;

@@ -10,6 +10,8 @@ public class ProjectileWeapon : WeaponBase
     [SerializeField] private float spreadAngle = 12f;     // Chế độ tỏa: góc giữa các viên
     [SerializeField] private float burstJitter = 3f;      // Chế độ bắn loạt: mỗi viên lệch ngẫu nhiên tối đa bao nhiêu độ
 
+    private float SpreadAngle => CurrentLevel.spreadAngle > 0f ? CurrentLevel.spreadAngle : spreadAngle;
+
     private int burstRemaining;                           // Số viên còn phải bắn trong loạt hiện tại
     private float burstTimer;
 
@@ -20,7 +22,7 @@ public class ProjectileWeapon : WeaponBase
         {
             float multiplier = owner != null ? owner.CooldownMultiplier : 1f;
             float speed = owner != null ? owner.AttackSpeedMultiplier : 1f;           // Tê cóng làm loạt bắn chậm lại
-            return Mathf.Max(0.03f, data.burstInterval * multiplier / speed);
+            return Mathf.Max(0.03f, BaseBurstInterval * multiplier / speed);
         }
     }
 
@@ -34,12 +36,12 @@ public class ProjectileWeapon : WeaponBase
     {
         if (burstRemaining > 0) return false;             // Loạt trước chưa bắn xong
 
-        Transform target = TargetFinder.FindNearest(transform.position, data.targetRange, enemyMask);
+        Transform target = TargetFinder.FindNearest(transform.position, TargetRange, enemyMask);
         if (target == null) return false;
 
         int count = CurrentLevel.projectileCount;
 
-        if (data.burstInterval > 0f)
+        if (BaseBurstInterval > 0f)
         {
             // Chế độ bắn loạt: viên đầu tiên bắn ngay, các viên còn lại bắn trong TickBurst
             ShootAt(target, 0f);
@@ -53,7 +55,7 @@ public class ProjectileWeapon : WeaponBase
         float damage = CalculateDamage();
         for (int i = 0; i < count; i++)
         {
-            float angleOffset = (i - (count - 1) * 0.5f) * spreadAngle;
+            float angleOffset = (i - (count - 1) * 0.5f) * SpreadAngle;
             Vector2 dir = Quaternion.Euler(0f, 0f, angleOffset) * baseDir;
             Spawn(dir, damage);
         }
@@ -68,7 +70,7 @@ public class ProjectileWeapon : WeaponBase
         if (burstTimer > 0f) return;
 
         // Mỗi viên ngắm lại mục tiêu gần nhất tại thời điểm bắn
-        Transform target = TargetFinder.FindNearest(transform.position, data.targetRange, enemyMask);
+        Transform target = TargetFinder.FindNearest(transform.position, TargetRange, enemyMask);
         if (target == null)
         {
             burstRemaining = 0;                            // Hết mục tiêu: dừng loạt
@@ -96,8 +98,8 @@ public class ProjectileWeapon : WeaponBase
         bool hasEffects = effects != null && effects.Count > 0;
 
         go.GetComponent<Projectile>().Init(
-            damage, dir, data.projectileSpeed, data.projectileLifetime, data.pierce,
+            damage, dir, ProjectileSpeed, ProjectileLifetime, Pierce,
             CurrentLevel.explosionRadius, enemyMask,
-            data.element, effects, (hasEffects && owner != null) ? owner.Atk : 1f);   // MỚI
+            data.element, effects, (hasEffects && owner != null) ? owner.Atk * owner.WeaponAtkMultiplier : 1f);
     }
 }
