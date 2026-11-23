@@ -35,6 +35,12 @@ public abstract class SkillDataBase : ScriptableObject
 public abstract class PassiveSkillData : SkillDataBase
 {
     public abstract PassiveSkillEffect CreateEffect(PlayerStats stats);
+
+    // Chủ sở hữu bất kỳ (quái, BOSS). Mặc định chỉ người chơi dùng được; skill dùng chung ghi đè hàm này.
+    public virtual PassiveSkillEffect CreateEffect(ISkillOwner owner)
+    {
+        return owner is PlayerStats player ? CreateEffect(player) : null;
+    }
 }
 
 // Skill chủ động: có nút kích hoạt, hiệu lực và hồi chiêu theo cấp

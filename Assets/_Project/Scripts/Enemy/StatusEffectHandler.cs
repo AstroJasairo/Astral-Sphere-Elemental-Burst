@@ -62,4 +62,7 @@ public class StatusEffectHandler : MonoBehaviour
         velocity = Vector2.zero;
         return false;
     }
+
+    // Miễn nhiễm khống chế: gỡ trói đang dính (không đụng tới đẩy lùi)
+    public void ClearRoot() { rootUntil = 0f; }
 }

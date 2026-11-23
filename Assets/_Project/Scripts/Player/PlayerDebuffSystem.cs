@@ -50,6 +50,7 @@ public class PlayerDebuffSystem : MonoBehaviour
             return false;
         }
         if (GameManager.Instance != null && GameManager.Instance.IsEnded) return false;
+        if (ImmunityUtil.BlocksDebuff(stats.Health.Immunities.Flags, type)) return false;      // Miễn nhiễm
         return stats.Buffs.ApplyDebuff(type, value, duration);
     }
 
@@ -57,6 +58,7 @@ public class PlayerDebuffSystem : MonoBehaviour
     public void ApplyDot(DotData data)
     {
         if (data == null) return;
+        if (stats.Health.Immunities.Has(ImmunityFlags.Dot)) return;                              // Miễn nhiễm DOT
         if (GameManager.Instance != null && GameManager.Instance.IsEnded) return;
 
         float now = Time.time;
@@ -75,6 +77,19 @@ public class PlayerDebuffSystem : MonoBehaviour
         {
             inst.stacks = Mathf.Min(inst.stacks + 1, data.maxStacks);
             inst.endTime = now + data.duration;                    // reset thời gian, giữ nguyên nhịp đang chạy
+        }
+    }
+
+    // Có miễn nhiễm mới: xóa các hiệu ứng đang dính thuộc nhóm đó
+    public void PurgeImmune(ImmunityFlags flags)
+    {
+        if ((flags & ImmunityFlags.Dot) != 0)
+            for (int i = dots.Count - 1; i >= 0; i--) RemoveDot(i);
+
+        for (int i = 0; i < BuffController.TypeCount; i++)            // Vòng for: không sinh rác như Enum.GetValues
+        {
+            BuffType type = (BuffType)i;
+            if (ImmunityUtil.BlocksDebuff(flags, type)) stats.Buffs.Clear(type);
         }
     }
 

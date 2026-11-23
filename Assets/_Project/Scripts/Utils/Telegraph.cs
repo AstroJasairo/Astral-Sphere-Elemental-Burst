@@ -29,6 +29,7 @@ public abstract class Telegraph : MonoBehaviour
     protected float elapsed;                                 // Thời gian đã trôi qua (giây)
     protected float damage;
     public ElementType Element { get; set; } = ElementType.Pure;
+    public DamageKind Kind { get; set; } = DamageKind.Normal;     // Đặt SAU Begin nếu đòn là sát thương Mechanic
     protected Transform playerTransform;
     protected PlayerStats playerStats;
 
@@ -58,6 +59,7 @@ public abstract class Telegraph : MonoBehaviour
     // Các lớp con gọi ở đầu hàm Begin
     protected void StartCommon(float duration, float damage, Action<Telegraph> onTriggered, Transform follow)
     {
+        Kind = DamageKind.Normal;
         this.duration = Mathf.Max(0.05f, duration);
         this.damage = damage;
         this.onTriggered = onTriggered;
@@ -95,7 +97,7 @@ public abstract class Telegraph : MonoBehaviour
 
         if (DamageOnFinish && damage > 0f && playerStats != null && IsPlayerInside(playerTransform.position))
         {
-            playerStats.TakeDamage(damage, Element);
+            playerStats.TakeDamage(damage, Element, Kind);
             HitEffect.ApplyAll(Effects, playerStats);
         }
         AudioManager.Play(triggerCue);
@@ -126,7 +128,7 @@ public abstract class Telegraph : MonoBehaviour
     protected void DealDamage()
     {
         if (playerStats == null) return;
-        playerStats.TakeDamage(damage, Element);
+        playerStats.TakeDamage(damage, Element, Kind);
         HitEffect.ApplyAll(Effects, playerStats);
     }
 

@@ -7,6 +7,10 @@ public enum StackMode { Multiplicative, Additive }   // Nhân tích lũy hay c�
 [CreateAssetMenu(menuName = "Astral Sphere/Combat Rules")]
 public class CombatRulesConfig : ScriptableObject
 {
+    [Header("Giao thức (hiệu lực lên từng bậc kẻ địch)")]
+    public TierProtocolTable standardProtocol = TierProtocolTable.CreateStandard();
+    public TierProtocolTable weakProtocol = TierProtocolTable.CreateWeak();
+
     [Header("Giảm sát thương nhận vào")]
     [Tooltip("Cách gộp các nguồn CÙNG nhóm (cùng 'chung' hoặc cùng một nguyên tố). Khác nhóm luôn CỘNG.")]
     public StackMode reductionStacking = StackMode.Multiplicative;

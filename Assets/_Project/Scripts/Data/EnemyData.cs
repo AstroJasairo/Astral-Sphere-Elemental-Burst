@@ -7,6 +7,12 @@ public class EnemyData : ScriptableObject
 {
     public string enemyName;
     public EnemyType type;
+    [Header("Bậc kẻ địch")]
+    [Tooltip("Standard < Normal < Elite < MiniBoss < Boss < Cataclysm. Dùng cho 'giao thức' của các kỹ năng như Đoạt mệnh")]
+    public EnemyTier tier = EnemyTier.Normal;
+
+    // Bậc thực tế: quái đánh dấu BOSS mà đặt bậc thấp hơn MiniBoss thì tính là Boss
+    public EnemyTier EffectiveTier => (isBoss && tier < EnemyTier.MiniBoss) ? EnemyTier.Boss : tier;
     public GameObject prefab;      // Prefab của quái (đi kèm dữ liệu)
 
     [Header("Sát thương")]

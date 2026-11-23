@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 // Giáp sắt: khi nhận sát thương khiến máu còn dưới một ngưỡng %, nhận giảm sát thương một thời gian.
-// Có hiệu lực (icon xanh dương) và hồi chiêu (icon tím).
+// Có hiệu lực (icon xanh dương) và hồi chiêu (icon tím). Dùng được cho nhân vật và BOSS.
 [CreateAssetMenu(menuName = "Astral Sphere/Skills/Passive/Iron Armor")]
 public class IronArmorPassiveData : PassiveSkillData
 {
@@ -20,6 +20,7 @@ public class IronArmorPassiveData : PassiveSkillData
     public float GetCooldown(int level) => Pick(cooldown, level);
 
     public override PassiveSkillEffect CreateEffect(PlayerStats stats) => new IronArmorPassiveEffect(stats, this);
+    public override PassiveSkillEffect CreateEffect(ISkillOwner owner) => new IronArmorPassiveEffect(owner, this);
 
     public override string DescribeLevel(int level)
         => $"Khi nhận sát thương khiến máu còn dưới {GetThreshold(level) * 100f:0.#}%, giảm {GetReduction(level) * 100f:0.#}% " +
@@ -49,7 +50,7 @@ public class IronArmorPassiveEffect : PassiveSkillEffect
     private bool applied;                                    // Đang có hiệu lực giảm sát thương
     private float effectEnd, cooldownStart, cooldownEnd;     // Ba mốc thời gian, giống hồi chiêu của skill chủ động
 
-    public IronArmorPassiveEffect(PlayerStats stats, IronArmorPassiveData data) : base(stats) { this.data = data; }
+    public IronArmorPassiveEffect(ISkillOwner owner, IronArmorPassiveData data) : base(owner) { this.data = data; }
 
     // ---- Dữ liệu cho HUD ----
     public override bool IsEffectShown => applied;
@@ -78,15 +79,15 @@ public class IronArmorPassiveEffect : PassiveSkillEffect
     // Gọi nhiều lần vẫn an toàn: gỡ đăng ký trước rồi mới đăng ký lại
     public override void Enable()
     {
-        stats.OnDamaged -= HandleDamaged;
-        stats.OnDamaged += HandleDamaged;
+        owner.OnDamaged -= HandleDamaged;
+        owner.OnDamaged += HandleDamaged;
         subscribed = true;
     }
 
     // Câm lặng: gỡ SẠCH hiệu ứng đang chạy. Hồi chiêu vẫn tiếp tục (dựa vào Time.time)
     public override void Disable()
     {
-        if (subscribed) stats.OnDamaged -= HandleDamaged;
+        if (subscribed) owner.OnDamaged -= HandleDamaged;
         subscribed = false;
         EndEffect();
     }
@@ -102,13 +103,13 @@ public class IronArmorPassiveEffect : PassiveSkillEffect
         float now = Time.time;
         if (now < cooldownEnd) return;                              // Còn hồi chiêu
 
-        HealthSystem health = stats.Health;
+        HealthSystem health = owner.Health;
         if (health.IsDead || health.MaxHealth <= 0f) return;
         if (health.CurrentHealth / health.MaxHealth >= threshold) return;   // Máu chưa xuống dưới ngưỡng
 
         applied = true;
         effectEnd = now + effectTotal;
-        stats.Reductions.Set(this, DamageReductionSet.AllScope, reduction);   // Giảm chung (trừ Pure)
+        owner.Reductions.Set(this, DamageReductionSet.AllScope, reduction);   // Giảm chung (trừ Pure)
 
         cooldownStart = data.cooldownStart == CooldownStart.OnActivate ? now : effectEnd;
         cooldownEnd = cooldownStart + cooldownTotal;
@@ -117,6 +118,6 @@ public class IronArmorPassiveEffect : PassiveSkillEffect
     private void EndEffect()
     {
         applied = false;
-        stats.Reductions.Remove(this);
+        owner.Reductions.Remove(this);
     }
 }

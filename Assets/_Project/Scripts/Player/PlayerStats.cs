@@ -3,7 +3,7 @@ using UnityEngine;
 using System;
 
 [RequireComponent(typeof(HealthSystem))]
-public class PlayerStats : MonoBehaviour
+public class PlayerStats : MonoBehaviour, ISkillOwner
 {
     [Header("Nhân vật (Chỉ dùng khi chạy thẳng scene Game để test)")]
     [SerializeField] private CharacterData character;      // Dự phòng khi chưa có MetaConfig
@@ -52,6 +52,7 @@ public class PlayerStats : MonoBehaviour
     private readonly List<StarPerk> activePerks = new List<StarPerk>();
 
     public CharacterData Character => character;
+    public Transform Transform => transform;                  // ISkillOwner
 
     // ATK/tốc độ "cộng thêm" dạng phần trăm: gồm nâng cấp trong trận, AOA, thuốc, Huyết nộ, Brave
     public float AddedAtkPct => atkBonusPct + aoaAtkPct + Buffs.GetValue(BuffType.Rage)
@@ -134,6 +135,18 @@ public class PlayerStats : MonoBehaviour
     public HealingBonusSet HealingBonuses { get; } = new HealingBonusSet();
     public event Action<float, float> OnShieldChanged;   // (lá chắn hiện tại, tối đa) -> HUD lắng nghe
     public event Action<float> OnDamaged;     // MỚI 12E: phát SAU khi một đòn đã trừ máu/khiên (tham số = sát thương đã tính DEF và giảm)
+
+    // MỚI 13C: Đoạt mệnh nghe. CombatHit báo sau mỗi đòn trúng quái
+    public event Action<EnemyBase> OnEnemyHit;
+    public bool HasEnemyHitListeners => OnEnemyHit != null;
+    public void NotifyEnemyHit(EnemyBase enemy) { OnEnemyHit?.Invoke(enemy); }
+
+    // ISkillOwner: đặt miễn nhiễm của một nguồn rồi xóa các hiệu ứng đang dính mà giờ được miễn nhiễm
+    public void SetImmunity(object source, ImmunityFlags flags)
+    {
+        Health.Immunities.Set(source, flags);
+        Debuffs.PurgeImmune(Health.Immunities.Flags);
+    }
 
     public IReadOnlyList<StarPerk> ActivePerks => activePerks;
 
@@ -323,11 +336,14 @@ public class PlayerStats : MonoBehaviour
         return amount * (1f - reduction) * 100f / (100f + Def);
     }
 
-    public void TakeDamage(float amount, ElementType element)
+    public void TakeDamage(float amount, ElementType element, DamageKind kind = DamageKind.Normal)
     {
         if (debugInvincible && Debug.isDebugBuild) return;
+        if (Health.Invulnerable) return;                                                    // Bất tử: khiên cũng không bị tiêu
+        if (kind == DamageKind.Normal && Health.Immunities.Has(ImmunityFlags.Damage)) return;   // Miễn nhiễm sát thương (DOT cũng đi qua đây)
+
         float damage = CalculateIncomingDamage(amount, element);
-        float incoming = damage;                           // MỚI: nhớ lại để phát sự kiện
+        float incoming = damage;                           // Nhớ lại để phát sự kiện
 
         if (Shield > 0f)                                   // Khiên hấp thụ trước, kể cả Pure
         {
@@ -339,7 +355,7 @@ public class PlayerStats : MonoBehaviour
 
         if (damage > 0f) Health.TakeDamage(damage);        // Phần dư mới trừ vào máu
 
-        if (incoming > 0f) OnDamaged?.Invoke(incoming);    // MỚI: miễn nhiễm (0 sát thương) thì không phát
+        if (incoming > 0f) OnDamaged?.Invoke(incoming);
     }
 
     private void HandleDied()

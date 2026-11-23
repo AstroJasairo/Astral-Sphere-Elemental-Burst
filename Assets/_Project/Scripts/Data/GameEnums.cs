@@ -46,3 +46,5 @@ public enum SharedUpgradeType
 public enum CooldownStart { OnActivate, AfterEffectEnds }   // Hồi chiêu tính từ lúc kích hoạt hay lúc hết hiệu lực
 public enum SkillKind { Passive, Active }
 public enum SkillUpgradeStatus { NoSkill, MaxLevel, NeedMoreStars, Available }   // để UI biết hiện gì trên nút
+// Bậc kẻ địch. THỨ TỰ phải giữ nguyên (đã lưu trong asset). Quái hiện có đều là Normal.
+public enum EnemyTier { Standard = 0, Normal = 1, Elite = 2, MiniBoss = 3, Boss = 4, Cataclysm = 5 }

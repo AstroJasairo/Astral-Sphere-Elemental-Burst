@@ -38,6 +38,7 @@ public class EnemyDebuffSystem : MonoBehaviour
     private BuffController Buffs { get { if (buffs == null) buffs = GetComponent<BuffController>(); return buffs; } }
     private StatusEffectHandler status;
     private StatusEffectHandler Status { get { if (status == null) status = GetComponent<StatusEffectHandler>(); return status; } }
+    private ImmunityFlags Immune => Health.Immunities.Flags;
 
     // ---------------- Hệ số cho EnemyBase và BOSS đọc ----------------
 
@@ -63,6 +64,7 @@ public class EnemyDebuffSystem : MonoBehaviour
     // Root, Stun là KHỐNG CHẾ CỨNG: quái có statusImmune (BOSS) miễn nhiễm. Các loại còn lại BOSS vẫn dính.
     public bool ApplyDebuff(BuffType type, float value, float duration)
     {
+        if (ImmunityUtil.BlocksDebuff(Immune, type)) return false;
         bool hard = type == BuffType.Root || type == BuffType.Stun;
         if (hard && Enemy.Data != null && Enemy.Data.statusImmune) return false;
 
@@ -87,6 +89,7 @@ public class EnemyDebuffSystem : MonoBehaviour
     public void ApplyDot(DotData data, int maxStacksOverride = 0, float scale = 1f, float damageOverride = 0f)
     {
         if (data == null) return;
+        if ((Immune & ImmunityFlags.Dot) != 0) return;
 
         float now = Time.time;
         int cap = maxStacksOverride > 0 ? maxStacksOverride : data.maxStacks;
@@ -132,6 +135,9 @@ public class EnemyDebuffSystem : MonoBehaviour
     // Quét liên tục từ skill: mỗi lần gọi làm mới thời hạn. Quái ra khỏi vùng thì tự hết sau duration giây.
     public void ApplyAura(float slow, float attackSlow, float exhaust, float vulnerable, float duration)
     {
+        ImmunityFlags immune = Immune;
+        if ((immune & ImmunityFlags.CrowdControl) != 0) { slow = 0f; attackSlow = 0f; }
+        if ((immune & ImmunityFlags.OtherDebuffs) != 0) { exhaust = 0f; vulnerable = 0f; }
         auraSlow = Mathf.Clamp01(slow);
         auraAttackSlow = Mathf.Clamp01(attackSlow);
         auraExhaust = Mathf.Clamp01(exhaust);
@@ -169,6 +175,24 @@ public class EnemyDebuffSystem : MonoBehaviour
         dots.RemoveAt(index);
         dot.data = null;
         freeDots.Push(dot);
+    }
+
+    // Có miễn nhiễm mới: xóa các hiệu ứng đang dính thuộc nhóm đó
+    public void PurgeImmune(ImmunityFlags flags)
+    {
+        if ((flags & ImmunityFlags.Dot) != 0) ClearDots();
+
+        for (int i = 0; i < BuffController.TypeCount; i++)
+        {
+            BuffType type = (BuffType)i;
+            if (!ImmunityUtil.BlocksDebuff(flags, type)) continue;
+
+            if (type == BuffType.Root) Status.ClearRoot();       // Trói của quái nằm ở StatusEffectHandler
+            else Buffs.Clear(type);
+        }
+
+        if ((flags & ImmunityFlags.CrowdControl) != 0) auraSlow = auraAttackSlow = 0f;
+        if ((flags & ImmunityFlags.OtherDebuffs) != 0) auraExhaust = auraVulnerable = 0f;
     }
 
     // ---------------- Nhịp DOT ----------------

@@ -61,6 +61,9 @@ public class DamageReductionSet
         if (total > 0f) total *= EffectScale;                        // Vulnerable chỉ làm yếu phần GIẢM, không làm yếu phần yếu hệ
         return Mathf.Clamp(total, -1f, rules.maxTotalReduction);     // MỚI: cho phép xuống tới -1 (nhận gấp đôi)
     }
+
+    // Xóa mọi nguồn (quái lấy lại từ pool)
+    public void Clear() { entries.Clear(); }
 }
 
 // Tập các nguồn HIỆU QUẢ HỒI PHỤC (0.15 = +15% lượng hồi)

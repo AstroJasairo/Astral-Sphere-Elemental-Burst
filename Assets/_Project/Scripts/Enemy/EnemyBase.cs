@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(HealthSystem), typeof(StatusEffectHandler))]
-public class EnemyBase : MonoBehaviour
+public class EnemyBase : MonoBehaviour, ISkillOwner
 {
     public static event Action<EnemyBase> EnemyKilled;
 
@@ -17,8 +17,30 @@ public class EnemyBase : MonoBehaviour
     public float MaxHealth => health.MaxHealth;     // Máu tối đa thực tế (đã nhân hệ số độ khó). Vẫn đọc được lúc phát EnemyKilled
     public bool OverrideMovement { get; set; }   // true: BOSS đang tự điều khiển (lao tới...), EnemyBase không đuổi theo nữa
 
-    private const float EdgeMargin = 0.3f;
+    // Bậc kẻ địch (cho giao thức của Đoạt mệnh...)
+    public EnemyTier Tier => Data != null ? Data.EffectiveTier : EnemyTier.Normal;
 
+    // Loại sát thương của đòn CHẠM. BOSS đặt Mechanic khi một cơ chế dùng đòn chạm (reset mỗi lần Init)
+    public DamageKind ContactKind { get; set; } = DamageKind.Normal;
+
+    // ----- ISkillOwner -----
+    public Transform Transform => transform;
+    public HealthSystem Health => health;
+    public DamageReductionSet Reductions { get; } = new DamageReductionSet();
+    public event Action<float> OnDamaged;
+
+    public void SetImmunity(object source, ImmunityFlags flags)
+    {
+        health.Immunities.Set(source, flags);
+        Debuffs.PurgeImmune(health.Immunities.Flags);
+    }
+
+    public void ReceiveHealing(float amount)
+    {
+        if (amount > 0f) health.Heal(amount);
+    }
+
+    private const float EdgeMargin = 0.3f;
 
     // Debuff của quái. Thuộc tính lấy lười: tự thêm component nếu prefab chưa có
     private EnemyDebuffSystem debuffs;
@@ -54,6 +76,7 @@ public class EnemyBase : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         health = GetComponent<HealthSystem>();
         health.OnDied += HandleDied;
+        health.DamageTaken += HandleDamageTaken;                 // Phát lại thành OnDamaged cho kỹ năng dùng chung
         health.IncomingFilter = FilterIncoming;                  // DEF, kháng, miễn nhiễm, Vulnerable (gán một lần)
         status = GetComponent<StatusEffectHandler>();
         if (status == null) status = gameObject.AddComponent<StatusEffectHandler>();
@@ -62,26 +85,41 @@ public class EnemyBase : MonoBehaviour
     private void OnEnable() { Active.Add(this); }
     private void OnDisable() { Active.Remove(this); }
 
+    private void HandleDamageTaken(float amount) { OnDamaged?.Invoke(amount); }
+
     // defMultiplier là tham số TÙY CHỌN ở cuối: chỗ gọi cũ (BossSpawner) vẫn biên dịch, BOSS không tăng DEF theo thời gian
     public void Init(EnemyData data, float hpMultiplier, float damageMultiplier, float defMultiplier = 1f)
     {
         Data = data;
         damage = data.baseDamage * damageMultiplier;
         defense = data.baseDef * defMultiplier;
-        health.Init(data.baseHp * hpMultiplier);
+        health.Init(data.baseHp * hpMultiplier);                 // Cũng xóa mọi miễn nhiễm và bất tử
         target = GameManager.Instance.Player;
         rb.linearVelocity = Vector2.zero;
         nextAttackTime = 0f;
         OverrideMovement = false;
+        ContactKind = DamageKind.Normal;
         status.ResetEffects();
         Debuffs.ResetAll();                                      // Quái lấy lại từ pool: xóa debuff và DOT cũ
+
+        // Kháng nguyên tố cơ bản của quái = một nguồn giảm sát thương (cùng hệ thống với người chơi)
+        Reductions.Clear();
+        if (data.elementResist != null)
+        {
+            foreach (ElementType e in ElementMaskUtil.Basic)
+            {
+                float resist = data.elementResist.GetClamped(e);
+                if (!Mathf.Approximately(resist, 0f)) Reductions.Set(this, (int)e, resist);
+            }
+        }
 
         // Quái tầm xa dừng ở 90% tầm đánh. Cận chiến (attackRange = 0) thì luôn lao vào.
         float stop = data.attackRange * 0.9f;
         stopDistanceSqr = stop * stop;
     }
 
-    // Sát thương nhận vào theo nguyên tố: miễn nhiễm, kháng, DEF, rồi Vulnerable. Pure bỏ qua miễn nhiễm, kháng, DEF.
+    // Sát thương nhận vào theo nguyên tố: miễn nhiễm, giảm sát thương, DEF, rồi Vulnerable.
+    // Pure bỏ qua miễn nhiễm nguyên tố, giảm sát thương và DEF.
     private float FilterIncoming(float amount, ElementType element)
     {
         if (Data == null) return amount;
@@ -90,7 +128,7 @@ public class EnemyBase : MonoBehaviour
         {
             if (ElementMaskUtil.Contains(Data.elementImmunity, element)) return 0f;
 
-            if (Data.elementResist != null) amount *= 1f - Data.elementResist.GetClamped(element);
+            amount *= 1f - Reductions.GetTotalReduction(element);     // Kháng cơ bản + Giáp sắt... (cùng luật gộp với người chơi)
             amount *= 100f / (100f + Mathf.Max(0f, defense));
         }
 
@@ -145,7 +183,7 @@ public class EnemyBase : MonoBehaviour
         if (Debuffs.IsStunned) return;                           // Quái bị Choáng không gây sát thương khi chạm
         if (!other.TryGetComponent(out PlayerStats player)) return;
 
-        player.TakeDamage(Damage, Data.damageElement);           // Damage đã nhân hệ số Exhaust
+        player.TakeDamage(Damage, Data.damageElement, ContactKind);     // Damage đã nhân hệ số Exhaust
         HitEffect.ApplyAll(Data.hitEffects, player);             // Áp dụng cả khi khiên hấp thụ hết sát thương
         nextAttackTime = Time.time + AttackCooldown / Debuffs.AttackSpeedMultiplier;
     }
@@ -160,5 +198,13 @@ public class EnemyBase : MonoBehaviour
         {
             PoolManager.Instance.Release(gameObject);   // Luôn trả về pool, kể cả khi có hàm lắng nghe bị lỗi
         }
+    }
+
+    // ---------------- Debug (chỉ Editor/Development Build): thử Đoạt mệnh mà không cần đánh lâu ----------------
+    [ContextMenu("Debug: Set HP to 10%")]
+    private void DebugSetLow()
+    {
+        if (!Debug.isDebugBuild || health == null) return;
+        health.TakeDamage(health.CurrentHealth - health.MaxHealth * 0.10f);
     }
 }

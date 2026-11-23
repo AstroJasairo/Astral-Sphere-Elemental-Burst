@@ -1,8 +1,17 @@
 ﻿// Hành vi runtime của skill bị động. Lớp thường (không MonoBehaviour), SkillSystem gọi mỗi frame.
 public abstract class PassiveSkillEffect
 {
-    protected readonly PlayerStats stats;
+    protected readonly ISkillOwner owner;         // Chủ sở hữu bất kỳ (người chơi, quái, BOSS)
+    protected readonly PlayerStats stats;         // Chỉ có khi chủ sở hữu là người chơi, ngược lại null
+
     protected PassiveSkillEffect(PlayerStats stats) { this.stats = stats; }
+
+    // Mọi lớp con cũ vẫn gọi base(stats): PlayerStats tự chuyển sang ISkillOwner
+    protected PassiveSkillEffect(ISkillOwner owner)
+    {
+        this.owner = owner;
+        stats = owner as PlayerStats;
+    }
 
     public abstract void SetLevel(int level);
     public virtual void Enable() { }       // Bắt đầu có hiệu lực: đăng ký nguồn giảm sát thương, hồi phục...
