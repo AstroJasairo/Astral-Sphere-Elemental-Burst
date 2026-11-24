@@ -47,11 +47,14 @@ public abstract class BossBase : MonoBehaviour
     }
 
     // Lớp con gọi để bật/tắt miễn nhiễm
-    protected void SetImmune(bool immune)
+    protected void SetImmune(bool immune) { SetImmuneState(immune, true); }
+
+    // Mới: affectHealth = false chỉ cập nhật hiển thị (HUD, màu thân). Miễn nhiễm thật nằm ở Health.Immunities
+    protected void SetImmuneState(bool immune, bool affectHealth)
     {
         if (IsImmune == immune) return;
         IsImmune = immune;
-        Health.Invulnerable = immune;
+        if (affectHealth) Health.Invulnerable = immune;
         ImmunityChanged?.Invoke(immune);
     }
 }

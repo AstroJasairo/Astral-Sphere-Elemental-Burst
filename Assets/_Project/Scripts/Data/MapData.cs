@@ -19,6 +19,10 @@ public class MapData : ScriptableObject
 
     public const float MinBoundsSize = 20f;       // Nhỏ hơn thế thì camera (6.8 x 12) gần như phủ hết bản đồ
 
+    [Header("Độ khó")]
+    [Tooltip("Kỹ năng BOSS dùng cấp này (1 đến 3). Cấp vượt quá số cấp kỹ năng có thì dùng cấp cao nhất")]
+    [Range(1, 3)] public int difficulty = 1;
+
     [Header("Biên bản đồ (hình chữ nhật, tâm tại (0,0))")]
     [Tooltip("Kích thước khung biên theo đơn vị Unity. Đặt 0 để KHÔNG có biên")]
     public Vector2 boundsSize = new Vector2(40f, 40f);

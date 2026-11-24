@@ -32,6 +32,17 @@ public class HealthSystem : MonoBehaviour
         else invulnerableSources.Remove(source);
     }
 
+    // Đứng yên (Tối thượng của Thiên thần hộ mệnh): không di chuyển, không tấn công, vũ khí tắt. Skill vẫn chạy.
+    // Theo nguồn khóa nên nhiều nguồn không đạp nhau.
+    private readonly HashSet<object> dormantSources = new HashSet<object>();
+    public bool IsDormant => dormantSources.Count > 0;
+
+    public void SetDormant(object source, bool on)
+    {
+        if (on) dormantSources.Add(source);
+        else dormantSources.Remove(source);
+    }
+
     public event Action<float, float> OnHealthChanged;             // (máu hiện tại, máu tối đa hiệu lực)
     public event Action OnDied;
 
@@ -48,6 +59,7 @@ public class HealthSystem : MonoBehaviour
         MaxHealth = maxHealth; CurrentHealth = maxHealth;
         invulnerableManual = false;
         invulnerableSources.Clear();
+        dormantSources.Clear();
         Immunities.Clear();
         OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
     }
@@ -95,12 +107,13 @@ public class HealthSystem : MonoBehaviour
         CurrentHealth = Mathf.Clamp(hp, Mathf.Min(1f, MaxHealth), MaxHealth);
     }
 
-    // Hiệu ứng gây chết (instant kill). Không bị Invulnerable hay Miễn nhiễm sát thương chặn,
-    // chỉ bị cờ Death chặn. Thiên thần hộ mệnh KHÔNG cứu được. Trả về true nếu đã giết.
-    public bool Kill()
+    // Hiệu ứng gây chết (instant kill). Không bị Invulnerable hay Miễn nhiễm sát thương chặn, chỉ bị cờ Death chặn.
+    // mechanic = true là MECHANIC KILL: lệnh giết cao nhất, bỏ qua cả cờ Death (Tối thượng cũng chết).
+    // Thiên thần hộ mệnh KHÔNG cứu được cả hai loại. Trả về true nếu đã giết.
+    public bool Kill(bool mechanic = false)
     {
         if (IsDead) return false;
-        if (Immunities.Has(ImmunityFlags.Death)) return false;
+        if (!mechanic && Immunities.Has(ImmunityFlags.Death)) return false;
 
         CurrentHealth = 0f;
         OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);

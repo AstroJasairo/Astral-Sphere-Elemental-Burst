@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e497d58fafc01045a485adfe8a24925, type: 3}
+  m_Name: LordOfTheWolfData_Claw
+  m_EditorClassIdentifier: Assembly-CSharp::ClawSkillData
+  skillName: "C\xE0o"
+  mode: 0
+  exclusive: 1
+  pausedWhileOthersExecute: 0
+  levels:
+  - firstDelay: 4
+    cooldown: 6
+    radius: 3.5
+    warning: 1.2
+    damage: 30
+    shrink: 0
+  effects:
+  - kind: 0
+    debuff: 9
+    value: 0
+    duration: 5
+    dot: {fileID: 0}
+  clawEffectPrefab: {fileID: 8854848550667421270, guid: 55050ba76dc142f439eaf184d45768d8, type: 3}

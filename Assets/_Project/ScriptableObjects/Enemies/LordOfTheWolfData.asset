@@ -14,11 +14,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LordOfTheWolfData
   enemyName: Lord of the Wolf
   type: 0
+  tier: 4
   prefab: {fileID: 8366031795934451168, guid: ee4d22e578d2a3a4a9866ef6a7d48de4, type: 3}
+  activeModules:
+  - {fileID: 11400000, guid: c93b270535aabcf47bd5e636904943db, type: 2}
+  passiveModules:
+  - {fileID: 11400000, guid: 370602f2faa90804485e6775b1e7033b, type: 2}
+  - {fileID: 11400000, guid: d166a81524a51984cb7dd14301ad2de1, type: 2}
   damageElement: 6
   baseHp: 4000
   baseDamage: 20
   moveSpeed: 3
+  baseDef: 0
+  elementResist:
+    metal: 0
+    fire: 0
+    lightning: 0
+    wind: 0
+    soul: 0
+    light: 0
+    earth: 0
+    water: 0
+    plant: 0
+    dark: 0
+  elementImmunity: 0
   scoreValue: 1200
   manaValue: 20
   attackRange: 0

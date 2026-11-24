@@ -11,7 +11,8 @@ public class GuardianAnglePassiveData : PassiveSkillData
     [Header("Theo cấp skill 1..5")]
     public float[] healAmount = new float[MaxLevel];            // Tổng máu hồi (chia đều cho thời gian)
     public float[] healDuration = new float[MaxLevel];          // Hồi trong bao nhiêu giây
-    public float[] invulnerableDuration = new float[MaxLevel];  // Bất tử n giây ngay sau khi kích hoạt (0 = không)
+    [UnityEngine.Serialization.FormerlySerializedAs("invulnerableDuration")]
+    public float[] supremeDuration = new float[MaxLevel];
     public float[] cooldown = new float[MaxLevel];
 
     [Tooltip("OnActivate: hồi chiêu tính từ lúc kích hoạt. AfterEffectEnds: tính từ lúc hồi máu xong")]
@@ -19,7 +20,7 @@ public class GuardianAnglePassiveData : PassiveSkillData
 
     public float GetAmount(int level) => Pick(healAmount, level);
     public float GetDuration(int level) => Pick(healDuration, level);
-    public float GetInvulnerable(int level) => Pick(invulnerableDuration, level);
+    public float GetSupreme(int level) => Pick(supremeDuration, level);
     public float GetCooldown(int level) => Pick(cooldown, level);
 
     public override PassiveSkillEffect CreateEffect(PlayerStats stats) => new GuardianAnglePassiveEffect(stats, this);
@@ -31,8 +32,8 @@ public class GuardianAnglePassiveData : PassiveSkillData
             ? $"{GetAmount(level) * 100f:0.#}% máu tối đa"
             : $"{GetAmount(level):0.#} máu";
 
-        string invul = GetInvulnerable(level) > 0f ? $" Bất tử {GetInvulnerable(level):0.#}s đầu." : "";
-        return $"Khi nhận sát thương chí mạng, sống sót với 1 máu và hồi {amount} trong {GetDuration(level):0.#}s.{invul} " +
+        string supreme = GetSupreme(level) > 0f ? $" Tối thượng {GetSupreme(level):0.#}s đầu (miễn nhiễm, đứng yên, ngừng tấn công)." : "";
+        return $"Khi nhận sát thương chí mạng, sống sót với 1 máu và hồi {amount} trong {GetDuration(level):0.#}s.{supreme} " +
                $"Hồi chiêu {GetCooldown(level):0.#}s.";
     }
 
@@ -44,7 +45,7 @@ public class GuardianAnglePassiveData : PassiveSkillData
         healMode = HealAmountMode.Percent;
         healAmount = new[] { 0.10f, 0.15f, 0.20f, 0.25f, 0.30f };
         healDuration = new[] { 5f, 5f, 5f, 5f, 5f };
-        invulnerableDuration = new[] { 1f, 1.5f, 2f, 2.5f, 3f };
+        supremeDuration = new[] { 1f, 1.5f, 2f, 2.5f, 3f };
         cooldown = new[] { 180f, 165f, 150f, 135f, 120f };
         upgradeCost = new[] { 1000, 3000, 8000, 20000, 50000 };          // TẠM
 #if UNITY_EDITOR
@@ -58,22 +59,22 @@ public class GuardianAnglePassiveEffect : PassiveSkillEffect
     private const float HealTick = 0.2f;                   // Hồi theo cụm 0.2s, không mỗi frame (đỡ phát sự kiện máu)
 
     private readonly GuardianAnglePassiveData data;
-    private float amount, healDuration, invulDuration, cooldownTotal;
+    private float amount, healDuration, supremeDuration, cooldownTotal;
     private bool running;
 
-    private bool healing, invulnerable;
-    private float healLeft, healPerSecond, healEnd, healTimer, invulEnd;
+    private bool healing, supreme;
+    private float healLeft, healPerSecond, healEnd, healTimer, supremeEnd;
     private float cooldownStartTime, cooldownEnd;
 
     public GuardianAnglePassiveEffect(ISkillOwner owner, GuardianAnglePassiveData data) : base(owner) { this.data = data; }
 
     // ---- Dữ liệu cho HUD ----
-    public override bool IsEffectShown => healing || invulnerable;
+    public override bool IsEffectShown => healing || supreme;
     public override float EffectRemaining01
     {
         get
         {
-            if (!healing || healDuration <= 0f) return invulnerable ? 1f : 0f;
+            if (!healing || healDuration <= 0f) return supreme ? 1f : 0f;
             return Mathf.Clamp01((healEnd - Time.time) / healDuration);
         }
     }
@@ -92,7 +93,7 @@ public class GuardianAnglePassiveEffect : PassiveSkillEffect
     {
         amount = data.GetAmount(level);
         healDuration = data.GetDuration(level);
-        invulDuration = data.GetInvulnerable(level);
+        supremeDuration = data.GetSupreme(level);
         cooldownTotal = data.GetCooldown(level);
     }
 
@@ -103,13 +104,13 @@ public class GuardianAnglePassiveEffect : PassiveSkillEffect
         running = true;
     }
 
-    // Câm lặng: gỡ người bảo vệ và dừng hồi/bất tử. Hồi chiêu vẫn chạy tiếp (theo Time.time)
+    // Câm lặng: gỡ người bảo vệ, dừng hồi và Tối thượng. Hồi chiêu vẫn chạy tiếp (theo Time.time)
     public override void Disable()
     {
         owner.Health.LethalGuards -= HandleLethal;
         running = false;
         healing = false;
-        EndInvulnerability();
+        EndSupreme();
     }
 
     // HealthSystem gọi khi một đòn sắp giết chủ sở hữu. Trả về true nếu đã cứu (và đã Revive)
@@ -140,14 +141,15 @@ public class GuardianAnglePassiveEffect : PassiveSkillEffect
             }
         }
 
-        if (invulDuration > 0f)
+        if (supremeDuration > 0f)
         {
-            invulnerable = true;
-            invulEnd = now + invulDuration;
-            health.SetInvulnerable(this, true);
+            supreme = true;
+            supremeEnd = now + supremeDuration;
+            owner.SetImmunity(this, ImmunityFlags.Supreme);    // Bất hoại + miễn nhiễm gây chết. Sát thương Mechanic vẫn nhận
+            health.SetDormant(this, true);                     // Đứng yên, ngừng tấn công, vũ khí tắt. Skill vẫn chạy
         }
 
-        float effectEnd = Mathf.Max(healing ? healEnd : now, invulnerable ? invulEnd : now);
+        float effectEnd = Mathf.Max(healing ? healEnd : now, supreme ? supremeEnd : now);
         cooldownStartTime = data.cooldownStart == CooldownStart.OnActivate ? now : effectEnd;
         cooldownEnd = cooldownStartTime + cooldownTotal;
         return true;
@@ -157,7 +159,7 @@ public class GuardianAnglePassiveEffect : PassiveSkillEffect
     {
         float now = Time.time;
 
-        if (invulnerable && now >= invulEnd) EndInvulnerability();
+        if (supreme && now >= supremeEnd) EndSupreme();
 
         if (!healing) return;
 
@@ -178,10 +180,11 @@ public class GuardianAnglePassiveEffect : PassiveSkillEffect
         if (finished || healLeft <= 0.001f) healing = false;
     }
 
-    private void EndInvulnerability()
+    private void EndSupreme()
     {
-        if (!invulnerable) return;
-        invulnerable = false;
-        owner.Health.SetInvulnerable(this, false);
+        if (!supreme) return;
+        supreme = false;
+        owner.SetImmunity(this, ImmunityFlags.None);
+        owner.Health.SetDormant(this, false);
     }
 }

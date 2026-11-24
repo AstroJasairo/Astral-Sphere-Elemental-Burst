@@ -36,7 +36,7 @@ public class OrbitWeapon : WeaponBase
     {
         if (data == null) return;
 
-        bool stunned = owner != null && owner.IsStunned;
+        bool stunned = owner != null && owner.WeaponsDisabled;
         if (stunned != orbsHidden)                                         // chỉ đổi khi trạng thái ĐỔI
         {
             orbsHidden = stunned;

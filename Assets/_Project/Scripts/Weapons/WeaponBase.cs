@@ -85,7 +85,7 @@ public abstract class WeaponBase : MonoBehaviour
     protected virtual void Update()
     {
         if (data == null) return;
-        if (owner != null && owner.IsStunned) return;      // Choáng: không khai hỏa, hồi chiêu đóng băng
+        if (owner != null && owner.WeaponsDisabled) return;      // Choáng: không khai hỏa, hồi chiêu đóng băng
         timer += Time.deltaTime;
 
         float cooldown = CurrentCooldown;
@@ -123,6 +123,7 @@ public abstract class WeaponBase : MonoBehaviour
     // Mọi vũ khí gây sát thương lên quái qua đây: sát thương có nguyên tố (DEF/kháng của quái) + hiệu ứng theo cấp
     protected void HitEnemy(Component target, float damage)
     {
+        if (owner != null && owner.IsDormant) return;
         List<WeaponHitEffect> effects = CurrentLevel.hitEffects;
         bool hasEffects = effects != null && effects.Count > 0;
         float atk = (hasEffects && owner != null) ? owner.Atk * owner.WeaponAtkMultiplier : 1f;      // Chỉ tính ATK khi thật sự cần

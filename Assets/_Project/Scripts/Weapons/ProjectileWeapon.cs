@@ -65,7 +65,7 @@ public class ProjectileWeapon : WeaponBase
     private void TickBurst()
     {
         if (burstRemaining <= 0 || data == null) return;
-        if (owner != null && owner.IsStunned) { burstRemaining = 0; return; }        // Choáng: hủy các viên chưa bắn
+        if (owner != null && owner.WeaponsDisabled) { burstRemaining = 0; return; }        // Choáng: hủy các viên chưa bắn
         burstTimer -= Time.deltaTime;                      // Dừng khi game tạm dừng
         if (burstTimer > 0f) return;
 

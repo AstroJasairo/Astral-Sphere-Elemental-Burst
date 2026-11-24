@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ca5b31a0c15dee448f98c726b16dbed, type: 3}
   m_Name: Passive_Reaper
   m_EditorClassIdentifier: Assembly-CSharp::ReaperPassiveData
-  id: 
-  skillName: 
+  id: acronomia_reaper
+  skillName: "\u0110o\u1EA1t m\u1EC7nh"
   icon: {fileID: 0}
-  description: 
-  upgradeCost: 0000000000000000000000000000000000000000
+  description: Des
+  upgradeCost: e8030000b80b0000401f0000204e000050c30000
   ignoresSilence: 0
   ignoresStun: 0
   hpThreshold:
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
+  - 0.05
+  - 0.1
+  - 0.15
+  - 0.2
+  - 0.25
   protocol: 0

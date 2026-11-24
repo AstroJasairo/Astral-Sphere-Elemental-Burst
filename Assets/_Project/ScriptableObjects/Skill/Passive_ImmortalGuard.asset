@@ -12,24 +12,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cae1fbbba4c189488902bb82640e787, type: 3}
   m_Name: Passive_ImmortalGuard
   m_EditorClassIdentifier: Assembly-CSharp::ImmortalGuardPassiveData
-  id: 
-  skillName: 
+  id: acronomia_immortal_guard
+  skillName: "B\u1EA5t t\u1EED h\u1ED9 th\xE2n"
   icon: {fileID: 0}
-  description: 
-  upgradeCost: 0000000000000000000000000000000000000000
+  description: description
+  upgradeCost: e8030000b80b0000401f0000204e000050c30000
   ignoresSilence: 0
   ignoresStun: 0
   immunity: 1
   mode: 0
   unlimitedDuration: 0
   levels:
-  - stages: []
+  - stages:
+    - hpThreshold: 0.5
+      duration: 2
+    - hpThreshold: 0.25
+      duration: 2
+    cooldown: 90
+  - stages:
+    - hpThreshold: 0.5
+      duration: 3
+    - hpThreshold: 0.25
+      duration: 3
+    cooldown: 80
+  - stages:
+    - hpThreshold: 0.5
+      duration: 4
+    - hpThreshold: 0.25
+      duration: 4
+    cooldown: 70
+  - stages:
+    - hpThreshold: 0.5
+      duration: 5
+    - hpThreshold: 0.25
+      duration: 5
     cooldown: 60
-  - stages: []
-    cooldown: 60
-  - stages: []
-    cooldown: 60
-  - stages: []
-    cooldown: 60
-  - stages: []
-    cooldown: 60
+  - stages:
+    - hpThreshold: 0.5
+      duration: 6
+    - hpThreshold: 0.25
+      duration: 6
+    cooldown: 50

@@ -14,7 +14,10 @@ public class ReaperPassiveData : PassiveSkillData
 
     public float GetThreshold(int level) => Pick(hpThreshold, level);
 
+    //public override PassiveSkillEffect CreateEffect(PlayerStats stats) => new ReaperPassiveEffect(stats, this);
+
     public override PassiveSkillEffect CreateEffect(PlayerStats stats) => new ReaperPassiveEffect(stats, this);
+    public override PassiveSkillEffect CreateEffect(ISkillOwner owner) => new ReaperPassiveEffect(owner, this);
 
     public override string DescribeLevel(int level)
     {
@@ -55,29 +58,28 @@ public class ReaperPassiveEffect : PassiveSkillEffect
     private readonly ReaperPassiveData data;
     private float threshold;
 
-    public ReaperPassiveEffect(PlayerStats stats, ReaperPassiveData data) : base(stats) { this.data = data; }
+    public ReaperPassiveEffect(ISkillOwner owner, ReaperPassiveData data) : base(owner) { this.data = data; }
 
     public override void SetLevel(int level) { threshold = data.GetThreshold(level); }
 
     // Gọi nhiều lần vẫn an toàn
     public override void Enable()
     {
-        stats.OnEnemyHit -= HandleEnemyHit;
-        stats.OnEnemyHit += HandleEnemyHit;
+        owner.OnHitTarget -= HandleHit;
+        owner.OnHitTarget += HandleHit;
     }
 
-    public override void Disable() { stats.OnEnemyHit -= HandleEnemyHit; }
+    public override void Disable() { owner.OnHitTarget -= HandleHit; }
 
-    // CombatHit báo sau MỖI đòn trúng quái (kể cả đòn không gây sát thương). Quái đã chết trong đòn đó thì không báo.
-    private void HandleEnemyHit(EnemyBase enemy)
+    // Chủ sở hữu vừa đánh trúng một mục tiêu (người chơi đánh quái, hoặc quái đánh người chơi)
+    private void HandleHit(HealthSystem target, EnemyTier tier)
     {
-        float effect = CombatRules.GetProtocolEffectiveness(data.protocol, enemy.Tier);
+        float effect = CombatRules.GetProtocolEffectiveness(data.protocol, tier);
         if (effect <= 0f) return;                                     // Bậc này miễn nhiễm theo giao thức
 
-        HealthSystem health = enemy.Health;
-        if (health == null || health.IsDead || health.MaxHealth <= 0f) return;
+        if (target == null || target.IsDead || target.MaxHealth <= 0f) return;
 
-        if (health.CurrentHealth / health.MaxHealth < threshold * effect)
-            health.Kill();                                            // Bị chặn nếu mục tiêu miễn nhiễm hiệu ứng gây chết
+        if (target.CurrentHealth / target.MaxHealth < threshold * effect)
+            target.Kill();                                            // Bị chặn nếu mục tiêu miễn nhiễm hiệu ứng gây chết
     }
 }

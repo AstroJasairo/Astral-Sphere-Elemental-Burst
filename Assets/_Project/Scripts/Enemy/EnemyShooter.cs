@@ -22,7 +22,7 @@ public class EnemyShooter : MonoBehaviour
     {
         EnemyData data = enemy.Data;
         if (data == null || data.projectilePrefab == null || enemy.Target == null) return;
-        if (enemy.IsStunned) return;                                  // MỚI: Choáng thì không bắn
+        if (enemy.IsStunned || enemy.IsDormant) return;        // Choáng hoặc Dormant: không bắn
 
         timer += Time.deltaTime * enemy.AttackSpeedMultiplier;        // MỚI: Tê cóng làm hồi chiêu bắn dài ra
         if (timer < data.attackCooldown) return;

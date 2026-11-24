@@ -29,6 +29,7 @@ public class PlayerDebuffSystem : MonoBehaviour
     private readonly Stack<DotInstance> freeDots = new Stack<DotInstance>();
 
     public IReadOnlyList<DotInstance> ActiveDots => dots;
+
     public event Action<DotInstance> OnDotAdded;                   // BuffHudView sinh icon
     public event Action<DotInstance> OnDotRemoved;                 // BuffHudView trả icon
 
@@ -36,12 +37,17 @@ public class PlayerDebuffSystem : MonoBehaviour
     private bool wasSilenced;
     private float shownWeakness;
 
+    // Chống gọi lồng: trong lúc đang tick DOT, một đòn có thể kích hoạt Thiên thần hộ mệnh → Tối thượng → xóa DOT.
+    // Khi đang tick thì chỉ GHI NHỚ, vòng tick xong mới xóa (xem FlushPending).
+    private bool ticking;
+    private bool pendingClearDots;
+
     private void Awake() { stats = GetComponent<PlayerStats>(); }
 
     // ---------------- API cho nguồn gây hiệu ứng (quái, BOSS, bẫy...) ----------------
 
     // value: phần trăm (0.5 = 50%) cho Slow, Tê cóng, Vulnerable, Exhaust, Blind, Yếu đuối, Suy giảm mana.
-    // Root/Stun/Silence chỉ dùng duration. Trả về true nếu hiệu ứng được áp dụng (không bị hiệu ứng mạnh hơn chặn).
+    // Root/Stun/Silence chỉ dùng duration. Trả về true nếu hiệu ứng được áp dụng.
     public bool ApplyDebuff(BuffType type, float value, float duration)
     {
         if (!BuffController.IsDebuff(type))
@@ -49,8 +55,10 @@ public class PlayerDebuffSystem : MonoBehaviour
             Debug.LogWarning($"PlayerDebuffSystem: {type} không phải debuff.", this);
             return false;
         }
+
         if (GameManager.Instance != null && GameManager.Instance.IsEnded) return false;
         if (ImmunityUtil.BlocksDebuff(stats.Health.Immunities.Flags, type)) return false;      // Miễn nhiễm
+
         return stats.Buffs.ApplyDebuff(type, value, duration);
     }
 
@@ -58,11 +66,12 @@ public class PlayerDebuffSystem : MonoBehaviour
     public void ApplyDot(DotData data)
     {
         if (data == null) return;
-        if (stats.Health.Immunities.Has(ImmunityFlags.Dot)) return;                              // Miễn nhiễm DOT
         if (GameManager.Instance != null && GameManager.Instance.IsEnded) return;
+        if (stats.Health.Immunities.Has(ImmunityFlags.Dot)) return;                              // Miễn nhiễm DOT
 
         float now = Time.time;
         DotInstance inst = Find(data);
+
         if (inst == null)
         {
             inst = freeDots.Count > 0 ? freeDots.Pop() : new DotInstance();
@@ -80,11 +89,19 @@ public class PlayerDebuffSystem : MonoBehaviour
         }
     }
 
+    // Gỡ mọi debuff và DOT (dùng cho "tẩy hiệu ứng" và để test)
+    public void ClearAll()
+    {
+        foreach (BuffType t in Enum.GetValues(typeof(BuffType)))
+            if (BuffController.IsDebuff(t)) stats.Buffs.Clear(t);
+
+        RequestClearDots();
+    }
+
     // Có miễn nhiễm mới: xóa các hiệu ứng đang dính thuộc nhóm đó
     public void PurgeImmune(ImmunityFlags flags)
     {
-        if ((flags & ImmunityFlags.Dot) != 0)
-            for (int i = dots.Count - 1; i >= 0; i--) RemoveDot(i);
+        if ((flags & ImmunityFlags.Dot) != 0) RequestClearDots();
 
         for (int i = 0; i < BuffController.TypeCount; i++)            // Vòng for: không sinh rác như Enum.GetValues
         {
@@ -93,11 +110,15 @@ public class PlayerDebuffSystem : MonoBehaviour
         }
     }
 
-    // Gỡ mọi debuff và DOT (dùng cho "tẩy hiệu ứng" sau này và để test)
-    public void ClearAll()
+    // Đang tick thì hoãn, không thì xóa ngay
+    private void RequestClearDots()
     {
-        foreach (BuffType t in Enum.GetValues(typeof(BuffType)))
-            if (BuffController.IsDebuff(t)) stats.Buffs.Clear(t);
+        if (ticking) pendingClearDots = true;
+        else RemoveAllDots();
+    }
+
+    private void RemoveAllDots()
+    {
         for (int i = dots.Count - 1; i >= 0; i--) RemoveDot(i);
     }
 
@@ -121,29 +142,57 @@ public class PlayerDebuffSystem : MonoBehaviour
         if (dots.Count == 0) return;
         if (GameManager.Instance != null && GameManager.Instance.IsEnded) return;
 
-        float now = Time.time;                                     // Dừng khi tạm dừng
-        for (int i = dots.Count - 1; i >= 0; i--)
+        ticking = true;
+        try
         {
-            DotInstance d = dots[i];
-            int guard = 0;                                         // Chốt an toàn: tối đa 8 nhịp mỗi frame
-            while (now >= d.nextTickTime && d.nextTickTime <= d.endTime + 0.001f && guard++ < 8)
-            {
-                Tick(d);
-                d.nextTickTime += d.data.tickInterval;
-                if (stats.Health.IsDead) return;
-            }
-            if (now >= d.endTime) RemoveDot(i);
+            TickDots();
+        }
+        finally
+        {
+            ticking = false;
+            FlushPending();                                         // Việc xóa bị hoãn trong lúc tick
         }
     }
 
-    // Mỗi stack là MỘT đòn riêng: sau này hiệu ứng giảm sát thương theo từng đòn sẽ áp dụng cho từng stack
+    private void TickDots()
+    {
+        float now = Time.time;                                     // Dừng khi tạm dừng
+
+        for (int i = dots.Count - 1; i >= 0; i--)
+        {
+            if (i >= dots.Count) continue;                         // Phòng danh sách bị đổi
+
+            DotInstance d = dots[i];
+            int guard = 0;                                         // Chốt an toàn: tối đa 8 nhịp mỗi frame
+
+            while (d.data != null && now >= d.nextTickTime && d.nextTickTime <= d.endTime + 0.001f && guard++ < 8)
+            {
+                Tick(d);
+                if (d.data == null) break;                         // Bản ghi đã bị xóa giữa chừng
+                d.nextTickTime += d.data.tickInterval;
+                if (stats.Health.IsDead) return;
+            }
+
+            if (d.data != null && now >= d.endTime) RemoveDot(i);
+        }
+    }
+
+    // Mỗi stack là MỘT đòn riêng: hiệu ứng giảm sát thương theo từng đòn áp dụng cho từng stack
     private void Tick(DotInstance d)
     {
         for (int s = 0; s < d.stacks; s++)
         {
-            stats.TakeDamage(d.data.damagePerTick, d.data.element);   // chịu DEF và giảm theo nguyên tố (Pure thì không)
+            if (d.data == null) return;
+            stats.TakeDamage(d.data.damagePerTick, d.data.element);   // Chịu DEF và giảm theo nguyên tố (Pure thì không)
             if (stats.Health.IsDead) return;
         }
+    }
+
+    private void FlushPending()
+    {
+        if (!pendingClearDots) return;
+        pendingClearDots = false;
+        RemoveAllDots();
     }
 
     private void RemoveDot(int index)
@@ -161,6 +210,7 @@ public class PlayerDebuffSystem : MonoBehaviour
         bool silenced = stats.IsSilenced;
         if (silenced == wasSilenced) return;
         wasSilenced = silenced;
+
         SkillSystem skills = stats.Skills;
         if (skills != null) skills.SetSilenced(silenced);
     }
@@ -181,7 +231,7 @@ public class PlayerDebuffSystem : MonoBehaviour
     {
         if (!Debug.isDebugBuild) return;
         bool applied = ApplyDebuff(debugDebuff, debugValue, debugDuration);
-        Debug.Log($"[Debuff] {debugDebuff} {debugValue:0.##} trong {debugDuration}s: {(applied ? "ÁP DỤNG" : "BỊ BỎ QUA (có hiệu ứng mạnh hơn)")}");
+        Debug.Log($"[Debuff] {debugDebuff} {debugValue:0.##} trong {debugDuration}s: {(applied ? "ÁP DỤNG" : "BỊ BỎ QUA (miễn nhiễm hoặc có hiệu ứng mạnh hơn)")}");
     }
 
     [ContextMenu("Debug: Apply DOT")]

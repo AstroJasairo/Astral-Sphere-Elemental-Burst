@@ -29,9 +29,26 @@ public class StarPerk
 [CreateAssetMenu(menuName = "Astral Sphere/Character Data")]
 public class CharacterData : ScriptableObject
 {
-    [Header("Meta: định danh và nâng cấp vĩnh viễn")]
+    [Header("Informations")]
     public string id;                                   // Duy nhất, dùng làm khóa lưu. Ví dụ "acronomia". KHÔNG đổi sau khi phát hành
-    public int[] starCosts = new int[5];                // Vàng để lên sao 1, 2, 3, 4, 5
+    public string characterName;
+    public Sprite icon;
+    public Color primaryColor = new Color(1f, 0.75f, 0.1f);      // Màu chính: thanh mana khi All Out Assault (sau này: giao diện, hiệu ứng...)
+    public Color secondaryColor = Color.white;                   // Màu phụ: dành cho tương lai
+
+    [Header("Base Stats")]
+    public float baseMaxHp = 100f;
+    public float baseAtk = 1f;
+    public float baseDef = 0f;
+    public float maxMana = 100f;
+    public float baseMoveSpeed = 5f;
+    public float baseMagnetRadius = 1.5f;
+
+    public ElementResistances elementResist = new ElementResistances();
+
+    [Tooltip("Tick nguyên tố nào thì nhân vật miễn nhiễm hoàn toàn sát thương nguyên tố đó")]
+    public ElementMask elementImmunity = ElementMask.None;
+
     public List<StatProgression> statProgressions = new List<StatProgression>();
 
     public StatProgression GetProgression(StatType stat)
@@ -41,29 +58,9 @@ public class CharacterData : ScriptableObject
         return null;
     }
 
-    public string characterName;
-    public Sprite icon;
+    [Header("Stars")]
+    public int[] starCosts = new int[5];                // Vàng để lên sao 1, 2, 3, 4, 5
 
-    [Header("Màu sắc nhân vật")]
-    public Color primaryColor = new Color(1f, 0.75f, 0.1f);      // Màu chính: thanh mana khi All Out Assault (sau này: giao diện, hiệu ứng...)
-    public Color secondaryColor = Color.white;                   // Màu phụ: dành cho tương lai
-
-    [Header("Chỉ số cơ bản riêng của nhân vật (lv0, trước khi nâng ở menu)")]
-    public float baseMaxHp = 100f;
-    public float baseAtk = 1f;
-    public float baseDef = 0f;
-    public float baseMoveSpeed = 5f;
-    public float baseMagnetRadius = 1.5f;
-
-    [Header("Mana của All Out Assault (riêng từng nhân vật)")]
-    public float maxMana = 100f;
-
-    [Header("Phòng thủ nguyên tố (0.2 = kháng 20%, âm = yếu hệ)")]
-    public ElementResistances elementResist = new ElementResistances();
-    [Tooltip("Tick nguyên tố nào thì nhân vật miễn nhiễm hoàn toàn sát thương nguyên tố đó")]
-    public ElementMask elementImmunity = ElementMask.None;
-
-    [Header("Đặc quyền theo sao (0 đến 5)")]
     public List<StarPerk> perks = new List<StarPerk>();
 
     // Trả về các perk THỰC SỰ đang hoạt động ở số sao hiện tại
@@ -86,8 +83,8 @@ public class CharacterData : ScriptableObject
         return active;
     }
 
-    [Header("Kỹ năng (để trống nếu nhân vật chưa có)")]
-    [SerializeField, HideInInspector] private PassiveSkillData passiveSkill;   // CŨ (GĐ10): tự chuyển vào danh sách bên dưới
+    [Header("Skills (để trống nếu nhân vật chưa có)")]
+    //[SerializeField, HideInInspector] private PassiveSkillData passiveSkill;   // CŨ (GĐ10): tự chuyển vào danh sách bên dưới
     public List<PassiveSkillData> passiveSkills = new List<PassiveSkillData>();
     public ActiveSkillData activeSkill;
 
@@ -101,14 +98,14 @@ public class CharacterData : ScriptableObject
     {
         if (passiveSkills == null) passiveSkills = new List<PassiveSkillData>();
 
-        if (passiveSkill != null)                                    // Chuyển dữ liệu cũ: passive đơn lẻ thành phần tử đầu danh sách
-        {
-            if (!passiveSkills.Contains(passiveSkill)) passiveSkills.Insert(0, passiveSkill);
-            passiveSkill = null;
-#if UNITY_EDITOR
-            UnityEditor.EditorUtility.SetDirty(this);
-#endif
-        }
+//        if (passiveSkill != null)                                    // Chuyển dữ liệu cũ: passive đơn lẻ thành phần tử đầu danh sách
+//        {
+//            if (!passiveSkills.Contains(passiveSkill)) passiveSkills.Insert(0, passiveSkill);
+//            passiveSkill = null;
+//#if UNITY_EDITOR
+//            UnityEditor.EditorUtility.SetDirty(this);
+//#endif
+//        }
 
         // Nhắc nhở id thiếu hoặc trùng (id là khóa lưu tiến trình nên không được trống/trùng trong cùng nhân vật)
         var seen = new HashSet<string>();
@@ -118,5 +115,31 @@ public class CharacterData : ScriptableObject
             if (string.IsNullOrEmpty(p.id)) Debug.LogWarning($"{name}: passive '{p.name}' chưa có id.", this);
             else if (!seen.Add(p.id)) Debug.LogWarning($"{name}: id passive '{p.id}' bị trùng.", this);
         }
+    }
+
+    // Chuột phải vào tiêu đề asset > chọn mục này để điền sẵn số mặc định, khỏi nhập tay 6 x 20 con số
+    [ContextMenu("Fill Default Meta Progression")]
+    private void FillDefaultMetaProgression()
+    {
+        starCosts = new[] { 3000, 10000, 25000, 70000, 150000 };
+
+        // Mức tăng mỗi cấp, theo thứ tự StatType: Hp, Mp, Atk, Def, Spd, Mag
+        // Hp và Def cộng thẳng; còn lại là phần trăm (0.04 = 4%)
+        float[] perLevel = { 10f, 0.02f, 0.04f, 2f, 0.02f, 0.06f };
+
+        statProgressions = new List<StatProgression>();
+        for (int s = 0; s < perLevel.Length; s++)
+        {
+            var p = new StatProgression { stat = (StatType)s, bonusByLevel = new float[10], costByLevel = new int[10] };
+            for (int i = 0; i < 10; i++)
+            {
+                p.bonusByLevel[i] = perLevel[s] * i;           // Cấp 1 (i = 0) không có bonus
+                p.costByLevel[i] = i == 0 ? 0 : 50 * i * i;    // Lên cấp 2 tốn 50, cấp 10 tốn 4050
+            }
+            statProgressions.Add(p);
+        }
+#if UNITY_EDITOR
+        UnityEditor.EditorUtility.SetDirty(this);
+#endif
     }
 }

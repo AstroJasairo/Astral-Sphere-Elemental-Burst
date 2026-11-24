@@ -15,6 +15,15 @@ public class EnemyData : ScriptableObject
     public EnemyTier EffectiveTier => (isBoss && tier < EnemyTier.MiniBoss) ? EnemyTier.Boss : tier;
     public GameObject prefab;      // Prefab của quái (đi kèm dữ liệu)
 
+    [Header("Kỹ năng dạng module (dùng được cho MỌI bậc kẻ địch)")]
+    [Tooltip("Kỹ năng thi triển: Sét đánh, Lao tới, Cào... (có hồi chiêu hoặc một lần)")]
+    public List<BossSkillData> activeModules = new List<BossSkillData>();
+    [Tooltip("Kỹ năng bị động dùng chung: Giáp sắt, Bất tử hộ thân, Thiên thần hộ mệnh, Đoạt mệnh, Miễn nhiễm khi ở xa...")]
+    public List<PassiveSkillData> passiveModules = new List<PassiveSkillData>();
+
+    public bool HasModules =>
+        (activeModules != null && activeModules.Count > 0) || (passiveModules != null && passiveModules.Count > 0);
+
     [Header("Sát thương")]
     [Tooltip("Nguyên tố của MỌI đòn của kẻ địch này (chạm, đạn, vùng cảnh báo). Pure = bỏ qua DEF và giảm sát thương")]
     public ElementType damageElement = ElementType.Metal;

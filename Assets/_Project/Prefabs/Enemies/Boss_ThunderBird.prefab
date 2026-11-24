@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2727147826250403648}
   - component: {fileID: 8167421897174393828}
   - component: {fileID: 7738119015124957909}
-  - component: {fileID: 518763663281951203}
+  - component: {fileID: 4833049744160116771}
   m_Layer: 7
   m_Name: Boss_ThunderBird
   m_TagString: Untagged
@@ -196,7 +196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c32dcbf6a63d7940a254729c985008e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatusEffectHandler
---- !u!114 &518763663281951203
+--- !u!114 &4833049744160116771
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -205,7 +205,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 8366031795934451168}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5436d1ed8e2dec247870041612ddda4b, type: 3}
+  m_Script: {fileID: 11500000, guid: 19db12ff1287d7e41bbf20d163772f65, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ThunderBirdBoss
-  strikeEffectPrefab: {fileID: 7835988988565987069, guid: fbe0038ec7f740c478c20e8dcc5ad917, type: 3}
+  m_EditorClassIdentifier: Assembly-CSharp::BossController
+  bodyRenderer: {fileID: 2690515725399655507}
+  immuneColor: {r: 0.55, g: 0.65, b: 0.9, a: 1}

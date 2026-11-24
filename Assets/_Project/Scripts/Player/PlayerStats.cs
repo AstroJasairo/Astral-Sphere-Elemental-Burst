@@ -82,7 +82,7 @@ public class PlayerStats : MonoBehaviour, ISkillOwner
     {
         get
         {
-            if (IsRooted || IsStunned) return 0f;                              // Trói và Choáng: không di chuyển
+            if (IsRooted || IsStunned || IsDormant) return 0f;               // Trói, Choáng, Dormant: không di chuyển                             // Trói và Choáng: không di chuyển
             return baseMoveSpeed * (1f + (soulLinkOn ? 0f : AddedSpeedPct))
                    * (1f - Debuff(BuffType.Slow));
         }
@@ -137,9 +137,17 @@ public class PlayerStats : MonoBehaviour, ISkillOwner
     public event Action<float> OnDamaged;     // MỚI 12E: phát SAU khi một đòn đã trừ máu/khiên (tham số = sát thương đã tính DEF và giảm)
 
     // MỚI 13C: Đoạt mệnh nghe. CombatHit báo sau mỗi đòn trúng quái
-    public event Action<EnemyBase> OnEnemyHit;
-    public bool HasEnemyHitListeners => OnEnemyHit != null;
-    public void NotifyEnemyHit(EnemyBase enemy) { OnEnemyHit?.Invoke(enemy); }
+    //public event Action<EnemyBase> OnEnemyHit;
+    //public bool HasEnemyHitListeners => OnEnemyHit != null;
+    //public void NotifyEnemyHit(EnemyBase enemy) { OnEnemyHit?.Invoke(enemy); }
+
+    // XÓA: public event Action<EnemyBase> OnEnemyHit; HasEnemyHitListeners; NotifyEnemyHit
+    public event Action<HealthSystem, EnemyTier> OnHitTarget;
+    public bool HasHitListeners => OnHitTarget != null;
+    public void NotifyHit(HealthSystem target, EnemyTier tier) { OnHitTarget?.Invoke(target, tier); }
+
+    public bool IsDormant => Health.IsDormant;                       // Tối thượng: đứng yên, ngừng tấn công
+    public bool WeaponsDisabled => IsStunned || IsDormant;           // Vũ khí tắt khi Choáng hoặc Dormant
 
     // ISkillOwner: đặt miễn nhiễm của một nguồn rồi xóa các hiệu ứng đang dính mà giờ được miễn nhiễm
     public void SetImmunity(object source, ImmunityFlags flags)

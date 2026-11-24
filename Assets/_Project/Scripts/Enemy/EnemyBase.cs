@@ -28,6 +28,10 @@ public class EnemyBase : MonoBehaviour, ISkillOwner
     public HealthSystem Health => health;
     public DamageReductionSet Reductions { get; } = new DamageReductionSet();
     public event Action<float> OnDamaged;
+    public event Action<HealthSystem, EnemyTier> OnHitTarget;      // ISkillOwner: quái vừa đánh trúng người chơi (Đoạt mệnh nghe)
+
+    public bool IsDormant => health != null && health.IsDormant;   // Tối thượng: đứng yên, ngừng tấn công
+    public Rigidbody2D Body => rb;                                  // Module kỹ năng (Lao tới) điều khiển trực tiếp
 
     public void SetImmunity(object source, ImmunityFlags flags)
     {
@@ -51,6 +55,17 @@ public class EnemyBase : MonoBehaviour, ISkillOwner
             if (debuffs == null && !TryGetComponent(out debuffs))
                 debuffs = gameObject.AddComponent<EnemyDebuffSystem>();
             return debuffs;
+        }
+    }
+
+    private EnemySkillRunner skillRunner;
+    private EnemySkillRunner SkillRunner
+    {
+        get
+        {
+            if (skillRunner == null && !TryGetComponent(out skillRunner))
+                skillRunner = gameObject.AddComponent<EnemySkillRunner>();
+            return skillRunner;
         }
     }
 
@@ -116,6 +131,7 @@ public class EnemyBase : MonoBehaviour, ISkillOwner
         // Quái tầm xa dừng ở 90% tầm đánh. Cận chiến (attackRange = 0) thì luôn lao vào.
         float stop = data.attackRange * 0.9f;
         stopDistanceSqr = stop * stop;
+        if (data.HasModules) SkillRunner.Setup(data);          // Chỉ quái có module mới tốn component. Quái cũ còn runner thì tự dọn ở OnDisable
     }
 
     // Sát thương nhận vào theo nguyên tố: miễn nhiễm, giảm sát thương, DEF, rồi Vulnerable.
@@ -141,6 +157,11 @@ public class EnemyBase : MonoBehaviour, ISkillOwner
     private void FixedUpdate()
     {
         if (Data == null || target == null) return;
+        if (health.IsDormant)                                  // Tối thượng: đứng yên
+        {
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
         if (OverrideMovement) return;
         if (status.TryGetForcedVelocity(out Vector2 forced))
         {
@@ -180,11 +201,12 @@ public class EnemyBase : MonoBehaviour, ISkillOwner
     private void OnTriggerStay2D(Collider2D other)
     {
         if (Time.time < nextAttackTime) return;
-        if (Debuffs.IsStunned) return;                           // Quái bị Choáng không gây sát thương khi chạm
+        if (Debuffs.IsStunned || health.IsDormant) return;     // Choáng hoặc Dormant: không gây sát thương khi chạm
         if (!other.TryGetComponent(out PlayerStats player)) return;
 
         player.TakeDamage(Damage, Data.damageElement, ContactKind);     // Damage đã nhân hệ số Exhaust
         HitEffect.ApplyAll(Data.hitEffects, player);             // Áp dụng cả khi khiên hấp thụ hết sát thương
+        OnHitTarget?.Invoke(player.Health, EnemyTier.Normal);
         nextAttackTime = Time.time + AttackCooldown / Debuffs.AttackSpeedMultiplier;
     }
 

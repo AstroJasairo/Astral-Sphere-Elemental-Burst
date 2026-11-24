@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 410a2b35dd51d05458db823db8df3393, type: 3}
+  m_Name: LordOfTheWolfData_ImmuneWhenFar
+  m_EditorClassIdentifier: Assembly-CSharp::ImmuneWhenFarPassiveData
+  id: 
+  skillName: "Mi\u1EC5n nhi\u1EC5m khi \u1EDF xa"
+  icon: {fileID: 0}
+  description: 
+  upgradeCost: 0000000000000000000000000000000000000000
+  ignoresSilence: 0
+  ignoresStun: 0
+  immunity: 1
+  levels:
+  - distance: 8
+    margin: 0.8

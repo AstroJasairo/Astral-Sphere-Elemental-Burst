@@ -25,7 +25,7 @@ public static class CombatHit
 
         bool hasEffects = effects != null && effects.Count > 0;
         PlayerStats player = GetAttacker();
-        bool needEnemy = hasEffects || (player != null && player.HasEnemyHitListeners);
+        bool needEnemy = hasEffects || (player != null && player.HasHitListeners);
 
         EnemyBase enemy = null;
         if (needEnemy) target.TryGetComponent(out enemy);        // Chỉ lấy khi thật sự cần
@@ -36,6 +36,6 @@ public static class CombatHit
         hp.TakeHit(damage, element);
 
         // Quái đã chết trong đòn này thì không báo
-        if (enemy != null && player != null && !hp.IsDead) player.NotifyEnemyHit(enemy);
+        if (enemy != null && player != null && !hp.IsDead) player.NotifyHit(hp, enemy.Tier);
     }
 }

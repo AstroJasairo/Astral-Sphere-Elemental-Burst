@@ -23,6 +23,7 @@ public class MapLoader : MonoBehaviour
     private void Awake()
     {
         MapData map = MetaProgress.GetSelectedMap();          // null: chạy thẳng scene Game, giữ cấu hình trong scene
+        GameDifficulty.Current = map != null ? Mathf.Clamp(map.difficulty, 1, 3) : 1;
 
         // ---- Biên bản đồ (làm TRƯỚC các spawner) ----
         Vector2 size = map != null ? map.boundsSize : Vector2.zero;

@@ -28,6 +28,8 @@ public class EnemyDebuffSystem : MonoBehaviour
     // Aura của Nữ hoàng chinh phạt: kênh RIÊNG, nhân với debuff từ vũ khí (không bị "mạnh nhất thắng")
     private float auraUntil, auraSlow, auraAttackSlow, auraExhaust, auraVulnerable;
     private bool AuraOn => Time.time < auraUntil;
+    // Chống gọi lồng: đòn trong lúc tick DOT có thể kích hoạt Thiên thần hộ mệnh (quái/BOSS) → Tối thượng → xóa DOT giữa chừng
+    private bool ticking, pendingClear;
 
     // Thuộc tính lấy lười: an toàn bất kể thứ tự Awake
     private EnemyBase enemy;
@@ -180,7 +182,11 @@ public class EnemyDebuffSystem : MonoBehaviour
     // Có miễn nhiễm mới: xóa các hiệu ứng đang dính thuộc nhóm đó
     public void PurgeImmune(ImmunityFlags flags)
     {
-        if ((flags & ImmunityFlags.Dot) != 0) ClearDots();
+        if ((flags & ImmunityFlags.Dot) != 0)
+        {
+            if (ticking) pendingClear = true;
+            else ClearDots();
+        }
 
         for (int i = 0; i < BuffController.TypeCount; i++)
         {
@@ -201,30 +207,44 @@ public class EnemyDebuffSystem : MonoBehaviour
     {
         if (GameManager.Instance != null && GameManager.Instance.IsEnded) return;
 
-        float now = Time.time;                              // Dừng khi tạm dừng
-
-        for (int i = dots.Count - 1; i >= 0; i--)
+        ticking = true;
+        try
         {
-            DotState d = dots[i];
-            int guard = 0;                                  // Chốt an toàn: tối đa 8 nhịp mỗi frame
+            float now = Time.time;                              // Dừng khi tạm dừng
 
-            while (now >= d.nextTickTime && d.nextTickTime <= d.endTime + 0.001f && guard++ < 8)
+            for (int i = dots.Count - 1; i >= 0; i--)
             {
-                float damage = d.damagePerTick * d.scale;      // CŨ: d.data.damagePerTick * d.scale
+                if (i >= dots.Count) continue;
 
-                // Mỗi stack là MỘT đòn riêng: chịu DEF, kháng và miễn nhiễm nguyên tố của quái
-                for (int s = 0; s < d.stacks; s++)
+                DotState d = dots[i];
+                int guard = 0;                                  // Chốt an toàn: tối đa 8 nhịp mỗi frame
+
+                while (d.data != null && now >= d.nextTickTime && d.nextTickTime <= d.endTime + 0.001f && guard++ < 8)
                 {
-                    Health.TakeHit(damage, d.data.element);
-                    if (Health.IsDead) return;              // Quái chết: EnemyBase đã trả về pool và OnDisable đã dọn DOT
-                }
-                d.nextTickTime += d.data.tickInterval;
-            }
+                    float damage = d.damagePerTick * d.scale;
 
-            if (now >= d.endTime) ReleaseDot(i);
+                    // Mỗi stack là MỘT đòn riêng: chịu DEF, kháng và miễn nhiễm nguyên tố của quái
+                    for (int s = 0; s < d.stacks; s++)
+                    {
+                        if (d.data == null) break;
+                        Health.TakeHit(damage, d.data.element);
+                        if (Health.IsDead) return;              // Quái chết: EnemyBase đã trả về pool và OnDisable đã dọn DOT
+                    }
+
+                    if (d.data == null) break;
+                    d.nextTickTime += d.data.tickInterval;
+                }
+
+                if (d.data != null && now >= d.endTime) ReleaseDot(i);
+            }
+        }
+        finally
+        {
+            ticking = false;
+            if (pendingClear) { pendingClear = false; ClearDots(); }
         }
 
-        if (dots.Count == 0) enabled = false;               // Hết DOT: tắt Update
+        if (dots.Count == 0) enabled = false;                   // Hết DOT: tắt Update
     }
 
     // Quái bị trả về pool khi còn DOT: dọn sạch để lần sau không dính

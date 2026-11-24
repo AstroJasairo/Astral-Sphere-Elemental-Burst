@@ -9,6 +9,10 @@ public interface ISkillOwner
     HealthSystem Health { get; }
     DamageReductionSet Reductions { get; }
 
+    // Phát sau MỖI đòn của chủ sở hữu trúng một mục tiêu (kể cả đòn không gây sát thương).
+    // Tham số: máu của mục tiêu và bậc của mục tiêu (người chơi tính là Normal). Đoạt mệnh nghe sự kiện này.
+    event Action<HealthSystem, EnemyTier> OnHitTarget;
+
     // Phát sau khi một đòn từ bên ngoài đã trừ máu (KHÔNG gồm tự trừ máu như Huyết nộ)
     event Action<float> OnDamaged;
 

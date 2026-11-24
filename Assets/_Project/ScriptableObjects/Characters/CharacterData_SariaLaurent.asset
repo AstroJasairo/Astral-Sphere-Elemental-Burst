@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: CharacterData_SariaLaurent
   m_EditorClassIdentifier: Assembly-CSharp::CharacterData
   id: saria_laurent
-  starCosts: 0000000000000000000000000000000000000000
-  statProgressions: []
   characterName: Saria Laurent
   icon: {fileID: 0}
   primaryColor: {r: 1, g: 0.75, b: 0.1, a: 1}
@@ -22,9 +20,9 @@ MonoBehaviour:
   baseMaxHp: 100
   baseAtk: 1
   baseDef: 0
+  maxMana: 300
   baseMoveSpeed: 3
   baseMagnetRadius: 1.5
-  maxMana: 300
   elementResist:
     metal: 0
     fire: 0
@@ -37,6 +35,86 @@ MonoBehaviour:
     plant: 0
     dark: 0
   elementImmunity: 0
+  statProgressions:
+  - stat: 0
+    bonusByLevel:
+    - 0
+    - 10
+    - 20
+    - 30
+    - 40
+    - 50
+    - 60
+    - 70
+    - 80
+    - 90
+    costByLevel: 0000000032000000c8000000c201000020030000e20400000807000092090000800c0000d20f0000
+  - stat: 1
+    bonusByLevel:
+    - 0
+    - 0.02
+    - 0.04
+    - 0.06
+    - 0.08
+    - 0.099999994
+    - 0.12
+    - 0.14
+    - 0.16
+    - 0.17999999
+    costByLevel: 0000000032000000c8000000c201000020030000e20400000807000092090000800c0000d20f0000
+  - stat: 2
+    bonusByLevel:
+    - 0
+    - 0.04
+    - 0.08
+    - 0.12
+    - 0.16
+    - 0.19999999
+    - 0.24
+    - 0.28
+    - 0.32
+    - 0.35999998
+    costByLevel: 0000000032000000c8000000c201000020030000e20400000807000092090000800c0000d20f0000
+  - stat: 3
+    bonusByLevel:
+    - 0
+    - 2
+    - 4
+    - 6
+    - 8
+    - 10
+    - 12
+    - 14
+    - 16
+    - 18
+    costByLevel: 0000000032000000c8000000c201000020030000e20400000807000092090000800c0000d20f0000
+  - stat: 4
+    bonusByLevel:
+    - 0
+    - 0.02
+    - 0.04
+    - 0.06
+    - 0.08
+    - 0.099999994
+    - 0.12
+    - 0.14
+    - 0.16
+    - 0.17999999
+    costByLevel: 0000000032000000c8000000c201000020030000e20400000807000092090000800c0000d20f0000
+  - stat: 5
+    bonusByLevel:
+    - 0
+    - 0.06
+    - 0.12
+    - 0.17999999
+    - 0.24
+    - 0.29999998
+    - 0.35999998
+    - 0.42
+    - 0.48
+    - 0.53999996
+    costByLevel: 0000000032000000c8000000c201000020030000e20400000807000092090000800c0000d20f0000
+  starCosts: b80b000010270000a861000070110100f0490200
   perks:
   - id: justia_I
     replacesId: 
@@ -47,6 +125,5 @@ MonoBehaviour:
     weaponLevel: 1
     bonus: 0
     description: 'Game Start: Gain Justia Lv1'
-  passiveSkill: {fileID: 0}
   passiveSkills: []
   activeSkill: {fileID: 0}
